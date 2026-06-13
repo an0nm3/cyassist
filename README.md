@@ -1,22 +1,10 @@
-<pre style="background:#0d1117;color:#e6edf3;font-family:monospace;padding:16px;border-radius:8px;line-height:1.4;font-weight:bold">
-  <span style="color:#33cc33">▄▀▀▀  █   █ ▄▀▀▀▄ ▄▀▀▀▀ ▄▀▀▀▀  ▀  ▄▀▀▀▀ ▀▀█▀▀</span>
-  <span style="color:#33cc33">█     ▀▄ ▄▀ █▀▀▀█  ▀▀▀▄  ▀▀▀▄  █   ▀▀▀▄   █</span>
-  <span style="color:#33cc33"> ▀▀▀    █   ▀   ▀ ▀▀▀▀  ▀▀▀▀   ▀  ▀▀▀▀    ▀</span>
-  <span style="color:#33cc33">       ▄▀</span>
-  <span style="color:#33cc33">+-+-+-+-+-+ +-+-+-+-+-+-+ +-+-+-+-+</span>
-  <span style="color:#33cc33">|C|Y|B|E|R| |G|L|O|B|A|L| |N|E|W|S|</span>
-  <span style="color:#33cc33">+-+-+-+-+-+ +-+-+-+-+-+-+ +-+-+-+-+</span>
-</pre>
+<p align="center">
+  <img src=".github/cyassist-global.svg" alt="Cyassist Global Cyber News">
+</p>
 
-<pre style="background:#0d1117;color:#e6edf3;font-family:monospace;padding:16px;border-radius:8px;line-height:1.4;font-weight:bold">
-  <span style="color:#FF9933">▄▀▀▀  █   █ ▄▀▀▀▄ ▄▀▀▀▀ ▄▀▀▀▀  ▀  ▄▀▀▀▀ ▀▀█▀▀</span>
-  <span style="color:#FF9933">█     ▀▄ ▄▀ █▀▀▀█  ▀▀▀▄  ▀▀▀▄  █   ▀▀▀▄   █</span>
-  <span style="color:#FF9933"> ▀▀▀    █   ▀   ▀ ▀▀▀▀  ▀▀▀▀   ▀  ▀▀▀▀    ▀</span>
-  <span style="color:#FF9933">       ▄▀</span>
-  <span style="color:#FF9933">+-+-+-+-+-+-+ +-+-+-+-+-+ +-+-+-+-+</span>
-  <span style="color:#e6edf3">|I|N|D|I|A|N| |C|Y|B|E|R| |N|E|W|S|</span>
-  <span style="color:#138808">+-+-+-+-+-+-+ +-+-+-+-+-+ +-+-+-+-+</span>
-</pre>
+<p align="center">
+  <img src=".github/cyassist-india.svg" alt="Cyassist Indian Cyber News">
+</p>
 
 # Cyassist 🇮🇳 — Indian Cyber News
 
@@ -51,33 +39,15 @@ python3 reader.py -H -d 3
 python3 reader.py -s "ransomware"
 ```
 
-<pre style="background:#0d1117;color:#e6edf3;font-family:monospace;padding:16px;border-radius:8px;line-height:1.4">
-$ python3 reader.py
-  <span style="color:#33cc33;font-weight:bold">▄▀▀▀  █   █ ▄▀▀▀▄ ▄▀▀▀▀ ▄▀▀▀▀  ▀  ▄▀▀▀▀ ▀▀█▀▀</span>
-  <span style="color:#33cc33;font-weight:bold">█     ▀▄ ▄▀ █▀▀▀█  ▀▀▀▄  ▀▀▀▄  █   ▀▀▀▄   █</span>
-  <span style="color:#33cc33;font-weight:bold"> ▀▀▀    █   ▀   ▀ ▀▀▀▀  ▀▀▀▀   ▀  ▀▀▀▀    ▀</span>
-  <span style="color:#33cc33;font-weight:bold">       ▄▀</span>
-  <span style="color:#33cc33;font-weight:bold">+-+-+-+-+-+ +-+-+-+-+-+-+ +-+-+-+-+</span>
-  <span style="color:#33cc33;font-weight:bold">|C|Y|B|E|R| |G|L|O|B|A|L| |N|E|W|S|</span>
-  <span style="color:#33cc33;font-weight:bold">+-+-+-+-+-+ +-+-+-+-+-+-+ +-+-+-+-+</span>
-  <span style="color:#8b949e">────────────────────────────────────────────────────────────</span>
-  Made by 🇮🇳 <span style="font-weight:bold">4n0n0n3</span>
-  <span style="color:#8b949e">────────────────────────────────────────────────────────────</span>
-</pre>
+<pre>
+$ python3 reader.py</pre>
 
-<pre style="background:#0d1117;color:#e6edf3;font-family:monospace;padding:16px;border-radius:8px;line-height:1.4">
-$ python3 reader.py -i
-  <span style="color:#FF9933;font-weight:bold">▄▀▀▀  █   █ ▄▀▀▀▄ ▄▀▀▀▀ ▄▀▀▀▀  ▀  ▄▀▀▀▀ ▀▀█▀▀</span>
-  <span style="color:#FF9933;font-weight:bold">█     ▀▄ ▄▀ █▀▀▀█  ▀▀▀▄  ▀▀▀▄  █   ▀▀▀▄   █</span>
-  <span style="color:#FF9933;font-weight:bold"> ▀▀▀    █   ▀   ▀ ▀▀▀▀  ▀▀▀▀   ▀  ▀▀▀▀    ▀</span>
-  <span style="color:#FF9933;font-weight:bold">       ▄▀</span>
-  <span style="color:#FF9933;font-weight:bold">+-+-+-+-+-+-+ +-+-+-+-+-+ +-+-+-+-+</span>
-  <span style="color:#e6edf3">|I|N|D|I|A|N| |C|Y|B|E|R| |N|E|W|S|</span>
-  <span style="color:#138808;font-weight:bold">+-+-+-+-+-+-+ +-+-+-+-+-+ +-+-+-+-+</span>
-  <span style="color:#8b949e">────────────────────────────────────────────────────────────</span>
-  Made by 🇮🇳 <span style="font-weight:bold">4n0n0n3</span>
-  <span style="color:#8b949e">────────────────────────────────────────────────────────────</span>
-</pre>
+<img src=".github/cyassist-global.svg" alt="Global Cyber News output">
+
+<pre>
+$ python3 reader.py -i</pre>
+
+<img src=".github/cyassist-india.svg" alt="Indian Cyber News output">
 
 ## Sources
 
