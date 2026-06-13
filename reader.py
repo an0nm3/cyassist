@@ -68,7 +68,8 @@ class Fmt:
     def signature(cls):
         line = cls.hr("\u2500", 50)
         name = cls.bold("4n0n0n3")
-        return f"{line}\n  Made by \U0001f1ee\U0001f1f3 {name}\n{line}"
+        heart = cls.bold("\u2665")
+        return f"{line}\n  Made by \U0001f1ee\U0001f1f3 {name} with {heart}\n{line}"
 
 
 def _figlet(text: str) -> str:
@@ -146,24 +147,9 @@ INDIA_KEYWORDS = [
     "bharat", "meity", "nasscom", "gov.in", "cyber swachhta", "it act",
 ]
 
-INDIA_SOURCES = [
-    "gbhackers", "quick-heal", "seqrite", "cyber-security-hive",
-    "the-cyber-india", "kratikal", "cyraacs",
-]
-
-
-def _is_india_source(source: str) -> bool:
-    source_slug = source.lower().replace("/", "-").replace("_", "-")
-    for ind_src in INDIA_SOURCES:
-        if ind_src in source_slug or source_slug in ind_src:
-            return True
-    return False
-
 
 def _matches_india(text, title, source):
-    if _is_india_source(source):
-        return True
-    combined = title.lower()
+    combined = f"{title} {text}".lower()
     for kw in INDIA_KEYWORDS:
         pattern = r'\b' + re.escape(kw.lower()) + r'\b'
         if re.search(pattern, combined):
@@ -384,16 +370,28 @@ def today(category: str = "news", source="", query="",
                 hl_page = 0
         elif cmd == 'n':
             if mode == "news":
-                page = min(page + 1, pages - 1)
+                if page >= pages - 1:
+                    print("  No more items")
+                    continue
+                page += 1
             else:
                 mode = "news"
         elif cmd == 'p' and mode == "news":
-            page = max(page - 1, 0)
+            if page <= 0:
+                print("  Already at first page")
+                continue
+            page -= 1
         elif cmd == 'hn' and mode == "highlights":
             hl_pages = max(1, (len(highlights) - 1) // hl_page_size + 1) if not show_all_hl else 1
-            hl_page = min(hl_page + 1, hl_pages - 1)
+            if hl_page >= hl_pages - 1:
+                print("  No more items")
+                continue
+            hl_page += 1
         elif cmd == 'hp' and mode == "highlights":
-            hl_page = max(hl_page - 1, 0)
+            if hl_page <= 0:
+                print("  Already at first page")
+                continue
+            hl_page -= 1
         elif cmd == 'm':
             show_all_hl = not show_all_hl
         elif cmd.startswith('/'):
