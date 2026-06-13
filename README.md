@@ -1,20 +1,28 @@
 ```
-▄▀▀▀  █   █ ▄▀▀▀▄ ▄▀▀▀▀ ▄▀▀▀▀  ▀  ▄▀▀▀▀ ▀▀█▀▀
-█     ▀▄ ▄▀ █▀▀▀█  ▀▀▀▄  ▀▀▀▄  █   ▀▀▀▄   █
- ▀▀▀    █   ▀   ▀ ▀▀▀▀  ▀▀▀▀   ▀  ▀▀▀▀    ▀
-       ▄▀
+ ▄▀▀▀  █   █ ▄▀▀▀▄ ▄▀▀▀▀ ▄▀▀▀▀ ▀▀ ▄▀▀▀▀ ▀▀█▀▀
+ █     ▀▄ ▄▀ █▀▀▀█  ▀▀▀▄  ▀▀▀▄  █   ▀▀▀▄   █
+  ▀▀▀    █   ▀   ▀ ▀▀▀▀  ▀▀▀▀  ▀▀  ▀▀▀▀    ▀
+        ▄▀
 ```
 
-# Cyassist — Indian Cyber News
+```
+ ▄▀▀▀  █   █ ▄▀▀▀▄ ▄▀▀▀▀ ▄▀▀▀▀ ▄▄ ▄▀▀▀▀ ▀▀█▀▀
+ █     ▀▄ ▄▀ █▀▀▀█  ▀▀▀▄  ▀▀▀▄  █   ▀▀▀▄   █
+  ▀▀▀    █   ▀   ▀ ▀▀▀▀  ▀▀▀▀  ▀▀  ▀▀▀▀    ▀
+        ▄▀
+```
+
+# Cyassist 🇮🇳 — Indian Cyber News
 
 Daily cybersecurity news feed archive — auto-collected from 35+ RSS and Telegram sources. Built for the Indian bug bounty and security community.
 
-Made by [**4n0n0n3**](https://github.com/4n0n0n3) (Pinaki Ranjan Patra) — [LinkedIn](https://www.linkedin.com/in/pinakirpatra/)
+Made with ❤️ by [**4n0n0n3**](https://github.com/4n0n0n3) (Pinaki Ranjan Patra) — [LinkedIn](https://www.linkedin.com/in/pinakirpatra/)
 
 ## Features
 
 - **Live archive** — news fetched every 15 min via automated collector
-- **Indian focus** — filter by `-i` for India-relevant cybersecurity news
+- **Global edition** 🌐 — full cybersecurity news from 35+ sources
+- **Indian edition** 🇮🇳 — filter by `-i` for India-relevant cybersecurity news
 - **Searchable** — full-text grep across all articles
 - **Public reader** — `reader.py` gives you terminal-based browsing
 
@@ -38,14 +46,19 @@ python3 reader.py -s "ransomware"
 ```
 
 ```
-$ python3 reader.py -i
-  ▄▀▀▀  █   █ ▄▀▀▀▄ ▄▀▀▀▀ ▄▀▀▀▀  ▀  ▄▀▀▀▀ ▀▀█▀▀
-  █     ▀▄ ▄▀ █▀▀▀█  ▀▀▀▄  ▀▀▀▄  █   ▀▀▀▄   █
-   ▀▀▀    █   ▀   ▀ ▀▀▀▀  ▀▀▀▀   ▀  ▀▀▀▀    ▀
+$ python3 reader.py        🌐 GLOBAL CYBER NEWS
+ ▄▀▀▀  █   █ ▄▀▀▀▄ ▄▀▀▀▀ ▄▀▀▀▀ ▀▀ ▄▀▀▀▀ ▀▀█▀▀
+ █     ▀▄ ▄▀ █▀▀▀█  ▀▀▀▄  ▀▀▀▄  █   ▀▀▀▄   █
+  ▀▀▀    █   ▀   ▀ ▀▀▀▀  ▀▀▀▀  ▀▀  ▀▀▀▀    ▀
         ▄▀
-+-+-+-+-+-+-+ +-+-+-+-+-+ +-+-+-+-+
-|I|n|d|i|a|n| |C|y|b|e|r| |N|e|w|s|
-+-+-+-+-+-+-+ +-+-+-+-+-+ +-+-+-+-+
+```
+
+```
+$ python3 reader.py -i     🇮🇳 INDIAN CYBER NEWS
+ ▄▀▀▀  █   █ ▄▀▀▀▄ ▄▀▀▀▀ ▄▀▀▀▀ ▄▄ ▄▀▀▀▀ ▀▀█▀▀
+ █     ▀▄ ▄▀ █▀▀▀█  ▀▀▀▄  ▀▀▀▄  █   ▀▀▀▄   █
+  ▀▀▀    █   ▀   ▀ ▀▀▀▀  ▀▀▀▀  ▀▀  ▀▀▀▀    ▀
+        ▄▀
 ```
 
 ## Sources
