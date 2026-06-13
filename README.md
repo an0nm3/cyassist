@@ -1,26 +1,22 @@
-```ansi
+<pre style="background:#0d1117;color:#e6edf3;font-family:monospace;padding:16px;border-radius:8px;line-height:1.4;font-weight:bold">
+  <span style="color:#33cc33">▄▀▀▀  █   █ ▄▀▀▀▄ ▄▀▀▀▀ ▄▀▀▀▀  ▀  ▄▀▀▀▀ ▀▀█▀▀</span>
+  <span style="color:#33cc33">█     ▀▄ ▄▀ █▀▀▀█  ▀▀▀▄  ▀▀▀▄  █   ▀▀▀▄   █</span>
+  <span style="color:#33cc33"> ▀▀▀    █   ▀   ▀ ▀▀▀▀  ▀▀▀▀   ▀  ▀▀▀▀    ▀</span>
+  <span style="color:#33cc33">       ▄▀</span>
+  <span style="color:#33cc33">+-+-+-+-+-+ +-+-+-+-+-+-+ +-+-+-+-+</span>
+  <span style="color:#33cc33">|C|Y|B|E|R| |G|L|O|B|A|L| |N|E|W|S|</span>
+  <span style="color:#33cc33">+-+-+-+-+-+ +-+-+-+-+-+-+ +-+-+-+-+</span>
+</pre>
 
-  [1;32m▄▀▀▀  █   █ ▄▀▀▀▄ ▄▀▀▀▀ ▄▀▀▀▀  ▀  ▄▀▀▀▀ ▀▀█▀▀[0m
-  [1;32m█     ▀▄ ▄▀ █▀▀▀█  ▀▀▀▄  ▀▀▀▄  █   ▀▀▀▄   █[0m
-  [1;32m ▀▀▀    █   ▀   ▀ ▀▀▀▀  ▀▀▀▀   ▀  ▀▀▀▀    ▀[0m
-  [1;32m       ▄▀[0m
-  [1;32m+-+-+-+-+-+ +-+-+-+-+-+-+ +-+-+-+-+[0m
-  [1;32m|C|Y|B|E|R| |G|L|O|B|A|L| |N|E|W|S|[0m
-  [1;32m+-+-+-+-+-+ +-+-+-+-+-+-+ +-+-+-+-+[0m
-
-```
-
-```ansi
-
-  [1;38;5;214m▄▀▀▀  █   █ ▄▀▀▀▄ ▄▀▀▀▀ ▄▀▀▀▀  ▀  ▄▀▀▀▀ ▀▀█▀▀[0m
-  [1;38;5;214m█     ▀▄ ▄▀ █▀▀▀█  ▀▀▀▄  ▀▀▀▄  █   ▀▀▀▄   █[0m
-  [1;38;5;214m ▀▀▀    █   ▀   ▀ ▀▀▀▀  ▀▀▀▀   ▀  ▀▀▀▀    ▀[0m
-  [1;38;5;214m       ▄▀[0m
-  [1;38;5;214m+-+-+-+-+-+-+ +-+-+-+-+-+ +-+-+-+-+[0m
-  [1;37m|I|N|D|I|A|N| |C|Y|B|E|R| |N|E|W|S|[0m
-  [1;38;5;34m+-+-+-+-+-+-+ +-+-+-+-+-+ +-+-+-+-+[0m
-
-```
+<pre style="background:#0d1117;color:#e6edf3;font-family:monospace;padding:16px;border-radius:8px;line-height:1.4;font-weight:bold">
+  <span style="color:#FF9933">▄▀▀▀  █   █ ▄▀▀▀▄ ▄▀▀▀▀ ▄▀▀▀▀  ▀  ▄▀▀▀▀ ▀▀█▀▀</span>
+  <span style="color:#FF9933">█     ▀▄ ▄▀ █▀▀▀█  ▀▀▀▄  ▀▀▀▄  █   ▀▀▀▄   █</span>
+  <span style="color:#FF9933"> ▀▀▀    █   ▀   ▀ ▀▀▀▀  ▀▀▀▀   ▀  ▀▀▀▀    ▀</span>
+  <span style="color:#FF9933">       ▄▀</span>
+  <span style="color:#FF9933">+-+-+-+-+-+-+ +-+-+-+-+-+ +-+-+-+-+</span>
+  <span style="color:#e6edf3">|I|N|D|I|A|N| |C|Y|B|E|R| |N|E|W|S|</span>
+  <span style="color:#138808">+-+-+-+-+-+-+ +-+-+-+-+-+ +-+-+-+-+</span>
+</pre>
 
 # Cyassist 🇮🇳 — Indian Cyber News
 
@@ -55,33 +51,33 @@ python3 reader.py -H -d 3
 python3 reader.py -s "ransomware"
 ```
 
-```ansi
+<pre style="background:#0d1117;color:#e6edf3;font-family:monospace;padding:16px;border-radius:8px;line-height:1.4">
 $ python3 reader.py
-  [1;32m▄▀▀▀  █   █ ▄▀▀▀▄ ▄▀▀▀▀ ▄▀▀▀▀  ▀  ▄▀▀▀▀ ▀▀█▀▀[0m
-  [1;32m█     ▀▄ ▄▀ █▀▀▀█  ▀▀▀▄  ▀▀▀▄  █   ▀▀▀▄   █[0m
-  [1;32m ▀▀▀    █   ▀   ▀ ▀▀▀▀  ▀▀▀▀   ▀  ▀▀▀▀    ▀[0m
-  [1;32m       ▄▀[0m
-  [1;32m+-+-+-+-+-+ +-+-+-+-+-+-+ +-+-+-+-+[0m
-  [1;32m|C|Y|B|E|R| |G|L|O|B|A|L| |N|E|W|S|[0m
-  [1;32m+-+-+-+-+-+ +-+-+-+-+-+-+ +-+-+-+-+[0m
-  [2m────────────────────────────────────────────────────────────[0m
-  Made by 🇮🇳 [1m4n0n0n3[0m
-  [2m────────────────────────────────────────────────────────────[0m
-```
+  <span style="color:#33cc33;font-weight:bold">▄▀▀▀  █   █ ▄▀▀▀▄ ▄▀▀▀▀ ▄▀▀▀▀  ▀  ▄▀▀▀▀ ▀▀█▀▀</span>
+  <span style="color:#33cc33;font-weight:bold">█     ▀▄ ▄▀ █▀▀▀█  ▀▀▀▄  ▀▀▀▄  █   ▀▀▀▄   █</span>
+  <span style="color:#33cc33;font-weight:bold"> ▀▀▀    █   ▀   ▀ ▀▀▀▀  ▀▀▀▀   ▀  ▀▀▀▀    ▀</span>
+  <span style="color:#33cc33;font-weight:bold">       ▄▀</span>
+  <span style="color:#33cc33;font-weight:bold">+-+-+-+-+-+ +-+-+-+-+-+-+ +-+-+-+-+</span>
+  <span style="color:#33cc33;font-weight:bold">|C|Y|B|E|R| |G|L|O|B|A|L| |N|E|W|S|</span>
+  <span style="color:#33cc33;font-weight:bold">+-+-+-+-+-+ +-+-+-+-+-+-+ +-+-+-+-+</span>
+  <span style="color:#8b949e">────────────────────────────────────────────────────────────</span>
+  Made by 🇮🇳 <span style="font-weight:bold">4n0n0n3</span>
+  <span style="color:#8b949e">────────────────────────────────────────────────────────────</span>
+</pre>
 
-```ansi
+<pre style="background:#0d1117;color:#e6edf3;font-family:monospace;padding:16px;border-radius:8px;line-height:1.4">
 $ python3 reader.py -i
-  [1;38;5;214m▄▀▀▀  █   █ ▄▀▀▀▄ ▄▀▀▀▀ ▄▀▀▀▀  ▀  ▄▀▀▀▀ ▀▀█▀▀[0m
-  [1;38;5;214m█     ▀▄ ▄▀ █▀▀▀█  ▀▀▀▄  ▀▀▀▄  █   ▀▀▀▄   █[0m
-  [1;38;5;214m ▀▀▀    █   ▀   ▀ ▀▀▀▀  ▀▀▀▀   ▀  ▀▀▀▀    ▀[0m
-  [1;38;5;214m       ▄▀[0m
-  [1;38;5;214m+-+-+-+-+-+-+ +-+-+-+-+-+ +-+-+-+-+[0m
-  [1;37m|I|N|D|I|A|N| |C|Y|B|E|R| |N|E|W|S|[0m
-  [1;38;5;34m+-+-+-+-+-+-+ +-+-+-+-+-+ +-+-+-+-+[0m
-  [2m────────────────────────────────────────────────────────────[0m
-  Made by 🇮🇳 [1m4n0n0n3[0m
-  [2m────────────────────────────────────────────────────────────[0m
-```
+  <span style="color:#FF9933;font-weight:bold">▄▀▀▀  █   █ ▄▀▀▀▄ ▄▀▀▀▀ ▄▀▀▀▀  ▀  ▄▀▀▀▀ ▀▀█▀▀</span>
+  <span style="color:#FF9933;font-weight:bold">█     ▀▄ ▄▀ █▀▀▀█  ▀▀▀▄  ▀▀▀▄  █   ▀▀▀▄   █</span>
+  <span style="color:#FF9933;font-weight:bold"> ▀▀▀    █   ▀   ▀ ▀▀▀▀  ▀▀▀▀   ▀  ▀▀▀▀    ▀</span>
+  <span style="color:#FF9933;font-weight:bold">       ▄▀</span>
+  <span style="color:#FF9933;font-weight:bold">+-+-+-+-+-+-+ +-+-+-+-+-+ +-+-+-+-+</span>
+  <span style="color:#e6edf3">|I|N|D|I|A|N| |C|Y|B|E|R| |N|E|W|S|</span>
+  <span style="color:#138808;font-weight:bold">+-+-+-+-+-+-+ +-+-+-+-+-+ +-+-+-+-+</span>
+  <span style="color:#8b949e">────────────────────────────────────────────────────────────</span>
+  Made by 🇮🇳 <span style="font-weight:bold">4n0n0n3</span>
+  <span style="color:#8b949e">────────────────────────────────────────────────────────────</span>
+</pre>
 
 ## Sources
 
