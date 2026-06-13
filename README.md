@@ -1,9 +1,9 @@
 <p align="center">
-  <img src=".github/cyassist-global.svg" alt="Cyassist Global Cyber News">
+  <img src=".github/cyassist-global.png" alt="Cyassist Global Cyber News">
 </p>
 
 <p align="center">
-  <img src=".github/cyassist-india.svg" alt="Cyassist Indian Cyber News">
+  <img src=".github/cyassist-india.png" alt="Cyassist Indian Cyber News">
 </p>
 
 # Cyassist 🇮🇳 — Indian Cyber News
@@ -42,12 +42,12 @@ python3 reader.py -s "ransomware"
 <pre>
 $ python3 reader.py</pre>
 
-<img src=".github/cyassist-global.svg" alt="Global Cyber News output">
+<img src=".github/cyassist-global.png" alt="Global Cyber News output">
 
 <pre>
 $ python3 reader.py -i</pre>
 
-<img src=".github/cyassist-india.svg" alt="Indian Cyber News output">
+<img src=".github/cyassist-india.png" alt="Indian Cyber News output">
 
 ## Sources
 
