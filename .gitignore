@@ -1,0 +1,9 @@
+# Storage tracking
+.seen_ids
+
+# Private techniques (not for public repo)
+techniques/
+
+# OS
+.DS_Store
+Thumbs.db

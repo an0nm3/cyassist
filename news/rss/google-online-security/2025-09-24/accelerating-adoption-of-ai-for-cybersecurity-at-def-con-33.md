@@ -1,0 +1,12 @@
+---
+source: rss/google-online-security
+title: Accelerating adoption of AI for cybersecurity at DEF CON 33
+url: http://security.googleblog.com/2025/09/accelerating-adoption-of-ai-for.html
+date: 2025-09-24
+item_id: http://security.googleblog.com/2025/09/accelerating-adoption-of-ai-for.html
+category: news---
+
+**Source:** Google Online Security
+**Link:** http://security.googleblog.com/2025/09/accelerating-adoption-of-ai-for.html
+
+Posted by Elie Bursztein and Marianna Tishchenko, Google Privacy, Safety and Security Team        Empowering cyber defenders with AI is critical to tilting the cybersecurity balance back in their favor as they battle cybercriminals&nbsp;and keep users safe. To help accelerate adoption of AI for cybersecurity workflows, we partnered with Airbus at DEF CON 33 to host the  GenSec Capture the Flag (CTF) , dedicated to human-AI collaboration in cybersecurity. Our goal was to create a fun, interactive environment, where participants across various skill levels could explore how AI can accelerate their daily cybersecurity workflows.                  At GenSec CTF, nearly 500 participants successfully completed introductory challenges, with 23% of participants using AI for cybersecurity for the very first time. An overwhelming 85% of all participants found the event useful for learning how AI can be applied to security workflows. This positive feedback highlights that AI-centric CTFs can play a vital role in speeding up AI education and adoption in the security community.      The CTF also offered a valuable opportunity for the community to use  Sec-Gemini , Google’s experimental Cybersecurity AI, as an optional assistant available in the UI alongside major LLMs. And we received great feedback on Sec-Gemini, with 77% of respondents saying that they had found Sec-Gemini either “very helpful” or “extremely helpful” in assisting them with solving the challenges.&nbsp;&nbsp;     We want to thank the DEF CON community for the enthusiastic participation and for making this inaugural event a resounding success. The community feedback during the event has been invaluable for understanding how to improve Sec-Gemini, and we are already incorporating some of the lessons learned into the next iteration.&nbsp;     We are committed to advancing the AI cybersecurity frontier and will continue working with the community to build tools that help protect people online. Stay tuned as we plan to share more research and key learnings from the CTF with the broader community.
