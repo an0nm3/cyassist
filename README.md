@@ -70,6 +70,3 @@ url: "https://theregister.com/..."
 ---
 ```
 
-## Automation
-
-News is auto-collected via a systemd service running the [intel-collector](https://github.com/4n0n0n3/intel-collector) pipeline. New articles arrive every 15-30 minutes.
