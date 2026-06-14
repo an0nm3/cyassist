@@ -10,14 +10,21 @@ Usage:
   python3 reader.py -c techniques     Browse techniques
   python3 reader.py --sources         List all sources
   python3 reader.py --tags            List all tags
+  python3 reader.py --add-source myblog https://blog.example.com/rss
+  python3 reader.py --fetch-custom    Fetch custom RSS sources
+  python3 reader.py --list-custom     List custom sources
 """
 
 import argparse
 import datetime
+import hashlib
+import json
 import os
 import re
 import subprocess
 import sys
+import urllib.request
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 
@@ -120,6 +127,10 @@ def _compact_header(heading_text: str, india_mode: bool = False):
 
 NEWS_DIR = Path(__file__).parent / "news"
 EXCERPT_WORDS = 150
+CONFIG_DIR = Path(os.getenv("XDG_CONFIG_HOME", Path.home() / ".config")) / "cyassist"
+DATA_DIR = Path(os.getenv("XDG_DATA_HOME", Path.home() / ".local" / "share")) / "cyassist"
+CUSTOM_SOURCES_FILE = CONFIG_DIR / "sources.json"
+CUSTOM_NEWS_DIR = DATA_DIR / "custom"
 
 
 def _meta(text: str) -> dict:
@@ -157,7 +168,89 @@ def _matches_india(text, title, source):
     return False
 
 
-def _collect(category: str, days: int = 0, source: str = "",
+def _load_custom_sources():
+    if not CUSTOM_SOURCES_FILE.exists():
+        return []
+    try:
+        return json.loads(CUSTOM_SOURCES_FILE.read_text())
+    except (json.JSONDecodeError, OSError):
+        return []
+
+def _save_custom_sources(sources):
+    CONFIG_DIR.mkdir(parents=True, exist_ok=True)
+    CUSTOM_SOURCES_FILE.write_text(json.dumps(sources, indent=2))
+
+def _add_source(name, url):
+    sources = _load_custom_sources()
+    if any(s["name"] == name for s in sources):
+        return False, f"Source '{name}' already exists"
+    sources.append({"name": name, "url": url})
+    _save_custom_sources(sources)
+    return True, f"Added source '{name}'"
+
+def _remove_source(name):
+    sources = _load_custom_sources()
+    filtered = [s for s in sources if s["name"] != name]
+    if len(filtered) == len(sources):
+        return False, f"Source '{name}' not found"
+    _save_custom_sources(filtered)
+    return True, f"Removed source '{name}'"
+
+def _fetch_custom_sources():
+    sources = _load_custom_sources()
+    if not sources:
+        print(f"  {Fmt.dim('No custom sources configured. Use --add-source to add one.')}")
+        return
+    CUSTOM_NEWS_DIR.mkdir(parents=True, exist_ok=True)
+    for s in sources:
+        name = s["name"]
+        url = s["url"]
+        print(f"  Fetching {Fmt.bold(name)} ...", end=" ")
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "cyassist/1.0"})
+            resp = urllib.request.urlopen(req, timeout=15)
+            data = resp.read()
+            root = ET.fromstring(data)
+            ns = {"atom": "http://www.w3.org/2005/Atom"}
+            items = []
+            for item in root.iter("item"):
+                title = item.findtext("title", "")
+                link = item.findtext("link", "")
+                desc = item.findtext("description", "")
+                pubdate = item.findtext("pubDate", "")
+                items.append((title, link, desc, pubdate))
+            for entry in root.iter("{http://www.w3.org/2005/Atom}entry"):
+                title = entry.findtext("{http://www.w3.org/2005/Atom}title", "")
+                link_el = entry.find("{http://www.w3.org/2005/Atom}link")
+                link = link_el.get("href", "") if link_el is not None else ""
+                desc_el = entry.find("{http://www.w3.org/2005/Atom}content")
+                desc = desc_el.text if desc_el is not None else ""
+                published = entry.findtext("{http://www.w3.org/2005/Atom}published", "")
+                items.append((title, link, desc, published))
+            count = 0
+            for title, link, desc, pubdate in items:
+                if not title:
+                    continue
+                uid = hashlib.md5(f"{name}:{title}:{link}".encode()).hexdigest()[:12]
+                fname = CUSTOM_NEWS_DIR / f"{name}_{uid}.md"
+                if fname.exists():
+                    continue
+                tags = "custom"
+                date_str = datetime.datetime.now().strftime("%Y-%m-%d")
+                content = f"""---
+title: "{title}"
+source: "custom/{name}"
+date: "{date_str}"
+category: "news"
+tags: [{tags}]
+url: "{link}"
+---
+{desc.strip()[:500]}"""
+                fname.write_text(content)
+                count += 1
+            print(f"{Fmt.green(f'{count} new')}")
+        except Exception as e:
+            print(f"{Fmt.red(f'error: {e}')}")
              query: str = "", india_mode: bool = False):
     if days > 0:
         cutoff = datetime.datetime.now() - datetime.timedelta(days=days)
@@ -165,22 +258,43 @@ def _collect(category: str, days: int = 0, source: str = "",
         cutoff = datetime.datetime.now() - datetime.timedelta(hours=24)
     items = []
 
-    for fp in NEWS_DIR.rglob("*.md"):
-        if fp.name.startswith("."):
-            continue
-        if datetime.datetime.fromtimestamp(fp.stat().st_mtime) < cutoff:
-            continue
-        text = fp.read_text(errors="replace")
-        m = _meta(text)
-        if category and m.get("category", "") != category:
-            continue
-        if source and source.lower() not in m.get("source", "").lower():
-            continue
-        if query and query.lower() not in text.lower():
-            continue
-        title = m.get("title", fp.stem)
-        in_scope = _matches_india(text, title, m.get("source", "")) if india_mode else True
-        items.append((fp, text, m, in_scope))
+    for base_dir in [NEWS_DIR]:
+        if base_dir.exists():
+            for fp in base_dir.rglob("*.md"):
+                if fp.name.startswith("."):
+                    continue
+                if datetime.datetime.fromtimestamp(fp.stat().st_mtime) < cutoff:
+                    continue
+                text = fp.read_text(errors="replace")
+                m = _meta(text)
+                if category and m.get("category", "") != category:
+                    continue
+                if source and source.lower() not in m.get("source", "").lower():
+                    continue
+                if query and query.lower() not in text.lower():
+                    continue
+                title = m.get("title", fp.stem)
+                in_scope = _matches_india(text, title, m.get("source", "")) if india_mode else True
+                items.append((fp, text, m, in_scope))
+
+    if CUSTOM_NEWS_DIR.exists():
+        for fp in CUSTOM_NEWS_DIR.rglob("*.md"):
+            if fp.name.startswith("."):
+                continue
+            if datetime.datetime.fromtimestamp(fp.stat().st_mtime) < cutoff:
+                continue
+            text = fp.read_text(errors="replace")
+            m = _meta(text)
+            if category and m.get("category", "") != category:
+                continue
+            if source and source.lower() not in m.get("source", "").lower():
+                continue
+            if query and query.lower() not in text.lower():
+                continue
+            title = m.get("title", fp.stem)
+            in_scope = _matches_india(text, title, m.get("source", "")) if india_mode else True
+            items.append((fp, text, m, in_scope))
+
     return items
 
 
@@ -637,8 +751,40 @@ if __name__ == "__main__":
     p.add_argument("-n", "--count", action="store_true", help="Count only")
     p.add_argument("--sources", action="store_true", help="List sources")
     p.add_argument("--tags", action="store_true", help="List tags")
+    p.add_argument("--add-source", nargs=2, metavar=("NAME", "URL"),
+                   help="Add a custom RSS source")
+    p.add_argument("--remove-source", metavar="NAME",
+                   help="Remove a custom RSS source")
+    p.add_argument("--list-custom", action="store_true",
+                   help="List custom RSS sources")
+    p.add_argument("--fetch-custom", action="store_true",
+                   help="Fetch articles from custom sources")
 
     args = p.parse_args()
+
+    if args.add_source:
+        ok, msg = _add_source(args.add_source[0], args.add_source[1])
+        print(msg)
+        return
+
+    if args.remove_source:
+        ok, msg = _remove_source(args.remove_source)
+        print(msg)
+        return
+
+    if args.list_custom:
+        sources = _load_custom_sources()
+        if not sources:
+            print("  No custom sources configured.")
+        else:
+            print(f"  {Fmt.bold('Custom sources:')}")
+            for s in sources:
+                print(f"    {Fmt.green(s['name'])}  {Fmt.dim(s['url'])}")
+        return
+
+    if args.fetch_custom:
+        _fetch_custom_sources()
+        return
 
     india_mode = args.india
     heading_text = "Indian Cyber News" if india_mode else "Cyber Global News"
