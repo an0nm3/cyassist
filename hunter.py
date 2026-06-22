@@ -919,6 +919,313 @@ def auto_run(news_dir: Path, exploit_dir: Path, techniques_dir: Path = None):
         pass
 
 
+# ── Phase 8: CVE Deep Research ──────────────────────────────────────────────
+ADDITIONAL_FEEDS = {
+    "the-hacker-news": "https://feeds.feedburner.com/TheHackersNews",
+    "msrc": "https://msrc.microsoft.com/update-guide/rss",
+    "project-zero": "https://googleprojectzero.blog/feed/",
+    "rapid7": "https://blog.rapid7.com/feed/",
+    "qualys": "https://blog.qualys.com/feed",
+    "sans-newsbites": "https://www.sans.org/newsletters/newsbites/rss/",
+    "portswigger": "https://portswigger.net/research/rss",
+    "detectify": "https://detectify.com/blog/feed.xml",
+    "assetnote": "https://assetnote.io/feed.xml",
+    "projectdiscovery": "https://projectdiscovery.io/blog/rss",
+}
+NITTER_INSTANCE = "https://nitter.net"
+X_FEEDS = {
+    "x-vxunderground": f"{NITTER_INSTANCE}/vxunderground/rss",
+    "x-pwntwitter": f"{NITTER_INSTANCE}/PwnAllTheThings/rss",
+    "x-binitamshah": f"{NITTER_INSTANCE}/binitamshah/rss",
+    "x-securityweek": f"{NITTER_INSTANCE}/SecurityWeek/rss",
+    "x-thedfirreport": f"{NITTER_INSTANCE}/TheDFIRReport/rss",
+    "x-0xor0ne": f"{NITTER_INSTANCE}/0xor0ne/rss",
+    "x-ghostsecurity": f"{NITTER_INSTANCE}/ghost_security_/rss",
+}
+MEDIUM_FEEDS = {
+    "medium-cybersecurity": "https://medium.com/feed/tag/cybersecurity",
+    "medium-bugbounty": "https://medium.com/feed/tag/bug-bounty",
+    "medium-infosec": "https://medium.com/feed/tag/infosec",
+    "medium-pentest": "https://medium.com/feed/tag/penetration-testing",
+    "medium-exploit": "https://medium.com/feed/tag/exploit",
+    "medium-vulnerability": "https://medium.com/feed/tag/vulnerability",
+    "medium-hacking": "https://medium.com/feed/tag/hacking",
+}
+NITTER_FALLBACK_INSTANCES = [
+    "https://nitter.poast.org",
+    "https://nitter.1d4.us",
+    "https://nitter.nl",
+]
+X_FEEDS_FLAT = dict(X_FEEDS)
+MEDIUM_FEEDS_FLAT = dict(MEDIUM_FEEDS)
+LINKEDIN_FEEDS = {
+    "linkedin-cybersecurity": "https://news.google.com/rss/search?q=site:linkedin.com+cybersecurity&hl=en-US&gl=US&ceid=US:en",
+    "linkedin-infosec": "https://news.google.com/rss/search?q=site:linkedin.com+infosec&hl=en-US&gl=US&ceid=US:en",
+    "linkedin-bugbounty": "https://news.google.com/rss/search?q=site:linkedin.com+bug+bounty&hl=en-US&gl=US&ceid=US:en",
+}
+ALL_FEEDS = {**ADDITIONAL_FEEDS, **X_FEEDS_FLAT, **MEDIUM_FEEDS_FLAT, **LINKEDIN_FEEDS}
+
+
+def _opencode_summarize(prompt: str, timeout: int = 60) -> Optional[str]:
+    """Use opencode's LLM for AI summarization (no extra API keys needed)."""
+    try:
+        result = subprocess.run(
+            ["opencode", "run", prompt],
+            capture_output=True, text=True, timeout=timeout
+        )
+        output = result.stdout or result.stderr or ""
+        return output.strip() or None
+    except FileNotFoundError:
+        return None
+    except subprocess.TimeoutExpired:
+        return None
+    except Exception:
+        return None
+
+
+def _web_search_cve(cve_id: str) -> list[dict]:
+    """Search the web for a CVE using available tools."""
+    results = []
+    urls_to_try = [
+        f"https://nvd.nist.gov/vuln/detail/{cve_id}",
+        f"https://www.cve.org/CVERecords?id={cve_id}",
+        f"https://packetstormsecurity.com/search/?q={cve_id}",
+        f"https://www.exploit-db.com/search?cve={cve_id}",
+    ]
+    for url in urls_to_try:
+        data = _fetch_url(url, timeout=10)
+        if data:
+            results.append({"url": url, "source": "web", "size": len(data)})
+    return results
+
+
+def research_cve(cve_id: str, news_dir: Path = None):
+    """Deep research on a single CVE across all intel sources."""
+    print(Fmt.banner(f"CVE DEEP RESEARCH", cve_id))
+
+    # 1. NVD + EPSS
+    print(f"\n  {Fmt.bold('1. NVD Enrichment')}")
+    enriched = enrich_cves([cve_id])
+    info = enriched.get(cve_id, {})
+    if info:
+        cvss = info.get("cvss", "N/A")
+        severity = info.get("severity", "N/A")
+        epss = info.get("epss", 0)
+        cwes = info.get("cwes", [])
+        desc = info.get("description", "")
+        print(f"    CVSS: {Fmt.yellow(str(cvss))} ({severity})")
+        print(f"    EPSS: {Fmt.yellow(f'{epss:.4f}')}")
+        if cwes:
+            print(f"    CWEs: {Fmt.cyan(', '.join(cwes))}")
+        if desc:
+            print(f"    Description: {Fmt.dim(desc[:300])}")
+
+    # 2. CISA KEV check
+    print(f"\n  {Fmt.bold('2. CISA KEV Status')}")
+    kev_cves = load_kev_cves(9999)
+    if cve_id in kev_cves:
+        print(f"    {Fmt.red('⚠ IN CISA KEV — actively exploited in the wild')}")
+        for fp in KEV_DIR.rglob("*.md"):
+            if cve_id in fp.read_text():
+                rw = re.search(r'ransomware:\s*(\S+)', fp.read_text())
+                if rw and rw.group(1).lower() == "known":
+                    print(f"    {Fmt.red('  Ransomware campaign use: KNOWN')}")
+                break
+    else:
+        print(f"    {Fmt.dim('Not in CISA KEV catalog')}")
+
+    # 3. GitHub PoCs
+    print(f"\n  {Fmt.bold('3. GitHub PoC Repositories')}")
+    gh_results = fetch_github_pocs([cve_id])
+    if gh_results and cve_id in gh_results:
+        for r in gh_results[cve_id]:
+            print(f"    ★{r['stars']} {Fmt.green(r['name'])}  {Fmt.url(r['url'])}")
+            if r['desc']:
+                print(f"      {Fmt.dim(r['desc'][:200])}")
+    else:
+        print(f"    {Fmt.dim('No GitHub PoCs found')}")
+
+    # 4. Local PoC storage
+    print(f"\n  {Fmt.bold('4. Local PoC Storage')}")
+    pocs = collect_exploit_pocs(EXPLOITS_DIR, days=999)
+    if cve_id in pocs:
+        for p in pocs[cve_id]:
+            print(f"    {Fmt.cyan(p['source'])}  {Fmt.url(p['url'])}  {Fmt.dim(p['file'])}")
+    else:
+        print(f"    {Fmt.dim('No local PoCs for this CVE')}")
+
+    # 5. News mentions
+    print(f"\n  {Fmt.bold('5. News Mentions')}")
+    if news_dir and news_dir.exists():
+        mentions = []
+        for fp in news_dir.rglob("*.md"):
+            if cve_id in fp.read_text():
+                title_m = re.search(r'title:\s*"(.+)"', fp.read_text(errors="replace"))
+                mentions.append((fp, title_m.group(1) if title_m else fp.stem))
+        if mentions:
+            for fp, title in mentions[:10]:
+                print(f"    {Fmt.dim(fp.parent.name)}  {title}")
+        else:
+            print(f"    {Fmt.dim('No news mentions')}")
+
+    # 6. Web results
+    print(f"\n  {Fmt.bold('6. Web Results')}")
+    web_results = _web_search_cve(cve_id)
+    for r in web_results[:5]:
+        print(f"    {Fmt.url(r['url'])} ({r['size']} bytes)")
+
+    # 7. AI summary via opencode
+    print(f"\n  {Fmt.bold('7. AI Summary')}")
+    desc_text = info.get("description", "")[:500]
+    poc_text = ""
+    if gh_results and cve_id in gh_results:
+        poc_text = "\n".join(f"- {r['name']}: {r['url']} (★{r['stars']})" for r in gh_results[cve_id][:3])
+    ai_prompt = f"Summarize this vulnerability for a bug bounty hunter in 3-4 sentences: CVE {cve_id}. CVSS {info.get('cvss', 'N/A')} ({info.get('severity', 'N/A')}). EPSS probability of exploitation: {info.get('epss', 0):.4f}. {'In CISA KEV (actively exploited).' if cve_id in kev_cves else ''} Description: {desc_text[:300]}. PoCs available: {poc_text[:200] or 'None found yet.'}. What should a hunter look for?"
+    ai_result = _opencode_summarize(ai_prompt)
+    if ai_result:
+        print(f"    {Fmt.green(ai_result[:500])}")
+    else:
+        print(f"    {Fmt.dim('AI summary unavailable (opencode subprocess failed)')}")
+
+    # 8. Brief write
+    brief_path = BRIEFS_DIR / f"research-{cve_id}-{datetime.datetime.now().strftime('%Y%m%d')}.md"
+    BRIEFS_DIR.mkdir(parents=True, exist_ok=True)
+    brief_lines = [
+        f"# CVE Research: {cve_id}",
+        f"**Date:** {datetime.datetime.now().strftime('%Y-%m-%d %H:%M')}",
+        f"**CVSS:** {info.get('cvss', 'N/A')} ({info.get('severity', 'N/A')})",
+        f"**EPSS:** {info.get('epss', 0):.4f}",
+        f"**CISA KEV:** {'YES' if cve_id in kev_cves else 'No'}",
+        f"**CWEs:** {', '.join(info.get('cwes', []))}",
+        f"**Description:** {desc}",
+        "",
+        "## GitHub PoCs",
+        poc_text or "None found",
+        "",
+        "## References",
+    ]
+    for r in web_results:
+        brief_lines.append(f"- {r['url']}")
+    brief_path.write_text("\n".join(brief_lines))
+    print(f"\n  {Fmt.green(f'Brief saved: {brief_path}')}")
+    return info
+
+
+def firehose(news_dir: Path, days: int = 7):
+    """Unfiltered intel dump — every CVE, PoC, KEV entry with no priority filtering."""
+    print(Fmt.banner("INTEL FIREHOSE", f"Last {days} days — unfiltered"))
+
+    # News CVEs
+    print(f"\n  {Fmt.bold('All CVEs in News')}")
+    all_cves = collect_news_cves(news_dir, days)
+    if all_cves:
+        for c in sorted(all_cves):
+            print(f"    {Fmt.cve(c)}")
+    else:
+        print(f"    {Fmt.dim('No CVEs found')}")
+
+    # All PoCs
+    print(f"\n  {Fmt.bold('All PoCs')}")
+    pocs = collect_exploit_pocs(EXPLOITS_DIR, days)
+    if pocs:
+        total = sum(len(v) for v in pocs.values())
+        print(f"    {Fmt.dim(f'{total} entries across {len(pocs)} CVE/sources')}")
+        seen = set()
+        for key, items in sorted(pocs.items()):
+            for item in items:
+                if item['file'] in seen: continue
+                seen.add(item['file'])
+                label = Fmt.cve(key) if key.startswith("CVE") else Fmt.cyan(f"[{key}]")
+                print(f"    {Fmt.bold(item['title'][:80])}")
+                print(f"      {label}  {Fmt.dim(item['source'])}")
+    else:
+        print(f"    {Fmt.dim('No PoCs')}")
+
+    # All KEV
+    print(f"\n  {Fmt.bold('All CISA KEV Entries (last 90 days)')}")
+    kev = load_kev_cves(90)
+    if kev:
+        for c in sorted(kev):
+            print(f"    {Fmt.red(c)}")
+    else:
+        print(f"    {Fmt.dim('No KEV entries')}")
+
+    # All targets matched
+    print(f"\n  {Fmt.bold('Target Matches')}")
+    targets = load_targets()
+    if targets:
+        for tname, tinfo in targets.items():
+            matched = [c for c in all_cves if any(kw.lower() in c.lower() for kw in tinfo.get("keywords", []) + tinfo.get("techs", []))]
+            if matched:
+                print(f"    {Fmt.green(tname)}: {', '.join(matched)}")
+
+    print(f"\n{Fmt.hr()}")
+
+
+def watch_mode(news_dir: Path, interval: int = 300):
+    """Continuous monitoring mode — checks for new intel every N seconds."""
+    print(Fmt.banner("WATCH MODE", f"Checking every {interval}s — Ctrl+C to stop"))
+    seen_cves = set()
+    try:
+        while True:
+            cves = collect_news_cves(news_dir, days=1)
+            new_cves = cves - seen_cves
+            if new_cves:
+                print(f"\n  {Fmt.green(f'[{datetime.datetime.now():%H:%M:%S}] {len(new_cves)} new CVE(s)')}")
+                for c in sorted(new_cves):
+                    print(f"    {Fmt.cve(c)}")
+                    enriched = enrich_cves([c])
+                    if enriched.get(c, {}).get("priority_score", 0) >= 50:
+                        print(f"      {Fmt.red('⚠ HIGH PRIORITY')}")
+                    seen_cves.add(c)
+            else:
+                print(f"  {Fmt.dim(f'[{datetime.datetime.now():%H:%M:%S}] No new CVEs')}", end="\r")
+            time.sleep(interval)
+    except KeyboardInterrupt:
+        print(f"\n  {Fmt.yellow('Watch mode stopped.')}")
+
+
+def fetch_additional_feeds(max_items: int = 10) -> int:
+    """Fetch from additional RSS sources for broader CVE coverage."""
+    count = 0
+    news_dir = HERE / "news" / "rss"
+    for name, url in ALL_FEEDS.items():
+        data = None
+        if name.startswith("x-"):
+            data = _fetch_url(url, timeout=15)
+            if not data:
+                for fallback in NITTER_FALLBACK_INSTANCES:
+                    alt_url = url.replace(NITTER_INSTANCE, fallback)
+                    data = _fetch_url(alt_url, timeout=10)
+                    if data:
+                        break
+        else:
+            data = _fetch_url(url, timeout=15)
+        if not data:
+            continue
+        try:
+            text_data = data.decode("utf-8", errors="replace")
+            entries = re.findall(r'<entry\b[^>]*>(.*?)</entry>', text_data, re.DOTALL) or \
+                      re.findall(r'<item\b[^>]*>(.*?)</item>', text_data, re.DOTALL)
+            for entry_xml in entries[:max_items]:
+                title_m = re.search(r'<title[^>]*>(.*?)</title>', entry_xml, re.DOTALL)
+                link_m = re.search(r'<link[^>]*href="([^"]+)"', entry_xml) or \
+                         re.search(r'<link[^>]*>(.*?)</link>', entry_xml)
+                pub_m = re.search(r'<published[^>]*>(.*?)</published>', entry_xml) or \
+                        re.search(r'<pubDate[^>]*>(.*?)</pubDate>', entry_xml)
+                title = title_m.group(1).strip() if title_m else ""
+                link = link_m.group(1).strip() if link_m else ""
+                pub = pub_m.group(1).strip()[:10] if pub_m else ""
+                date_str = pub or datetime.datetime.now().strftime("%Y-%m-%d")
+                cves = _cves_from_text(title)
+                tags = [name] + [f"CVE:{c}" for c in cves[:3]]
+                if _save_article(news_dir / name / date_str, name, title, link, "", tags, date_str):
+                    count += 1
+        except Exception as e:
+            print(f"  {Fmt.red(f'Feed {name} parse error: {e}')}", file=sys.stderr)
+    return count
+
+
 # ── CLI ─────────────────────────────────────────────────────────────────────
 def main():
     p = argparse.ArgumentParser(description="Cyassist hunter engine")
@@ -942,6 +1249,18 @@ def main():
                    help="Launch web dashboard")
     p.add_argument("--dashboard-port", type=int, default=8080,
                    help="Dashboard port (default: 8080)")
+    p.add_argument("--research", metavar="CVE-ID",
+                   help="Deep research on a specific CVE across all intel sources")
+    p.add_argument("--firehose", action="store_true",
+                   help="Unfiltered intel dump — every CVE, PoC, KEV with no filtering")
+    p.add_argument("--watch", action="store_true",
+                   help="Continuous monitoring — polls for new CVEs every N seconds")
+    p.add_argument("--watch-interval", type=int, default=300,
+                   help="Watch mode polling interval in seconds (default: 300)")
+    p.add_argument("--feeds-fetch", action="store_true",
+                   help="Fetch from additional RSS sources (THN, MSRC, Project Zero, etc.)")
+    p.add_argument("--brief", metavar="CVE-ID",
+                   help="Generate AI-summarized exploitation brief for a CVE")
     p.add_argument("--news-dir", default=str(HERE / "news"),
                    help="News directory (default: cyassist/news)")
 
@@ -1051,6 +1370,37 @@ def main():
                         print(f"      {Fmt.dim(r['desc'])}")
         else:
             print(f"  {Fmt.dim(f'No GitHub PoCs found for {args.cve}')}")
+        return
+
+    if args.research:
+        research_cve(args.research.upper(), news_dir)
+        return
+
+    if args.firehose:
+        firehose(news_dir, days=7)
+        return
+
+    if args.watch:
+        watch_mode(news_dir, interval=args.watch_interval)
+        return
+
+    if args.feeds_fetch:
+        print(f"  Fetching additional RSS sources...")
+        n = fetch_additional_feeds()
+        print(f"  {Fmt.green(f'Done: {n} new articles from {len(ALL_FEEDS)} sources')}")
+        return
+
+    if args.brief:
+        enriched = enrich_cves([args.brief.upper()])
+        info = enriched.get(args.brief.upper(), {})
+        gh_results = fetch_github_pocs([args.brief.upper()])
+        poc_repos = gh_results.get(args.brief.upper(), [])
+        try:
+            from gpt_briefs import generate_exploit_brief
+            brief = generate_exploit_brief(args.brief.upper(), info, poc_repos=poc_repos)
+        except ImportError:
+            brief = f"# {args.brief.upper()} — Exploitation Brief\n\nNo AI brief module available."
+        print(f"\n{brief[:2000]}")
         return
 
     if args.dashboard:

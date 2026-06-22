@@ -153,13 +153,54 @@ def _strip_fm(text: str) -> str:
     return text.strip()
 
 
+INDIA_SOURCE_PATTERNS = [
+    "et-ciso",
+    "the-cyber-india", "the cyber india",
+    "cyberblogindia",
+]
+
 INDIA_KEYWORDS = [
-    "india", "indian", "cert-in", "dpdp", "aadhaar", "upi",
-    "bharat", "meity", "nasscom", "gov.in", "cyber swachhta", "it act",
+    # General
+    "india", "indian",
+    # Govt cyber bodies
+    "cert-in", "nciipc", "cdac", "stqc", "nielit", "nic.in",
+    "meity", "ministry of home affairs", "mha",
+    # Frameworks & regulations
+    "dpdp", "digital personal data protection", "it act",
+    "national cyber security policy", "ncsp",
+    "information technology act",
+    "cyber swachhta", "i4c", "cybercrime.gov.in",
+    "national cyber crime reporting",
+    # Identity & fintech
+    "aadhaar", "uidai", "digilocker", "upi", "bhim", "rupay",
+    "pan card", "voter id", "epfo",
+    # Indian companies & banks
+    "tcs", "infosys", "wipro", "hcl", "tech mahindra",
+    "reliance jio", "airtel", "bsnl", "vodafone idea", "vi",
+    "sbi", "state bank of india", "hdfc", "icici", "rbi", "npci",
+    "paytm", "phonepe", "razorpay", "bharatpe",
+    "flipkart", "zomato", "swiggy", "ola", "irctc", "groww", "zerodha",
+    # Threat actors targeting India
+    "sidewinder", "patchwork", "transparent tribe", "apt36",
+    "confucius", "white elephant", "bahamut",
+    "indian cyber crime", "cyber crime india",
+    # Indian govt initiatives
+    "ayushman bharat", "cowin", "digiyatra", "fastag",
+    "gstn", "umang",
+    # States & cities
+    "delhi", "mumbai", "bengaluru", "bangalore",
+    "hyderabad", "chennai", "pune", "kolkata", "ahmedabad",
+    "gurgaon", "noida", "jaipur", "lucknow", "chandigarh",
+    # Domains
+    "gov.in", "nic.in", "ac.in", "edu.in", "co.in",
 ]
 
 
 def _matches_india(text, title, source):
+    source_lower = source.lower()
+    for pat in INDIA_SOURCE_PATTERNS:
+        if pat in source_lower:
+            return True
     combined = f"{title} {text}".lower()
     for kw in INDIA_KEYWORDS:
         pattern = r'\b' + re.escape(kw.lower()) + r'\b'
@@ -792,6 +833,18 @@ if __name__ == "__main__":
                    help="Launch web dashboard")
     p.add_argument("--dashboard-port", type=int, default=8080,
                    help="Dashboard port (default: 8080)")
+    p.add_argument("--research", metavar="CVE-ID",
+                   help="Deep research on a specific CVE across all intel sources")
+    p.add_argument("--firehose", action="store_true",
+                   help="Unfiltered intel dump — every CVE, PoC, KEV with no filtering")
+    p.add_argument("--watch", action="store_true",
+                   help="Continuous monitoring — polls for new CVEs every N seconds")
+    p.add_argument("--watch-interval", type=int, default=300,
+                   help="Watch mode polling interval in seconds (default: 300)")
+    p.add_argument("--feeds-fetch", action="store_true",
+                   help="Fetch from additional RSS sources (THN, MSRC, Project Zero, etc.)")
+    p.add_argument("--brief", metavar="CVE-ID",
+                   help="Generate AI-summarized exploitation brief for a CVE")
 
     args = p.parse_args()
 
