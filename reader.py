@@ -153,13 +153,54 @@ def _strip_fm(text: str) -> str:
     return text.strip()
 
 
+INDIA_SOURCE_PATTERNS = [
+    "et-ciso",
+    "the-cyber-india", "the cyber india",
+    "cyberblogindia",
+]
+
 INDIA_KEYWORDS = [
-    "india", "indian", "cert-in", "dpdp", "aadhaar", "upi",
-    "bharat", "meity", "nasscom", "gov.in", "cyber swachhta", "it act",
+    # General
+    "india", "indian",
+    # Govt cyber bodies
+    "cert-in", "nciipc", "cdac", "stqc", "nielit", "nic.in",
+    "meity", "ministry of home affairs", "mha",
+    # Frameworks & regulations
+    "dpdp", "digital personal data protection", "it act",
+    "national cyber security policy", "ncsp",
+    "information technology act",
+    "cyber swachhta", "i4c", "cybercrime.gov.in",
+    "national cyber crime reporting",
+    # Identity & fintech
+    "aadhaar", "uidai", "digilocker", "upi", "bhim", "rupay",
+    "pan card", "voter id", "epfo",
+    # Indian companies & banks
+    "tcs", "infosys", "wipro", "hcl", "tech mahindra",
+    "reliance jio", "airtel", "bsnl", "vodafone idea", "vi",
+    "sbi", "state bank of india", "hdfc", "icici", "rbi", "npci",
+    "paytm", "phonepe", "razorpay", "bharatpe",
+    "flipkart", "zomato", "swiggy", "ola", "irctc", "groww", "zerodha",
+    # Threat actors targeting India
+    "sidewinder", "patchwork", "transparent tribe", "apt36",
+    "confucius", "white elephant", "bahamut",
+    "indian cyber crime", "cyber crime india",
+    # Indian govt initiatives
+    "ayushman bharat", "cowin", "digiyatra", "fastag",
+    "gstn", "umang",
+    # States & cities
+    "delhi", "mumbai", "bengaluru", "bangalore",
+    "hyderabad", "chennai", "pune", "kolkata", "ahmedabad",
+    "gurgaon", "noida", "jaipur", "lucknow", "chandigarh",
+    # Domains
+    "gov.in", "nic.in", "ac.in", "edu.in", "co.in",
 ]
 
 
 def _matches_india(text, title, source):
+    source_lower = source.lower()
+    for pat in INDIA_SOURCE_PATTERNS:
+        if pat in source_lower:
+            return True
     combined = f"{title} {text}".lower()
     for kw in INDIA_KEYWORDS:
         pattern = r'\b' + re.escape(kw.lower()) + r'\b'
@@ -251,6 +292,9 @@ url: "{link}"
             print(f"{Fmt.green(f'{count} new')}")
         except Exception as e:
             print(f"{Fmt.red(f'error: {e}')}")
+
+
+def _collect(category: str = "news", days: int = 0, source: str = "",
              query: str = "", india_mode: bool = False):
     if days > 0:
         cutoff = datetime.datetime.now() - datetime.timedelta(days=days)

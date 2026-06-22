@@ -1,0 +1,12 @@
+---
+source: rss/linkedin-bug-bounty
+title: How To Approach ANY Bug Bounty Target In 2026 - LinkedIn
+url: https://news.google.com/rss/articles/CBMixwFBVV95cUxQUTdDbzFjQ0taaEpiZVlSbWFGYnVYMjZmWEJjcHJiUS1hd1dyX1UyUUJUYTJqQ1BpaHRIdDZtRFplNnJ3Z0laRXZVSU56cllNYzUxaWZTZ2VzN3JzekdEV1hHNU1LamVHcjNHZlpPSWVONUpPX1gzRkd5TjVCUl9WNjJXeVU0QjJIVTFjY095c1d2YXUtNWNKS2x4Q1IzVkFLc1Z2ZExOUEpTTFhfb2EwOWZCZVR0bFN3bmN4Q0JWY1hYNGNoQk04?oc=5
+date: 2026-06-18
+item_id: https://news.google.com/rss/articles/CBMixwFBVV95cUxQUTdDbzFjQ0taaEpiZVlSbWFGYnVYMjZmWEJjcHJiUS1hd1dyX1UyUUJUYTJqQ1BpaHRIdDZtRFplNnJ3Z0laRXZVSU56cllNYzUxaWZTZ2VzN3JzekdEV1hHNU1LamVHcjNHZlpPSWVONUpPX1gzRkd5TjVCUl9WNjJXeVU0QjJIVTFjY095c1d2YXUtNWNKS2x4Q1IzVkFLc1Z2ZExOUEpTTFhfb2EwOWZCZVR0bFN3bmN4Q0JWY1hYNGNoQk04?oc=5
+category: news---
+
+**Source:** LinkedIn Bug Bounty
+**Link:** https://news.google.com/rss/articles/CBMixwFBVV95cUxQUTdDbzFjQ0taaEpiZVlSbWFGYnVYMjZmWEJjcHJiUS1hd1dyX1UyUUJUYTJqQ1BpaHRIdDZtRFplNnJ3Z0laRXZVSU56cllNYzUxaWZTZ2VzN3JzekdEV1hHNU1LamVHcjNHZlpPSWVONUpPX1gzRkd5TjVCUl9WNjJXeVU0QjJIVTFjY095c1d2YXUtNWNKS2x4Q1IzVkFLc1Z2ZExOUEpTTFhfb2EwOWZCZVR0bFN3bmN4Q0JWY1hYNGNoQk04?oc=5
+
+How To Approach ANY Bug Bounty Target In 2026 &nbsp;&nbsp; LinkedIn

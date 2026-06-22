@@ -1,0 +1,12 @@
+---
+source: rss/linkedin-bug-bounty
+title: Bug Bounty Programs For Financial Institutions - LinkedIn
+url: https://news.google.com/rss/articles/CBMiwAFBVV95cUxNaVdpM1htNWd2UC03X2NZR3hudXlyXzMybXRFSWFXMUVlMmNOMXJTZXdIczVwcmR5bjNfSDNzUVFRRU9uS2dhRUMzWXhzckNyTllTcjZVbVNraDRoYWVVd05JNkpIeVhQZ2VfZm5aQnFWY3RMaFN4VzFpZTlpN0dXUHJIY0xiX3ZlOEtLdXh1Y0FYcWVtd2JPSmJnRmVJa2RuQWtJR3ZuN1piS2RWMGF3dWt2UmNPZUlrMkxSM2VCemE?oc=5
+date: 2023-02-12
+item_id: https://news.google.com/rss/articles/CBMiwAFBVV95cUxNaVdpM1htNWd2UC03X2NZR3hudXlyXzMybXRFSWFXMUVlMmNOMXJTZXdIczVwcmR5bjNfSDNzUVFRRU9uS2dhRUMzWXhzckNyTllTcjZVbVNraDRoYWVVd05JNkpIeVhQZ2VfZm5aQnFWY3RMaFN4VzFpZTlpN0dXUHJIY0xiX3ZlOEtLdXh1Y0FYcWVtd2JPSmJnRmVJa2RuQWtJR3ZuN1piS2RWMGF3dWt2UmNPZUlrMkxSM2VCemE?oc=5
+category: news---
+
+**Source:** LinkedIn Bug Bounty
+**Link:** https://news.google.com/rss/articles/CBMiwAFBVV95cUxNaVdpM1htNWd2UC03X2NZR3hudXlyXzMybXRFSWFXMUVlMmNOMXJTZXdIczVwcmR5bjNfSDNzUVFRRU9uS2dhRUMzWXhzckNyTllTcjZVbVNraDRoYWVVd05JNkpIeVhQZ2VfZm5aQnFWY3RMaFN4VzFpZTlpN0dXUHJIY0xiX3ZlOEtLdXh1Y0FYcWVtd2JPSmJnRmVJa2RuQWtJR3ZuN1piS2RWMGF3dWt2UmNPZUlrMkxSM2VCemE?oc=5
+
+Bug Bounty Programs For Financial Institutions &nbsp;&nbsp; LinkedIn

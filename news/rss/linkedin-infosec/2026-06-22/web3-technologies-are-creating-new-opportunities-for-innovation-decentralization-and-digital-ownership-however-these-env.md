@@ -1,0 +1,12 @@
+---
+source: rss/linkedin-infosec
+title: Web3 technologies are creating new opportunities for innovation, decentralization, and digital ownership. However, these environments also introduce unique cybersecurity challenges involving identity management, governance, authentication, and asset prot - LinkedIn
+url: https://news.google.com/rss/articles/CBMi0wFBVV95cUxQY29aQm9fUDlIQlQ1RE5ZRTVKS1dsQjd4YWZvOVNOMl9PWXVsZWJqNjJaSG1scGZCSklQQUhPcVNRQm5UQlhGOTFyS0xJSFhsbEhSX01BekN1WGFKMmE0SGFaS21xT2YtajU3Ym9JRkE4YUctd2MyMzdVaERURWlWT05XTHNSRXJPTzZXbHJEWlpTMEsteUZidzBSeEtuUXdoQktWYXlVWFl1eDdiNHFuRGFRbEI3dzNoWHV2VmJteUJndnJEM1M5WG5uMmhJeXFfTldr?oc=5
+date: 2026-06-22
+item_id: https://news.google.com/rss/articles/CBMi0wFBVV95cUxQY29aQm9fUDlIQlQ1RE5ZRTVKS1dsQjd4YWZvOVNOMl9PWXVsZWJqNjJaSG1scGZCSklQQUhPcVNRQm5UQlhGOTFyS0xJSFhsbEhSX01BekN1WGFKMmE0SGFaS21xT2YtajU3Ym9JRkE4YUctd2MyMzdVaERURWlWT05XTHNSRXJPTzZXbHJEWlpTMEsteUZidzBSeEtuUXdoQktWYXlVWFl1eDdiNHFuRGFRbEI3dzNoWHV2VmJteUJndnJEM1M5WG5uMmhJeXFfTldr?oc=5
+category: news---
+
+**Source:** LinkedIn Infosec
+**Link:** https://news.google.com/rss/articles/CBMi0wFBVV95cUxQY29aQm9fUDlIQlQ1RE5ZRTVKS1dsQjd4YWZvOVNOMl9PWXVsZWJqNjJaSG1scGZCSklQQUhPcVNRQm5UQlhGOTFyS0xJSFhsbEhSX01BekN1WGFKMmE0SGFaS21xT2YtajU3Ym9JRkE4YUctd2MyMzdVaERURWlWT05XTHNSRXJPTzZXbHJEWlpTMEsteUZidzBSeEtuUXdoQktWYXlVWFl1eDdiNHFuRGFRbEI3dzNoWHV2VmJteUJndnJEM1M5WG5uMmhJeXFfTldr?oc=5
+
+Web3 technologies are creating new opportunities for innovation, decentralization, and digital ownership. However, these environments also introduce unique cybersecurity challenges involving identity management, governance, authentication, and asset prot &nbsp;&nbsp; LinkedIn

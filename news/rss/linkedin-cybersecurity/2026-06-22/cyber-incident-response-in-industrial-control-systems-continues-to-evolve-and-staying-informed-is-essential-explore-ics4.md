@@ -1,0 +1,12 @@
+---
+source: rss/linkedin-cybersecurity
+title: Cyber incident response in industrial control systems continues to evolve, and staying informed is essential. 💻 Explore ICS4ICS resources designed to help professionals strengthen preparedness, improve coordination and support more effective response stra - LinkedIn
+url: https://news.google.com/rss/articles/CBMi6AFBVV95cUxNU2czVGdTQ2t2RDExTGJ3OW9tS0QxekFQQTNBczVzd1A3YTZ4ZDZwX2RBNENDS0ctWWpZTUZ0NXJ4c1FkYnVDTkhjWU1RZDNOSVVKQXhTSE5ZREFNOXdidXhXWXhMRDZONlhad3pPck55YkxJYmJQTnVuRHJ5SE5YVlNGMjE5ZWducFVPNDFVZzBaR08xQ0VFN1pmMUszeVA2bV9qVXhoTHp6YUVYbkl6blRKemtFYWZWYTdrYV80U3dtTzV2cV80VGEzN09lY2o0SUh5cS1kVl9mQm1BSnRFU0VsU0cwaG8t?oc=5
+date: 2026-06-22
+item_id: https://news.google.com/rss/articles/CBMi6AFBVV95cUxNU2czVGdTQ2t2RDExTGJ3OW9tS0QxekFQQTNBczVzd1A3YTZ4ZDZwX2RBNENDS0ctWWpZTUZ0NXJ4c1FkYnVDTkhjWU1RZDNOSVVKQXhTSE5ZREFNOXdidXhXWXhMRDZONlhad3pPck55YkxJYmJQTnVuRHJ5SE5YVlNGMjE5ZWducFVPNDFVZzBaR08xQ0VFN1pmMUszeVA2bV9qVXhoTHp6YUVYbkl6blRKemtFYWZWYTdrYV80U3dtTzV2cV80VGEzN09lY2o0SUh5cS1kVl9mQm1BSnRFU0VsU0cwaG8t?oc=5
+category: news---
+
+**Source:** LinkedIn Cybersecurity
+**Link:** https://news.google.com/rss/articles/CBMi6AFBVV95cUxNU2czVGdTQ2t2RDExTGJ3OW9tS0QxekFQQTNBczVzd1A3YTZ4ZDZwX2RBNENDS0ctWWpZTUZ0NXJ4c1FkYnVDTkhjWU1RZDNOSVVKQXhTSE5ZREFNOXdidXhXWXhMRDZONlhad3pPck55YkxJYmJQTnVuRHJ5SE5YVlNGMjE5ZWducFVPNDFVZzBaR08xQ0VFN1pmMUszeVA2bV9qVXhoTHp6YUVYbkl6blRKemtFYWZWYTdrYV80U3dtTzV2cV80VGEzN09lY2o0SUh5cS1kVl9mQm1BSnRFU0VsU0cwaG8t?oc=5
+
+Cyber incident response in industrial control systems continues to evolve, and staying informed is essential. 💻 Explore ICS4ICS resources designed to help professionals strengthen preparedness, improve coordination and support more effective response stra &nbsp;&nbsp; LinkedIn

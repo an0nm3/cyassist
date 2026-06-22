@@ -1,0 +1,12 @@
+---
+source: rss/linkedin-cybersecurity
+title: Breaking into Cybersecurity GRC by Pooja Shimpi - LinkedIn
+url: https://news.google.com/rss/articles/CBMiuAFBVV95cUxPbEJRU1loa1E3QWZaWW1tSnRySmJvRXRrV0h3QWRpY2VLUzNPSFJfa2Z6VllPYUFZcHh6RjQ3VkloNUg2ZkN2dVk2MkUydVdLYkF0Sk02NUE5b3JfU1U0dWVvZ0I5WE9ITW1melptWTJTVWdRYU9GVDM5THBBclBWdkQwOFRpRFQ5SHhPbnI1X0hzR192dGIzWWdVYTBvYUJEUTdsa01ONEI1anZDNkQtQ2MxMkVPMkJ6?oc=5
+date: 2026-06-22
+item_id: https://news.google.com/rss/articles/CBMiuAFBVV95cUxPbEJRU1loa1E3QWZaWW1tSnRySmJvRXRrV0h3QWRpY2VLUzNPSFJfa2Z6VllPYUFZcHh6RjQ3VkloNUg2ZkN2dVk2MkUydVdLYkF0Sk02NUE5b3JfU1U0dWVvZ0I5WE9ITW1melptWTJTVWdRYU9GVDM5THBBclBWdkQwOFRpRFQ5SHhPbnI1X0hzR192dGIzWWdVYTBvYUJEUTdsa01ONEI1anZDNkQtQ2MxMkVPMkJ6?oc=5
+category: news---
+
+**Source:** LinkedIn Cybersecurity
+**Link:** https://news.google.com/rss/articles/CBMiuAFBVV95cUxPbEJRU1loa1E3QWZaWW1tSnRySmJvRXRrV0h3QWRpY2VLUzNPSFJfa2Z6VllPYUFZcHh6RjQ3VkloNUg2ZkN2dVk2MkUydVdLYkF0Sk02NUE5b3JfU1U0dWVvZ0I5WE9ITW1melptWTJTVWdRYU9GVDM5THBBclBWdkQwOFRpRFQ5SHhPbnI1X0hzR192dGIzWWdVYTBvYUJEUTdsa01ONEI1anZDNkQtQ2MxMkVPMkJ6?oc=5
+
+Breaking into Cybersecurity GRC by Pooja Shimpi &nbsp;&nbsp; LinkedIn

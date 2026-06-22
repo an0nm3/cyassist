@@ -4,6 +4,9 @@
 # Private techniques (not for public repo)
 techniques/
 
+# Config
+.config/
+
 # OS
 .DS_Store
 Thumbs.db

@@ -1,0 +1,12 @@
+---
+source: rss/linkedin-infosec
+title: InfoSec News Nuggets – 06/22/2026 - AboutDFIR - The Definitive Compendium Project - LinkedIn
+url: https://news.google.com/rss/articles/CBMiugFBVV95cUxQQWl4UkJGelhOdVJJclRwRzVXMVJWZ21jYU1TU0xsdXJZVkRKV2d5MUdrSmpGTnQ4d2MtUWJyb3ZEcUI0cllaNmVGTEZzeGZnd2N2QlhLcjYxVjB5dVJNal9MQnRzT2Zwem1MRFMtVTBycTlLa09Fcm1EdUdEMnR5STdMQU94N2loeGtjd1VwX3o2TkJWdWdUUEhzTTZFa0xSd3BDdWNOWm1KMU1WVjhVWmdmbmJTSnRqekE?oc=5
+date: 2026-06-22
+item_id: https://news.google.com/rss/articles/CBMiugFBVV95cUxQQWl4UkJGelhOdVJJclRwRzVXMVJWZ21jYU1TU0xsdXJZVkRKV2d5MUdrSmpGTnQ4d2MtUWJyb3ZEcUI0cllaNmVGTEZzeGZnd2N2QlhLcjYxVjB5dVJNal9MQnRzT2Zwem1MRFMtVTBycTlLa09Fcm1EdUdEMnR5STdMQU94N2loeGtjd1VwX3o2TkJWdWdUUEhzTTZFa0xSd3BDdWNOWm1KMU1WVjhVWmdmbmJTSnRqekE?oc=5
+category: news---
+
+**Source:** LinkedIn Infosec
+**Link:** https://news.google.com/rss/articles/CBMiugFBVV95cUxQQWl4UkJGelhOdVJJclRwRzVXMVJWZ21jYU1TU0xsdXJZVkRKV2d5MUdrSmpGTnQ4d2MtUWJyb3ZEcUI0cllaNmVGTEZzeGZnd2N2QlhLcjYxVjB5dVJNal9MQnRzT2Zwem1MRFMtVTBycTlLa09Fcm1EdUdEMnR5STdMQU94N2loeGtjd1VwX3o2TkJWdWdUUEhzTTZFa0xSd3BDdWNOWm1KMU1WVjhVWmdmbmJTSnRqekE?oc=5
+
+InfoSec News Nuggets – 06/22/2026 - AboutDFIR - The Definitive Compendium Project &nbsp;&nbsp; LinkedIn

@@ -1,0 +1,12 @@
+---
+source: rss/linkedin-cybersecurity
+title: Great conversations, engaging discussions, and hands-on learning during our recent Customer Workshops on the Power of Cisco Security. The session focused on demonstrating the capabilities of Cisco's User Protection Suite, showcasing how organisations - LinkedIn
+url: https://news.google.com/rss/articles/CBMi0AFBVV95cUxNYW10R2piU29IYW1sODRIbUtUYWllMERtemdYTDM4LTVXanREbWg4ZG1XYUcxdkltX1dxZFExSGxuZHZJMDdTRlY0VWJuaXN1dzdqcGxnd3NOMkprUHpodzVfQ0ctMlFzMzdlZHp3N0lFanhYbDhoNF9FaDhYUFdvRm5Oa0xtQ1FCM2E4YXI4WmgwbEN3SVpENUVsd3p2NUp4YVVaeUotSFE2cG00dkp1UWtTZVFkSVBVTWxYZGhsMkpHZ3h0bFBycGszdGc5Y3k3?oc=5
+date: 2026-06-22
+item_id: https://news.google.com/rss/articles/CBMi0AFBVV95cUxNYW10R2piU29IYW1sODRIbUtUYWllMERtemdYTDM4LTVXanREbWg4ZG1XYUcxdkltX1dxZFExSGxuZHZJMDdTRlY0VWJuaXN1dzdqcGxnd3NOMkprUHpodzVfQ0ctMlFzMzdlZHp3N0lFanhYbDhoNF9FaDhYUFdvRm5Oa0xtQ1FCM2E4YXI4WmgwbEN3SVpENUVsd3p2NUp4YVVaeUotSFE2cG00dkp1UWtTZVFkSVBVTWxYZGhsMkpHZ3h0bFBycGszdGc5Y3k3?oc=5
+category: news---
+
+**Source:** LinkedIn Cybersecurity
+**Link:** https://news.google.com/rss/articles/CBMi0AFBVV95cUxNYW10R2piU29IYW1sODRIbUtUYWllMERtemdYTDM4LTVXanREbWg4ZG1XYUcxdkltX1dxZFExSGxuZHZJMDdTRlY0VWJuaXN1dzdqcGxnd3NOMkprUHpodzVfQ0ctMlFzMzdlZHp3N0lFanhYbDhoNF9FaDhYUFdvRm5Oa0xtQ1FCM2E4YXI4WmgwbEN3SVpENUVsd3p2NUp4YVVaeUotSFE2cG00dkp1UWtTZVFkSVBVTWxYZGhsMkpHZ3h0bFBycGszdGc5Y3k3?oc=5
+
+Great conversations, engaging discussions, and hands-on learning during our recent Customer Workshops on the Power of Cisco Security. The session focused on demonstrating the capabilities of Cisco's User Protection Suite, showcasing how organisations &nbsp;&nbsp; LinkedIn

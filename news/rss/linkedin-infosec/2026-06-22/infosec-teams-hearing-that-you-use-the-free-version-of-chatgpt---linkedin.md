@@ -1,0 +1,12 @@
+---
+source: rss/linkedin-infosec
+title: InfoSec teams hearing that you use the free version of ChatGPT - LinkedIn
+url: https://news.google.com/rss/articles/CBMiugFBVV95cUxPV2FLVGxOWFQ0cXJvWTlnMTBwVDEwdjAwa0JJOU42VUJPejY4OUdzSzMxX29fZ1h3XzlPdXltblk1RE1uSTFpTUE0YTBnX0huc3daaVVJb1J1dnFoOFJlZkVzOVRYV1ZtaWZrOE5Qa2o0VWhiOVFpNDJYQ3hCaDhHWFFBLUFwRkFvSWhZSktvbUhBb0ZRS3B0U05KbEttWjlDRld6NUFpaFFLMlpSa3QxMGFPTkdMclRsbVE?oc=5
+date: 2026-06-22
+item_id: https://news.google.com/rss/articles/CBMiugFBVV95cUxPV2FLVGxOWFQ0cXJvWTlnMTBwVDEwdjAwa0JJOU42VUJPejY4OUdzSzMxX29fZ1h3XzlPdXltblk1RE1uSTFpTUE0YTBnX0huc3daaVVJb1J1dnFoOFJlZkVzOVRYV1ZtaWZrOE5Qa2o0VWhiOVFpNDJYQ3hCaDhHWFFBLUFwRkFvSWhZSktvbUhBb0ZRS3B0U05KbEttWjlDRld6NUFpaFFLMlpSa3QxMGFPTkdMclRsbVE?oc=5
+category: news---
+
+**Source:** LinkedIn Infosec
+**Link:** https://news.google.com/rss/articles/CBMiugFBVV95cUxPV2FLVGxOWFQ0cXJvWTlnMTBwVDEwdjAwa0JJOU42VUJPejY4OUdzSzMxX29fZ1h3XzlPdXltblk1RE1uSTFpTUE0YTBnX0huc3daaVVJb1J1dnFoOFJlZkVzOVRYV1ZtaWZrOE5Qa2o0VWhiOVFpNDJYQ3hCaDhHWFFBLUFwRkFvSWhZSktvbUhBb0ZRS3B0U05KbEttWjlDRld6NUFpaFFLMlpSa3QxMGFPTkdMclRsbVE?oc=5
+
+InfoSec teams hearing that you use the free version of ChatGPT &nbsp;&nbsp; LinkedIn
