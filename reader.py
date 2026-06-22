@@ -251,6 +251,9 @@ url: "{link}"
             print(f"{Fmt.green(f'{count} new')}")
         except Exception as e:
             print(f"{Fmt.red(f'error: {e}')}")
+
+
+def _collect(category: str = "news", days: int = 0, source: str = "",
              query: str = "", india_mode: bool = False):
     if days > 0:
         cutoff = datetime.datetime.now() - datetime.timedelta(days=days)
@@ -760,17 +763,37 @@ if __name__ == "__main__":
     p.add_argument("--fetch-custom", action="store_true",
                    help="Fetch articles from custom sources")
 
+    # ── Hunter engine flags ──
+    p.add_argument("--hunt", action="store_true",
+                   help="Full hunting pipeline (PoC + KEV + target match)")
+    p.add_argument("--poc", action="store_true",
+                   help="Show today's PoCs from exploit-db / GitHub")
+    p.add_argument("--poc-fetch", action="store_true",
+                   help="Fetch new PoCs from exploit-db & packetstorm")
+    p.add_argument("--kev", action="store_true",
+                   help="Show CISA Known Exploited Vulnerabilities catalog")
+    p.add_argument("--kev-fetch", action="store_true",
+                   help="Fetch CISA KEV catalog")
+    p.add_argument("--auto", action="store_true",
+                   help="Silent daily auto-run (cron-friendly)")
+    p.add_argument("--cve", metavar="CVE-ID",
+                   help="Enrich a specific CVE (GitHub PoC search)")
+    p.add_argument("--targets", action="store_true",
+                   help="List registered targets and their tech stacks")
+    p.add_argument("--target-add", nargs=3, metavar=("NAME", "TECHS", "KW"),
+                   help="Add target: name, comma-separated techs, comma-separated keywords")
+
     args = p.parse_args()
 
     if args.add_source:
         ok, msg = _add_source(args.add_source[0], args.add_source[1])
         print(msg)
-        return
+        sys.exit(0)
 
     if args.remove_source:
         ok, msg = _remove_source(args.remove_source)
         print(msg)
-        return
+        sys.exit(0)
 
     if args.list_custom:
         sources = _load_custom_sources()
@@ -780,11 +803,28 @@ if __name__ == "__main__":
             print(f"  {Fmt.bold('Custom sources:')}")
             for s in sources:
                 print(f"    {Fmt.green(s['name'])}  {Fmt.dim(s['url'])}")
-        return
+        sys.exit(0)
 
     if args.fetch_custom:
         _fetch_custom_sources()
-        return
+        sys.exit(0)
+
+    if args.hunt or args.poc or args.poc_fetch or args.kev or args.kev_fetch \
+       or args.auto or args.cve or args.targets or args.target_add:
+        from hunter import main as hunter_main
+        import sys as _sys
+        _sys.argv = [_sys.argv[0]]
+        if args.hunt:       _sys.argv.append("--hunt")
+        if args.poc:        _sys.argv.append("--poc")
+        if args.poc_fetch:  _sys.argv.append("--poc-fetch")
+        if args.kev:        _sys.argv.append("--kev")
+        if args.kev_fetch:  _sys.argv.append("--kev-fetch")
+        if args.auto:       _sys.argv.append("--auto")
+        if args.cve:        _sys.argv += ["--cve", args.cve]
+        if args.targets:    _sys.argv.append("--targets")
+        if args.target_add: _sys.argv += ["--target-add"] + list(args.target_add)
+        hunter_main()
+        sys.exit(0)
 
     india_mode = args.india
     heading_text = "Indian Cyber News" if india_mode else "Cyber Global News"

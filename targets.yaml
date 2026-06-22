@@ -1,0 +1,100 @@
+indrive:
+  techs:
+  - indriver
+  - indrive
+  - indriverapp
+  - indrive.com
+  - google oauth
+  - google cloud
+  - istio
+  - envoy
+  - next.js
+  - vue.js
+  keywords:
+  - indrive
+  - indriver
+  - indriverapp
+  - taxi
+  - neo-bank
+  - neobank
+shopify:
+  techs:
+  - shopify
+  - shopifycloud
+  - myshopify
+  - okta
+  - ruby
+  - rails
+  - graphql
+  keywords:
+  - shopify
+  - minerva
+  - okta
+  - graphql
+spotify:
+  techs:
+  - spotify
+  - spotify.com
+  - oauth
+  - pkce
+  - google cloud
+  keywords:
+  - spotify
+  - spoClient
+  - device-auth
+whatnot:
+  techs:
+  - whatnot
+  - graphql
+  - python
+  - apollo
+  - phoenix
+  - websocket
+  keywords:
+  - whatnot
+  - graphql
+  - livestream
+playtika:
+  techs:
+  - playtika
+  - slotomania
+  - wooga
+  - servicenow
+  - jenkins
+  - wordpress
+  - akamai
+  keywords:
+  - playtika
+  - slotomania
+  - servicenow
+  - wooga
+epic-games:
+  techs:
+  - epicgames
+  - unreal
+  - graphql
+  - react
+  - next.js
+  - cloudflare
+  - cloudfront
+  keywords:
+  - epicgames
+  - unreal engine
+  - fortnite
+  - oauth
+x-twitter:
+  techs:
+  - x.com
+  - twitter
+  - grok.com
+  - x.ai
+  - next.js
+  - cloudflare
+  - envoy
+  - express
+  keywords:
+  - x.com
+  - twitter
+  - grok
+  - xai
+
