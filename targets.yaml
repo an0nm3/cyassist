@@ -1,4 +1,5 @@
 indrive:
+  url: "https://indrive.com"
   techs:
   - indriver
   - indrive
@@ -18,6 +19,7 @@ indrive:
   - neo-bank
   - neobank
 shopify:
+  url: "https://www.shopify.com"
   techs:
   - shopify
   - shopifycloud
@@ -32,6 +34,7 @@ shopify:
   - okta
   - graphql
 spotify:
+  url: "https://www.spotify.com"
   techs:
   - spotify
   - spotify.com
@@ -43,6 +46,7 @@ spotify:
   - spoClient
   - device-auth
 whatnot:
+  url: "https://www.whatnot.com"
   techs:
   - whatnot
   - graphql
@@ -55,6 +59,7 @@ whatnot:
   - graphql
   - livestream
 playtika:
+  url: "https://www.playtika.com"
   techs:
   - playtika
   - slotomania
@@ -69,6 +74,7 @@ playtika:
   - servicenow
   - wooga
 epic-games:
+  url: "https://www.epicgames.com"
   techs:
   - epicgames
   - unreal
@@ -83,6 +89,7 @@ epic-games:
   - fortnite
   - oauth
 x-twitter:
+  url: "https://x.com"
   techs:
   - x.com
   - twitter
@@ -97,4 +104,3 @@ x-twitter:
   - twitter
   - grok
   - xai
-

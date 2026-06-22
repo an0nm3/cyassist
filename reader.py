@@ -780,8 +780,18 @@ if __name__ == "__main__":
                    help="Enrich a specific CVE (GitHub PoC search)")
     p.add_argument("--targets", action="store_true",
                    help="List registered targets and their tech stacks")
-    p.add_argument("--target-add", nargs=3, metavar=("NAME", "TECHS", "KW"),
-                   help="Add target: name, comma-separated techs, comma-separated keywords")
+    p.add_argument("--target-add", nargs="+", metavar=("NAME", "TECHS", "KW", "[URL]"),
+                   help="Add target: NAME TECHs KEYWORDS [URL]")
+    p.add_argument("--setup-telegram", nargs=2, metavar=("TOKEN", "CHAT_ID"),
+                   help="Configure Telegram bot for critical alerts")
+    p.add_argument("--setup-discord", metavar="WEBHOOK_URL",
+                   help="Configure Discord webhook for critical alerts")
+    p.add_argument("--test-alert", action="store_true",
+                   help="Send a test alert via Telegram/Discord")
+    p.add_argument("--dashboard", action="store_true",
+                   help="Launch web dashboard")
+    p.add_argument("--dashboard-port", type=int, default=8080,
+                   help="Dashboard port (default: 8080)")
 
     args = p.parse_args()
 
@@ -810,19 +820,26 @@ if __name__ == "__main__":
         sys.exit(0)
 
     if args.hunt or args.poc or args.poc_fetch or args.kev or args.kev_fetch \
-       or args.auto or args.cve or args.targets or args.target_add:
+       or args.auto or args.cve or args.targets or args.target_add \
+       or args.setup_telegram or args.setup_discord or args.test_alert \
+       or args.dashboard:
         from hunter import main as hunter_main
         import sys as _sys
         _sys.argv = [_sys.argv[0]]
-        if args.hunt:       _sys.argv.append("--hunt")
-        if args.poc:        _sys.argv.append("--poc")
-        if args.poc_fetch:  _sys.argv.append("--poc-fetch")
-        if args.kev:        _sys.argv.append("--kev")
-        if args.kev_fetch:  _sys.argv.append("--kev-fetch")
-        if args.auto:       _sys.argv.append("--auto")
-        if args.cve:        _sys.argv += ["--cve", args.cve]
-        if args.targets:    _sys.argv.append("--targets")
-        if args.target_add: _sys.argv += ["--target-add"] + list(args.target_add)
+        if args.hunt:           _sys.argv.append("--hunt")
+        if args.poc:            _sys.argv.append("--poc")
+        if args.poc_fetch:      _sys.argv.append("--poc-fetch")
+        if args.kev:            _sys.argv.append("--kev")
+        if args.kev_fetch:      _sys.argv.append("--kev-fetch")
+        if args.auto:           _sys.argv.append("--auto")
+        if args.cve:            _sys.argv += ["--cve", args.cve]
+        if args.targets:        _sys.argv.append("--targets")
+        if args.target_add:     _sys.argv += ["--target-add"] + list(args.target_add)
+        if args.setup_telegram: _sys.argv += ["--setup-telegram"] + list(args.setup_telegram)
+        if args.setup_discord:  _sys.argv += ["--setup-discord", args.setup_discord]
+        if args.test_alert:     _sys.argv.append("--test-alert")
+        if args.dashboard:      _sys.argv.append("--dashboard")
+        if args.dashboard_port: _sys.argv += ["--dashboard-port", str(args.dashboard_port)]
         hunter_main()
         sys.exit(0)
 

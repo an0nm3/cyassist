@@ -17,6 +17,7 @@ import hashlib
 import json
 import os
 import re
+import subprocess
 import sys
 import time
 import urllib.parse
@@ -37,6 +38,9 @@ EXPLOITDB_RSS = "https://www.exploit-db.com/rss.xml"
 PACKETSTORM_RSS = "https://packetstormsecurity.com/feed/"
 GITHUB_API = "https://api.github.com/search/repositories"
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "") or os.environ.get("GH_TOKEN", "")
+NVD_API = "https://services.nvd.nist.gov/rest/json/cves/2.0"
+EPSS_API = "https://api.first.org/data/v1/epss"
+NVD_API_KEY = os.environ.get("NVD_API_KEY", "")
 
 USER_AGENT = "cyassist-hunter/1.0"
 
@@ -282,6 +286,269 @@ def load_kev_cves(days: int = 90) -> set[str]:
     return cves
 
 
+# ── Phase 3: Nuclei Integration ────────────────────────────────────────────
+NUCLEI_TEMPLATES_DIR = Path("/root/nuclei-templates")
+NUCLEI_RESULTS_DIR = HERE / "nuclei_results"
+
+
+def _nuclei_has_template(cve_id: str) -> bool:
+    """Check if nuclei has a template for a given CVE."""
+    if not NUCLEI_TEMPLATES_DIR.exists():
+        return False
+    year = cve_id.split("-")[1] if cve_id.count("-") >= 2 else ""
+    if not year:
+        return False
+    template_path = NUCLEI_TEMPLATES_DIR / "http" / "cves" / year / f"{cve_id}.yaml"
+    headless_path = NUCLEI_TEMPLATES_DIR / "headless" / "cves" / year / f"{cve_id}-HEADLESS.yaml"
+    return template_path.exists() or headless_path.exists()
+
+
+def _nuclei_scan(target_url: str, cve_ids: list[str], timeout: int = 60) -> list[dict]:
+    """Run nuclei on a target for a list of CVEs. Returns list of findings."""
+    NUCLEI_RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    available = [c for c in cve_ids if _nuclei_has_template(c)]
+    if not available:
+        return []
+    template_ids = ",".join(available)
+    out_file = NUCLEI_RESULTS_DIR / f"scan_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}_{hash(target_url) % 10000}.json"
+    try:
+        result = subprocess.run(
+            ["nuclei", "-u", target_url,
+             "-id", template_ids,
+             "-json", "-silent",
+             "-timeout", str(timeout),
+             "-o", str(out_file),
+             "-disable-update-check"],
+            capture_output=True, text=True, timeout=timeout + 30
+        )
+        findings = []
+        if out_file.exists() and out_file.stat().st_size > 0:
+            for line in out_file.read_text().strip().split("\n"):
+                if line.strip():
+                    try:
+                        findings.append(json.loads(line))
+                    except json.JSONDecodeError:
+                        pass
+        return findings
+    except subprocess.TimeoutExpired:
+        print(f"  {Fmt.yellow(f'  Nuclei scan timed out for {target_url}')}", file=sys.stderr)
+        return []
+    except FileNotFoundError:
+        print(f"  {Fmt.yellow('  nuclei not found in PATH')}", file=sys.stderr)
+        return []
+    except Exception as e:
+        print(f"  {Fmt.yellow(f'  Nuclei scan error: {e}')}", file=sys.stderr)
+        return []
+
+
+def scan_targets(target_cve_map: dict[str, list[str]], target_urls: dict[str, str] = None) -> dict[str, list]:
+    """Run nuclei scans for targets with matched CVEs."""
+    if not target_cve_map:
+        return {}
+    print(f"\n  {Fmt.bold('Phase 6: Nuclei scanning targets...')}")
+    all_findings = {}
+    for tname, cves in target_cve_map.items():
+        url = (target_urls or {}).get(tname, "")
+        if not url:
+            print(f"  {Fmt.dim(f'  {tname}: no URL configured, skipping scan')}")
+            continue
+        print(f"  {Fmt.cyan(f'  Scanning {tname} ({url}) for {len(cves)} CVE(s)...')}")
+        findings = _nuclei_scan(url, cves)
+        if findings:
+            all_findings[tname] = findings
+            print(f"    {Fmt.red(f'{len(findings)} finding(s)')}")
+            for f in findings[:5]:
+                tmpl = f.get("template-id", "?")
+                matched = f.get("matched-at", "")
+                print(f"      {Fmt.yellow(f'[{tmpl}]')} {Fmt.dim(matched)}")
+        else:
+            print(f"    {Fmt.green('No findings (or no templates available)')}")
+    return all_findings
+
+
+# ── Phase 3: CVE Scoring Engine (NVD + EPSS) ───────────────────────────────
+SCORE_CACHE_DIR = HERE / "cve_scores"
+
+def _nvd_batch(cve_ids: list[str]) -> dict[str, dict]:
+    """Fetch CVSS scores from NVD API 2.0. Returns {cve_id: {cvss, severity, cwe, ...}}."""
+    results = {}
+    if not cve_ids:
+        return results
+    batch_size = 5
+    for i in range(0, len(cve_ids), batch_size):
+        batch = cve_ids[i:i + batch_size]
+        cve_param = ",".join(batch)
+        url = f"{NVD_API}?cveId={cve_param}"
+        headers = {}
+        if NVD_API_KEY:
+            headers["apiKey"] = NVD_API_KEY
+        data = _fetch_url(url, headers=headers)
+        if data:
+            try:
+                body = json.loads(data)
+                vulns = body.get("vulnerabilities", [])
+                for vuln in vulns:
+                    cve_data = vuln.get("cve", {})
+                    cve_id = cve_data.get("id", "")
+                    metrics = cve_data.get("metrics", {})
+                    cvss_data = (metrics.get("cvssMetricV31", [{}])[0]
+                                 if metrics.get("cvssMetricV31") else
+                                 metrics.get("cvssMetricV30", [{}])[0]
+                                 if metrics.get("cvssMetricV30") else
+                                 metrics.get("cvssMetricV2", [{}])[0]
+                                 if metrics.get("cvssMetricV2") else {})
+                    base_score = None
+                    severity = None
+                    vector = None
+                    if cvss_data:
+                        cvss_obj = cvss_data.get("cvssData", {})
+                        base_score = cvss_obj.get("baseScore")
+                        severity = cvss_obj.get("baseSeverity", "")
+                        vector = cvss_obj.get("vectorString", "")
+                    weaknesses = cve_data.get("weaknesses", [])
+                    cwes = []
+                    for w in weaknesses:
+                        for desc in w.get("description", []):
+                            val = desc.get("value", "")
+                            if val.startswith("CWE-"):
+                                cwes.append(val)
+                    descriptions = cve_data.get("descriptions", [])
+                    desc_text = ""
+                    for d in descriptions:
+                        if d.get("lang") == "en":
+                            desc_text = d.get("value", "")
+                            break
+                    results[cve_id] = {
+                        "cvss": base_score,
+                        "severity": severity,
+                        "vector": vector or "",
+                        "cwes": cwes,
+                        "description": desc_text[:500],
+                    }
+            except (json.JSONDecodeError, KeyError) as e:
+                print(f"  {Fmt.red(f'NVD parse error: {e}')}", file=sys.stderr)
+        time.sleep(1.5)
+    return results
+
+
+def _epss_batch(cve_ids: list[str]) -> dict[str, dict]:
+    """Fetch EPSS scores from FIRST.org. Returns {cve_id: {epss, percentile}}."""
+    results = {}
+    if not cve_ids:
+        return results
+    for i in range(0, len(cve_ids), 50):
+        batch = cve_ids[i:i + 50]
+        cve_param = ",".join(batch)
+        url = f"{EPSS_API}?cve={cve_param}"
+        data = _fetch_url(url)
+        if data:
+            try:
+                body = json.loads(data)
+                for item in body.get("data", []):
+                    cve_id = item.get("cve", "")
+                    results[cve_id] = {
+                        "epss": float(item.get("epss", 0)),
+                        "percentile": float(item.get("percentile", 0)),
+                    }
+            except (json.JSONDecodeError, KeyError) as e:
+                print(f"  {Fmt.red(f'EPSS parse error: {e}')}", file=sys.stderr)
+        time.sleep(0.3)
+    return results
+
+
+def _composite_priority(cvss: float | None, epss: float, in_kev: bool, has_poc: bool) -> tuple[int, str]:
+    """Calculate composite priority score and label."""
+    score = 0
+    if cvss is not None:
+        if cvss >= 9.0:
+            score += 40
+        elif cvss >= 7.0:
+            score += 30
+        elif cvss >= 4.0:
+            score += 15
+        else:
+            score += 5
+    if in_kev:
+        score += 30
+    if epss > 0.5:
+        score += 25
+    elif epss > 0.1:
+        score += 15
+    elif epss > 0.01:
+        score += 5
+    if has_poc:
+        score += 10
+
+    if score >= 70:
+        label = "CRITICAL"
+    elif score >= 50:
+        label = "HIGH"
+    elif score >= 30:
+        label = "MEDIUM"
+    elif score >= 15:
+        label = "LOW"
+    else:
+        label = "INFO"
+    return score, label
+
+
+def enrich_cves(cve_ids: list[str], kev_set: set[str] = None,
+                poc_set: set[str] = None) -> dict[str, dict]:
+    """Full CVE enrichment pipeline: NVD → EPSS → composite score."""
+    if not cve_ids:
+        return {}
+    unique = list(set(cve_ids))
+    print(f"  {Fmt.bold('Enriching CVEs with NVD + EPSS...')}")
+    print(f"  {Fmt.dim(f'  {len(unique)} unique CVEs to process')}")
+
+    SCORE_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    cache_file = SCORE_CACHE_DIR / "enriched.json"
+    cache = {}
+    if cache_file.exists():
+        try:
+            cache = json.loads(cache_file.read_text())
+        except (json.JSONDecodeError, OSError):
+            cache = {}
+
+    uncached = [c for c in unique if c not in cache]
+    if uncached:
+        nvd_data = _nvd_batch(uncached)
+        epss_data = _epss_batch(uncached)
+        for cve_id in uncached:
+            nvd = nvd_data.get(cve_id, {})
+            epss = epss_data.get(cve_id, {})
+            cache[cve_id] = {
+                "cvss": nvd.get("cvss"),
+                "severity": nvd.get("severity", ""),
+                "vector": nvd.get("vector", ""),
+                "cwes": nvd.get("cwes", []),
+                "description": nvd.get("description", ""),
+                "epss": epss.get("epss", 0),
+                "epss_percentile": epss.get("percentile", 0),
+            }
+        try:
+            cache_file.write_text(json.dumps(cache, indent=2))
+        except OSError:
+            pass
+
+    enriched = {}
+    for cve_id in unique:
+        info = cache.get(cve_id, {})
+        has_poc = cve_id in (poc_set or set())
+        in_kev = cve_id in (kev_set or set())
+        pri_score, pri_label = _composite_priority(
+            info.get("cvss"), info.get("epss", 0), in_kev, has_poc
+        )
+        enriched[cve_id] = {
+            **info,
+            "priority_score": pri_score,
+            "priority_label": pri_label,
+            "in_kev": in_kev,
+            "has_poc": has_poc,
+        }
+    return enriched
+
+
 # ── Phase 3: Target Tech Stack Registry ────────────────────────────────────
 def load_targets() -> dict:
     """Load targets.yaml. Returns {name: {techs: [...], keywords: [...]}}."""
@@ -300,10 +567,13 @@ def load_targets() -> dict:
         return {}
 
 
-def save_target(name: str, techs: list[str], keywords: list[str]):
+def save_target(name: str, techs: list[str], keywords: list[str], url: str = ""):
     """Add or update a target in targets.yaml."""
     targets = load_targets()
-    targets[name] = {"techs": techs, "keywords": keywords}
+    entry = {"techs": techs, "keywords": keywords}
+    if url:
+        entry["url"] = url
+    targets[name] = entry
     try:
         import yaml
         with open(TARGETS_FILE, "w") as f:
@@ -475,6 +745,17 @@ def generate_hunting_brief(news_dir: Path, exploit_dir: Path,
                 target_cve_map[tname] = matched
                 print(f"  {Fmt.green(f'  {tname}: {len(matched)} matching CVE(s)')}")
 
+    # ── Enrich with NVD + EPSS ──
+    print(f"\n  {Fmt.bold('Phase 5: CVE enrichment (NVD CVSS + EPSS)...')}")
+    enriched = enrich_cves(list(news_cves), kev_cves,
+                           set(list(poc_map.keys()) | set(gh_results.keys())))
+
+    # ── Nuclei Scan ──
+    target_urls = {}
+    if targets:
+        target_urls = {n: t.get("url", "") for n, t in targets.items() if t.get("url")}
+    nuclei_findings = scan_targets(target_cve_map, target_urls)
+
     # ── Final Brief ──
     print(f"\n{Fmt.hr('\u2550', 70)}")
     print(f"  {Fmt.bold(Fmt.red(' PRIORITY HUNTING LIST '))}")
@@ -482,42 +763,66 @@ def generate_hunting_brief(news_dir: Path, exploit_dir: Path,
 
     prioritized = []
     for cve_id in news_cves:
-        priority = 0
+        info = enriched.get(cve_id, {})
+        score = info.get("priority_score", 0)
+        label = info.get("priority_label", "INFO")
         reasons = []
         if cve_id in active_cves:
-            priority += 30
             reasons.append("ACTIVELY EXPLOITED")
         if cve_id in poc_map or cve_id in gh_results:
-            priority += 20
             reasons.append("PoC AVAILABLE")
+        cvss = info.get("cvss")
+        if cvss is not None:
+            reasons.append(f"CVSS {cvss}")
+        epss = info.get("epss", 0)
+        if epss > 0.01:
+            reasons.append(f"EPSS {epss:.3f}")
         affected_targets = [t for t, cves in target_cve_map.items() if cve_id in cves]
         if affected_targets:
-            priority += 10
             reasons.append(f"TARGET: {', '.join(affected_targets)}")
-        prioritized.append((priority, cve_id, reasons))
+        prioritized.append((score, cve_id, label, reasons, info))
 
     prioritized.sort(key=lambda x: x[0], reverse=True)
 
     if not prioritized:
         print(f"  {Fmt.dim('No actionable CVEs today.')}")
     else:
-        for pri, cve_id, reasons in prioritized:
-            if pri >= 30:
-                label = Fmt.red("CRITICAL")
-            elif pri >= 20:
-                label = Fmt.yellow("HIGH")
-            elif pri >= 10:
-                label = Fmt.blue("MEDIUM")
+        for pri, cve_id, label_str, reasons, info in prioritized:
+            if label_str == "CRITICAL":
+                label = Fmt.red(label_str)
+            elif label_str == "HIGH":
+                label = Fmt.yellow(label_str)
+            elif label_str == "MEDIUM":
+                label = Fmt.blue(label_str)
+            elif label_str == "LOW":
+                label = Fmt.dim(label_str)
             else:
-                label = Fmt.dim("LOW")
+                label = Fmt.dim(label_str)
             r_str = f" [{', '.join(reasons)}]" if reasons else ""
             poc_note = ""
             if cve_id in poc_map:
                 poc_note = f" {Fmt.url(poc_map[cve_id][0]['file'])}"
             elif cve_id in gh_results:
                 poc_note = f" {Fmt.url(gh_results[cve_id][0]['url'])}"
+            desc = info.get("description", "")
+            desc_short = f" — {desc[:120]}..." if desc else ""
             print(f"\n  [{label}] {Fmt.bold(cve_id)}{poc_note}")
-            print(f"          {Fmt.dim(r_str)}")
+            print(f"          Score: {pri} | CVSS: {info.get('cvss', 'N/A')} | EPSS: {info.get('epss', 0):.4f} | KEV: {info.get('in_kev', False)}")
+            print(f"          {Fmt.dim(r_str)}{Fmt.dim(desc_short)}")
+
+    # ── Generate Exploit Briefs ──
+    print(f"\n  {Fmt.bold('Phase 7: Generating exploit briefs...')}")
+    try:
+        from gpt_briefs import generate_all_briefs
+        briefed = generate_all_briefs(enriched, poc_map, nuclei_findings, target_cve_map)
+        if briefed:
+            print(f"  {Fmt.green(f'  {len(briefed)} exploit brief(s) generated')}")
+        else:
+            print(f"  {Fmt.dim('  No CVEs above threshold for briefs')}")
+    except ImportError:
+        print(f"  {Fmt.dim('  gpt_briefs.py not found, skipping')}")
+    except Exception as e:
+        print(f"  {Fmt.yellow(f'  Brief generation error: {e}')}")
 
     # ── Technique Links ──
     if techniques_dir and techniques_dir.exists():
@@ -566,6 +871,7 @@ def auto_run(news_dir: Path, exploit_dir: Path, techniques_dir: Path = None):
         lines.append("")
 
     existing_pocs = collect_exploit_pocs(exploit_dir, 7)
+    poc_set = set(list(existing_pocs.keys()) | set(gh_results.keys()))
     with_poc = [c for c in brief_cves if c in existing_pocs or c in gh_results]
     if with_poc:
         lines.append(f"## PoC Available ({len(with_poc)})")
@@ -580,6 +886,21 @@ def auto_run(news_dir: Path, exploit_dir: Path, techniques_dir: Path = None):
             lines.append(f"- {tname}: {', '.join(cves)}")
         lines.append("")
 
+    enriched = enrich_cves(list(brief_cves), kev_cves, poc_set)
+    if enriched:
+        lines.append("## Enriched CVEs (CVSS + EPSS + Priority)")
+        sorted_cves = sorted(enriched.items(), key=lambda x: x[1].get("priority_score", 0), reverse=True)
+        for cve_id, info in sorted_cves:
+            pri_label = info.get("priority_label", "INFO")
+            cvss = info.get("cvss", "N/A")
+            epss = info.get("epss", 0)
+            kev = "✓" if info.get("in_kev") else ""
+            desc = info.get("description", "")[:200]
+            lines.append(f"- **{cve_id}** [{pri_label}] CVSS:{cvss} EPSS:{epss:.4f} KEV:{kev}")
+            if desc:
+                lines.append(f"  - {desc}")
+        lines.append("")
+
     if brief_cves:
         lines.append(f"## All CVEs in Today's News ({len(brief_cves)})")
         for c in sorted(brief_cves):
@@ -590,6 +911,12 @@ def auto_run(news_dir: Path, exploit_dir: Path, techniques_dir: Path = None):
 
     brief_file.write_text("\n".join(lines))
     print(f"  {Fmt.green(f'Brief saved: {brief_file}')}")
+
+    try:
+        from notifier import alert_critical
+        alert_critical(enriched, target_map, str(brief_file))
+    except ImportError:
+        pass
 
 
 # ── CLI ─────────────────────────────────────────────────────────────────────
@@ -603,8 +930,18 @@ def main():
     p.add_argument("--auto", action="store_true", help="Silent daily auto-run")
     p.add_argument("--cve", metavar="CVE-ID", help="Enrich a specific CVE")
     p.add_argument("--targets", action="store_true", help="List targets")
-    p.add_argument("--target-add", nargs=3, metavar=("NAME", "TECHS", "KW"),
-                   help="Add target: name, comma-separated techs, comma-separated keywords")
+    p.add_argument("--target-add", nargs="+", metavar=("NAME", "TECHS", "KW", "[URL]"),
+                   help="Add target: NAME TECHs KEYWORDS [URL]")
+    p.add_argument("--setup-telegram", nargs=2, metavar=("TOKEN", "CHAT_ID"),
+                   help="Configure Telegram bot for alerts")
+    p.add_argument("--setup-discord", metavar="WEBHOOK_URL",
+                   help="Configure Discord webhook for alerts")
+    p.add_argument("--test-alert", action="store_true",
+                   help="Send a test notification")
+    p.add_argument("--dashboard", action="store_true",
+                   help="Launch web dashboard")
+    p.add_argument("--dashboard-port", type=int, default=8080,
+                   help="Dashboard port (default: 8080)")
     p.add_argument("--news-dir", default=str(HERE / "news"),
                    help="News directory (default: cyassist/news)")
 
@@ -612,11 +949,41 @@ def main():
     news_dir = Path(args.news_dir)
     techniques_dir = HERE.parent / "bugbounty-config" / "techniques"
 
+    if args.setup_telegram:
+        try:
+            from notifier import setup_telegram
+            setup_telegram(*args.setup_telegram)
+        except ImportError:
+            print(f"  {Fmt.red('notifier.py not found')}", file=sys.stderr)
+        return
+
+    if args.setup_discord:
+        try:
+            from notifier import setup_discord
+            setup_discord(args.setup_discord)
+        except ImportError:
+            print(f"  {Fmt.red('notifier.py not found')}", file=sys.stderr)
+        return
+
+    if args.test_alert:
+        try:
+            from notifier import send_telegram, send_discord
+            msg = "Cyassist test alert — hunter pipeline operational."
+            tg = send_telegram(msg)
+            dc = send_discord(msg)
+            print(f"  Telegram: {'OK' if tg else 'SKIP'}")
+            print(f"  Discord:  {'OK' if dc else 'SKIP'}")
+        except ImportError:
+            print(f"  {Fmt.red('notifier.py not found')}", file=sys.stderr)
+        return
+
     if args.target_add:
-        name, techs_str, kw_str = args.target_add
-        techs = [t.strip() for t in techs_str.split(",") if t.strip()]
-        kw = [k.strip() for k in kw_str.split(",") if k.strip()]
-        save_target(name, techs, kw)
+        parts = args.target_add
+        name = parts[0]
+        techs = [t.strip() for t in parts[1].split(",") if t.strip()]
+        kw = [k.strip() for k in parts[2].split(",") if k.strip()]
+        url = parts[3] if len(parts) > 3 else ""
+        save_target(name, techs, kw, url)
         return
 
     if args.targets:
@@ -684,6 +1051,17 @@ def main():
                         print(f"      {Fmt.dim(r['desc'])}")
         else:
             print(f"  {Fmt.dim(f'No GitHub PoCs found for {args.cve}')}")
+        return
+
+    if args.dashboard:
+        try:
+            from dashboard.app import run_dashboard
+            run_dashboard(args.dashboard_port)
+        except ImportError:
+            PORT = args.dashboard_port
+            print(f"  {Fmt.green(f'Launching dashboard on http://127.0.0.1:{PORT}...')}")
+            sys.stdout.flush()
+            os.execvp(sys.executable, [sys.executable, "-m", "dashboard.app", "--port", str(PORT)])
         return
 
     if args.auto:
