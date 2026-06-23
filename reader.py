@@ -154,8 +154,12 @@ def _strip_fm(text: str) -> str:
 
 
 INDIA_SOURCE_PATTERNS = [
+    # Auto-include: every article inherently India-relevant
     "et-ciso",
     "seqrite-blog",
+    "cybertimesindia",
+    "ringsafe",
+    # Keyword-filtered (in INDIA_KEYWORDS): gbhackers, kratikal, cyraacs, indusface, voice-of-greyhat, etc.
 ]
 
 INDIA_KEYWORDS = [
