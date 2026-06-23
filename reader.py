@@ -199,6 +199,24 @@ INDIA_EXCLUDED_SOURCES = [
     "cvereports",
 ]
 
+_HIGH_CONF_KW = frozenset({
+    "cert-in", "meity", "nciipc", "aadhaar", "uidai",
+    "digilocker", "ayushman bharat", "cowin", "digiyatra",
+    "fastag", "gstn", "umang", "i4c", "cyber swachhta",
+    "bhim", "rupay",
+    "indian cyber crime", "cyber crime india",
+    "national cyber crime reporting", "cybercrime.gov.in",
+    "dpdp", "digital personal data protection",
+})
+
+_INDIA_COUNT_PAT = re.compile(r'\b(india|indian|india\'s)\b', re.IGNORECASE)
+_HIGH_CONF_PAT = re.compile(
+    r'\b(' + '|'.join(re.escape(kw) for kw in _HIGH_CONF_KW) + r')\b', re.IGNORECASE)
+_GENERAL_PAT = re.compile(
+    r'\b(' + '|'.join(re.escape(kw) for kw in INDIA_KEYWORDS
+                       if kw not in ("india", "indian", "india's")
+                       and kw not in _HIGH_CONF_KW) + r')\b', re.IGNORECASE)
+
 def _matches_india(text, title, source):
     source_lower = source.lower()
     for pat in INDIA_EXCLUDED_SOURCES:
@@ -207,12 +225,12 @@ def _matches_india(text, title, source):
     for pat in INDIA_SOURCE_PATTERNS:
         if pat in source_lower:
             return True
-    combined = f"{title} {text}".lower()
-    for kw in INDIA_KEYWORDS:
-        pattern = r'\b' + re.escape(kw.lower()) + r'\b'
-        if re.search(pattern, combined):
-            return True
-    return False
+    combined = f"{title} {text}"
+    if _HIGH_CONF_PAT.search(combined):
+        return True
+    if len(_INDIA_COUNT_PAT.findall(combined)) >= 2:
+        return True
+    return len(set(_GENERAL_PAT.findall(combined))) >= 2
 
 
 def _load_custom_sources():
