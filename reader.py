@@ -196,8 +196,16 @@ INDIA_KEYWORDS = [
 ]
 
 
+INDIA_EXCLUDED_SOURCES = [
+    "linkedin",
+    "cvereports",
+]
+
 def _matches_india(text, title, source):
     source_lower = source.lower()
+    for pat in INDIA_EXCLUDED_SOURCES:
+        if pat in source_lower:
+            return False
     for pat in INDIA_SOURCE_PATTERNS:
         if pat in source_lower:
             return True
