@@ -215,13 +215,10 @@ _HIGH_CONF_KW = frozenset({
     "dpdp", "digital personal data protection",
 })
 
-_INDIA_COUNT_PAT = re.compile(r'\b(india|indian|india\'s)\b', re.IGNORECASE)
-_HIGH_CONF_PAT = re.compile(
-    r'\b(' + '|'.join(re.escape(kw) for kw in _HIGH_CONF_KW) + r')\b', re.IGNORECASE)
-_GENERAL_PAT = re.compile(
-    r'\b(' + '|'.join(re.escape(kw) for kw in INDIA_KEYWORDS
-                       if kw not in ("india", "indian", "india's")
-                       and kw not in _HIGH_CONF_KW) + r')\b', re.IGNORECASE)
+_HIGH_CONF_KWS = list(_HIGH_CONF_KW)
+_GENERAL_KWS = [kw for kw in INDIA_KEYWORDS
+                if kw not in ("india", "indian", "india's")
+                and kw not in _HIGH_CONF_KW]
 
 def _matches_india(text, title, source):
     source_lower = source.lower()
@@ -232,11 +229,19 @@ def _matches_india(text, title, source):
         if pat in source_lower:
             return True
     combined = f"{title} {text}"
-    if _HIGH_CONF_PAT.search(combined):
+    lower = combined.lower()
+    for kw in _HIGH_CONF_KWS:
+        if kw in lower:
+            return True
+    if lower.count('india') >= 2:
         return True
-    if len(_INDIA_COUNT_PAT.findall(combined)) >= 2:
-        return True
-    return len(set(_GENERAL_PAT.findall(combined))) >= 2
+    kw_hits = set()
+    for kw in _GENERAL_KWS:
+        if kw in lower:
+            kw_hits.add(kw)
+            if len(kw_hits) >= 2:
+                return True
+    return False
 
 
 def _load_custom_sources():
