@@ -198,11 +198,13 @@ INDIA_KEYWORDS = [
     "gov.in", "nic.in", "ac.in", "edu.in", "co.in",
 ]
 
+
 INDIA_EXCLUDED_SOURCES = [
     "linkedin",
     "cvereports",
 ]
 
+# High-confidence — single match is enough
 _HIGH_CONF_KW = frozenset({
     "cert-in", "meity", "nciipc", "aadhaar", "uidai",
     "digilocker", "ayushman bharat", "cowin", "digiyatra",
@@ -213,13 +215,10 @@ _HIGH_CONF_KW = frozenset({
     "dpdp", "digital personal data protection",
 })
 
-_INDIA_COUNT_PAT = re.compile(r'\b(india|indian|india\'s)\b', re.IGNORECASE)
-_HIGH_CONF_PAT = re.compile(
-    r'\b(' + '|'.join(re.escape(kw) for kw in _HIGH_CONF_KW) + r')\b', re.IGNORECASE)
-_GENERAL_PAT = re.compile(
-    r'\b(' + '|'.join(re.escape(kw) for kw in INDIA_KEYWORDS
-                       if kw not in ("india", "indian", "india's")
-                       and kw not in _HIGH_CONF_KW) + r')\b', re.IGNORECASE)
+_HIGH_CONF_KWS = list(_HIGH_CONF_KW)
+_GENERAL_KWS = [kw for kw in INDIA_KEYWORDS
+                if kw not in ("india", "indian", "india's")
+                and kw not in _HIGH_CONF_KW]
 
 def _matches_india(text, title, source):
     source_lower = source.lower()
@@ -230,11 +229,19 @@ def _matches_india(text, title, source):
         if pat in source_lower:
             return True
     combined = f"{title} {text}"
-    if _HIGH_CONF_PAT.search(combined):
+    lower = combined.lower()
+    for kw in _HIGH_CONF_KWS:
+        if kw in lower:
+            return True
+    if lower.count('india') >= 2:
         return True
-    if len(_INDIA_COUNT_PAT.findall(combined)) >= 2:
-        return True
-    return len(set(_GENERAL_PAT.findall(combined))) >= 2
+    kw_hits = set()
+    for kw in _GENERAL_KWS:
+        if kw in lower:
+            kw_hits.add(kw)
+            if len(kw_hits) >= 2:
+                return True
+    return False
 
 
 def _load_custom_sources():
@@ -832,17 +839,59 @@ if __name__ == "__main__":
     p.add_argument("--fetch-custom", action="store_true",
                    help="Fetch articles from custom sources")
 
+    # ── Hunter engine flags ──
+    p.add_argument("--hunt", action="store_true",
+                   help="Full hunting pipeline (PoC + KEV + target match)")
+    p.add_argument("--poc", action="store_true",
+                   help="Show today's PoCs from exploit-db / GitHub")
+    p.add_argument("--poc-fetch", action="store_true",
+                   help="Fetch new PoCs from exploit-db & packetstorm")
+    p.add_argument("--kev", action="store_true",
+                   help="Show CISA Known Exploited Vulnerabilities catalog")
+    p.add_argument("--kev-fetch", action="store_true",
+                   help="Fetch CISA KEV catalog")
+    p.add_argument("--auto", action="store_true",
+                   help="Silent daily auto-run (cron-friendly)")
+    p.add_argument("--cve", metavar="CVE-ID",
+                   help="Enrich a specific CVE (GitHub PoC search)")
+    p.add_argument("--targets", action="store_true",
+                   help="List registered targets and their tech stacks")
+    p.add_argument("--target-add", nargs="+", metavar="NAME TECHS KW [URL]",
+                   help="Add target: NAME TECHs KEYWORDS [URL]")
+    p.add_argument("--setup-telegram", nargs=2, metavar=("TOKEN", "CHAT_ID"),
+                   help="Configure Telegram bot for critical alerts")
+    p.add_argument("--setup-discord", metavar="WEBHOOK_URL",
+                   help="Configure Discord webhook for critical alerts")
+    p.add_argument("--test-alert", action="store_true",
+                   help="Send a test alert via Telegram/Discord")
+    p.add_argument("--dashboard", action="store_true",
+                   help="Launch web dashboard")
+    p.add_argument("--dashboard-port", type=int, default=8080,
+                   help="Dashboard port (default: 8080)")
+    p.add_argument("--research", metavar="CVE-ID",
+                   help="Deep research on a specific CVE across all intel sources")
+    p.add_argument("--firehose", action="store_true",
+                   help="Unfiltered intel dump — every CVE, PoC, KEV with no filtering")
+    p.add_argument("--watch", action="store_true",
+                   help="Continuous monitoring — polls for new CVEs every N seconds")
+    p.add_argument("--watch-interval", type=int, default=300,
+                   help="Watch mode polling interval in seconds (default: 300)")
+    p.add_argument("--feeds-fetch", action="store_true",
+                   help="Fetch from additional RSS sources (THN, MSRC, Project Zero, etc.)")
+    p.add_argument("--brief", metavar="CVE-ID",
+                   help="Generate AI-summarized exploitation brief for a CVE")
+
     args = p.parse_args()
 
     if args.add_source:
         ok, msg = _add_source(args.add_source[0], args.add_source[1])
         print(msg)
-        return
+        sys.exit(0)
 
     if args.remove_source:
         ok, msg = _remove_source(args.remove_source)
         print(msg)
-        return
+        sys.exit(0)
 
     if args.list_custom:
         sources = _load_custom_sources()
@@ -852,11 +901,35 @@ if __name__ == "__main__":
             print(f"  {Fmt.bold('Custom sources:')}")
             for s in sources:
                 print(f"    {Fmt.green(s['name'])}  {Fmt.dim(s['url'])}")
-        return
+        sys.exit(0)
 
     if args.fetch_custom:
         _fetch_custom_sources()
-        return
+        sys.exit(0)
+
+    if args.hunt or args.poc or args.poc_fetch or args.kev or args.kev_fetch \
+       or args.auto or args.cve or args.targets or args.target_add \
+       or args.setup_telegram or args.setup_discord or args.test_alert \
+       or args.dashboard:
+        from hunter import main as hunter_main
+        import sys as _sys
+        _sys.argv = [_sys.argv[0]]
+        if args.hunt:           _sys.argv.append("--hunt")
+        if args.poc:            _sys.argv.append("--poc")
+        if args.poc_fetch:      _sys.argv.append("--poc-fetch")
+        if args.kev:            _sys.argv.append("--kev")
+        if args.kev_fetch:      _sys.argv.append("--kev-fetch")
+        if args.auto:           _sys.argv.append("--auto")
+        if args.cve:            _sys.argv += ["--cve", args.cve]
+        if args.targets:        _sys.argv.append("--targets")
+        if args.target_add:     _sys.argv += ["--target-add"] + list(args.target_add)
+        if args.setup_telegram: _sys.argv += ["--setup-telegram"] + list(args.setup_telegram)
+        if args.setup_discord:  _sys.argv += ["--setup-discord", args.setup_discord]
+        if args.test_alert:     _sys.argv.append("--test-alert")
+        if args.dashboard:      _sys.argv.append("--dashboard")
+        if args.dashboard_port: _sys.argv += ["--dashboard-port", str(args.dashboard_port)]
+        hunter_main()
+        sys.exit(0)
 
     india_mode = args.india
     heading_text = "Indian Cyber News" if india_mode else "Cyber Global News"
