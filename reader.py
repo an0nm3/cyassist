@@ -156,7 +156,6 @@ def _strip_fm(text: str) -> str:
 INDIA_SOURCE_PATTERNS = [
     "et-ciso",
     "seqrite-blog",
-    "gbhackers",
 ]
 
 INDIA_KEYWORDS = [
