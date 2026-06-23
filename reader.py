@@ -155,16 +155,16 @@ def _strip_fm(text: str) -> str:
 
 INDIA_SOURCE_PATTERNS = [
     "et-ciso",
-    "the-cyber-india", "the cyber india",
-    "cyberblogindia",
+    "seqrite-blog",
+    "gbhackers",
 ]
 
 INDIA_KEYWORDS = [
     # General
-    "india", "indian",
+    "india", "indian", "india's",
     # Govt cyber bodies
     "cert-in", "nciipc", "cdac", "stqc", "nielit", "nic.in",
-    "meity", "ministry of home affairs", "mha",
+    "meity", "ministry of home affairs", "mha", "mygov",
     # Frameworks & regulations
     "dpdp", "digital personal data protection", "it act",
     "national cyber security policy", "ncsp",
@@ -176,7 +176,7 @@ INDIA_KEYWORDS = [
     "pan card", "voter id", "epfo",
     # Indian companies & banks
     "tcs", "infosys", "wipro", "hcl", "tech mahindra",
-    "reliance jio", "airtel", "bsnl", "vodafone idea", "vi",
+    "reliance jio", "airtel", "bsnl", "vodafone idea",
     "sbi", "state bank of india", "hdfc", "icici", "rbi", "npci",
     "paytm", "phonepe", "razorpay", "bharatpe",
     "flipkart", "zomato", "swiggy", "ola", "irctc", "groww", "zerodha",
@@ -195,9 +195,16 @@ INDIA_KEYWORDS = [
     "gov.in", "nic.in", "ac.in", "edu.in", "co.in",
 ]
 
+INDIA_EXCLUDED_SOURCES = [
+    "linkedin",
+    "cvereports",
+]
 
 def _matches_india(text, title, source):
     source_lower = source.lower()
+    for pat in INDIA_EXCLUDED_SOURCES:
+        if pat in source_lower:
+            return False
     for pat in INDIA_SOURCE_PATTERNS:
         if pat in source_lower:
             return True
