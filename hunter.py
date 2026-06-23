@@ -1237,7 +1237,7 @@ def main():
     p.add_argument("--auto", action="store_true", help="Silent daily auto-run")
     p.add_argument("--cve", metavar="CVE-ID", help="Enrich a specific CVE")
     p.add_argument("--targets", action="store_true", help="List targets")
-    p.add_argument("--target-add", nargs="+", metavar=("NAME", "TECHS", "KW", "[URL]"),
+    p.add_argument("--target-add", nargs="+", metavar="NAME TECHS KW [URL]",
                    help="Add target: NAME TECHs KEYWORDS [URL]")
     p.add_argument("--setup-telegram", nargs=2, metavar=("TOKEN", "CHAT_ID"),
                    help="Configure Telegram bot for alerts")

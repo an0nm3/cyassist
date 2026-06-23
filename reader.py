@@ -829,7 +829,7 @@ if __name__ == "__main__":
                    help="Enrich a specific CVE (GitHub PoC search)")
     p.add_argument("--targets", action="store_true",
                    help="List registered targets and their tech stacks")
-    p.add_argument("--target-add", nargs="+", metavar=("NAME", "TECHS", "KW", "[URL]"),
+    p.add_argument("--target-add", nargs="+", metavar="NAME TECHS KW [URL]",
                    help="Add target: NAME TECHs KEYWORDS [URL]")
     p.add_argument("--setup-telegram", nargs=2, metavar=("TOKEN", "CHAT_ID"),
                    help="Configure Telegram bot for critical alerts")
