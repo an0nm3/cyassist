@@ -881,7 +881,12 @@ if __name__ == "__main__":
     p.add_argument("--brief", metavar="CVE-ID",
                    help="Generate AI-summarized exploitation brief for a CVE")
 
-    args = p.parse_args()
+    # ── Engine flags ──
+    p.add_argument("--engine", nargs="?", const="sync", default=None,
+                   help="Data Engine v2: sync|extract|query|status|catalog")
+
+    args, engine_remainder = p.parse_known_args()
+    args.engine_argv = engine_remainder
 
     if args.add_source:
         ok, msg = _add_source(args.add_source[0], args.add_source[1])
@@ -905,6 +910,13 @@ if __name__ == "__main__":
 
     if args.fetch_custom:
         _fetch_custom_sources()
+        sys.exit(0)
+
+    if args.engine:
+        from engine.__main__ import main as engine_main
+        import sys as _sys
+        _sys.argv = [_sys.argv[0], args.engine] + args.engine_argv
+        engine_main()
         sys.exit(0)
 
     if args.hunt or args.poc or args.poc_fetch or args.kev or args.kev_fetch \

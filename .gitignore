@@ -21,6 +21,12 @@ news/telegram/
 __pycache__/
 *.pyc
 
+# Engine v2 data
+engine_data/
+dna/
+.engine_metadata
+.engine_metadata.*
+
 # OS
 .DS_Store
 Thumbs.db
