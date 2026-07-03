@@ -159,43 +159,82 @@ INDIA_SOURCE_PATTERNS = [
     "seqrite-blog",
     "cybertimesindia",
     "ringsafe",
-    # Keyword-filtered (in INDIA_KEYWORDS): gbhackers, kratikal, cyraacs, indusface, voice-of-greyhat, etc.
+    "k7computing",
+    "quickheal",
+    "cyble",
+    "securityji",
+    "kratikal",
+    "cyraacs",
+    "indusface",
+    "voice-of-greyhat",
+    "the-hacker-news",  # Heavy Indian coverage (CERT-In, UPI, Aadhaar, etc.)
+    # Keyword-filtered (in INDIA_KEYWORDS): gbhackers, etc.
 ]
 
 INDIA_KEYWORDS = [
     # General
-    "india", "indian", "india's",
+    "india", "indian", "india's", "bharat",
     # Govt cyber bodies
     "cert-in", "nciipc", "cdac", "stqc", "nielit", "nic.in",
     "meity", "ministry of home affairs", "mha", "mygov",
+    "ministry of electronics", "national critical information",
+    "indian computer emergency response",
     # Frameworks & regulations
     "dpdp", "digital personal data protection", "it act",
     "national cyber security policy", "ncsp",
     "information technology act",
     "cyber swachhta", "i4c", "cybercrime.gov.in",
     "national cyber crime reporting",
+    "national cyber coordination centre", "nccc",
     # Identity & fintech
     "aadhaar", "uidai", "digilocker", "upi", "bhim", "rupay",
     "pan card", "voter id", "epfo",
+    "account aggregator", "aa framework", "ocen",
+    "pci dss india", "digital rupee", "cbdc",
     # Indian companies & banks
     "tcs", "infosys", "wipro", "hcl", "tech mahindra",
-    "reliance jio", "airtel", "bsnl", "vodafone idea",
+    "ltimindtree", "l&t technology", "mphasis",
+    "reliance jio", "jio", "airtel", "bsnl", "vodafone idea", "vi",
     "sbi", "state bank of india", "hdfc", "icici", "rbi", "npci",
     "paytm", "phonepe", "razorpay", "bharatpe",
+    "cred", "gpay india", "google pay india",
     "flipkart", "zomato", "swiggy", "ola", "irctc", "groww", "zerodha",
+    "nykaa", "policybazaar", "mobikwik",
+    "pine labs", "cashfree", "juspay", "ekko",
+    # Cybersecurity companies (India-based)
+    "quickheal", "seqrite", "k7 computing", "k7cloud",
+    "cyble", "kratikal", "cyraacs", "indusface",
+    "netskope india", "paladion", "securityji",
+    "payatu", "cloudsek", "appsecco",
+    # Govt agencies & initiatives
+    "indian navy", "indian army", "indian air force",
+    "ministry of defence", "mod india",
+    "national security council secretariat", "nscs",
+    "nuclear command authority",
+    "isro", "indian space research",
+    "barc", "drdo",
     # Threat actors targeting India
     "sidewinder", "patchwork", "transparent tribe", "apt36",
     "confucius", "white elephant", "bahamut",
     "indian cyber crime", "cyber crime india",
+    "apt india", "cyberespionage india",
+    # CERT-In advisories
+    "cert-in advisory", "civic", "cert-in alert",
+    "critical vulnerability india",
     # Indian govt initiatives
     "ayushman bharat", "cowin", "digiyatra", "fastag",
-    "gstn", "umang",
+    "gstn", "umang", "meripehchaan", "abha",
+    "asha", "nhm", "pm-kisan",
     # States & cities
     "delhi", "mumbai", "bengaluru", "bangalore",
     "hyderabad", "chennai", "pune", "kolkata", "ahmedabad",
     "gurgaon", "noida", "jaipur", "lucknow", "chandigarh",
+    "indore", "bhopal", "surat", "thane", "nagpur",
     # Domains
     "gov.in", "nic.in", "ac.in", "edu.in", "co.in",
+    # Indian financial infra
+    "nse", "bse", "sebi", "stock exchange india",
+    "indian rupee", "inr",
 ]
 
 
@@ -213,6 +252,13 @@ _HIGH_CONF_KW = frozenset({
     "indian cyber crime", "cyber crime india",
     "national cyber crime reporting", "cybercrime.gov.in",
     "dpdp", "digital personal data protection",
+    "cert-in advisory", "civic",
+    "digital rupee", "cbdc india",
+    "qcommerce india", "indian startup",
+    "quickheal", "seqrite", "cyble", "kratikal",
+    "payatu", "cloudsek", "appsecco",
+    "isro", "drdo", "barc",
+    "nse india", "sebi",
 })
 
 _HIGH_CONF_KWS = list(_HIGH_CONF_KW)

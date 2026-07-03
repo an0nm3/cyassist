@@ -52,7 +52,47 @@ def do_query(args, store):
             sv = getattr(meta, "vulnerability_type", "") or ""
             if args.severity.lower() not in sv.lower():
                 continue
-        results.append(meta)
+        if args.tech:
+            results.append(meta)
+        else:
+            results.append(meta)
+
+    if args.tech:
+        from .attack_dna import AttackDNAExporter
+        dna_exporter = AttackDNAExporter(output_dir=args.dna_dir)
+        vectors = dna_exporter.collect_all()
+        if not vectors:
+            print(json.dumps({"error": "no DNA vectors available", "execution_map": None}))
+            return
+        tag = args.tech.lower()
+        matched = [v for v in vectors if
+                   any(tag in (k.lower() if k else "") for k in
+                       v.get("tech_classification", {}).keys())]
+        if not matched:
+            matched = [v for v in vectors if
+                       tag in json.dumps(v.get("categories", [])).lower()]
+        if not matched:
+            print(json.dumps({"error": f"no DNA vectors for tech '{args.tech}'",
+                              "execution_map": None}))
+            return
+        vector = matched[0]
+        ctx = vector.get("target_context", {})
+        strategy = vector.get("fuzz_strategy", {})
+        execution_map = {
+            "targeted_paths": ctx.get("discovered_paths", []),
+            "vulnerable_parameters": ctx.get("vulnerable_parameters", []),
+            "mutation_vector": (strategy.get("mutation_types", ["param_fuzzing"]) or ["param_fuzzing"])[0],
+            "primary_vector": strategy.get("primary_vector", "UNKNOWN"),
+            "payload_example": strategy.get("payload_example", []),
+            "source_vector": vector.get("report_id", "unknown"),
+        }
+        print(json.dumps({
+            "execution_map": execution_map,
+            "matched_vectors": len(matched),
+            "total_available": len(vectors),
+        }, indent=2))
+        return
+
     if args.json:
         out = []
         for r in results:
@@ -111,6 +151,7 @@ def main():
     p = sub.add_parser("query", help="Query indexed reports")
     p.add_argument("--cwe", default="", help="Filter by CWE")
     p.add_argument("--severity", default="", choices=["HIGH", "MEDIUM", "LOW", ""])
+    p.add_argument("--tech", default="", help="Filter by technology (scans DNA vectors for tech match)")
     p.add_argument("--json", action="store_true")
 
     sub.add_parser("status", help="Engine stats")
