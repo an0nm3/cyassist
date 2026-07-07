@@ -3,7 +3,7 @@
 > **Intel-Driven Bug Bounty Assistant**  
 > SQLite-backed threat intel, Indian cybersecurity news, exploit DNA harvesting, template indexing, and Rudra Framework integration.  
 > Storage target: `<100MB` — metadata only, no exploit code cached.  
-> Latest: **v2.2.1** — short flags, 3-color Indian logo, white-bg blinking highlights, BB-only news DB, India fallback (7 days), LinkedIn noise removed.
+> Latest: **v2.2.1** — short flags, 3-color Indian logo, white-bg blinking highlights, BB-only news DB, India fallback (7 days), LinkedIn noise removed, Rudra v11.4.1 Phase 0 Browser Proxy + `--cf-bypass` + `--cookie`.
 
 ---
 

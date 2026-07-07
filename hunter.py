@@ -963,7 +963,7 @@ LINKEDIN_FEEDS = {
     "linkedin-infosec": "https://news.google.com/rss/search?q=site:linkedin.com+infosec&hl=en-US&gl=US&ceid=US:en",
     "linkedin-bugbounty": "https://news.google.com/rss/search?q=site:linkedin.com+bug+bounty&hl=en-US&gl=US&ceid=US:en",
 }
-ALL_FEEDS = {**ADDITIONAL_FEEDS, **X_FEEDS_FLAT, **MEDIUM_FEEDS_FLAT, **LINKEDIN_FEEDS}
+ALL_FEEDS = {**ADDITIONAL_FEEDS, **X_FEEDS_FLAT, **MEDIUM_FEEDS_FLAT}
 
 
 def _opencode_summarize(prompt: str, timeout: int = 60) -> Optional[str]:
