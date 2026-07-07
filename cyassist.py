@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""Cyassist v2.1 — unified CLI for Indian news, exploit DNA, template sync, Rudra bridge.
-v2.1: Added -i/--india flag for instant Indian news reader dispatch.
+"""Cyassist v2.2 — unified CLI for Indian news, exploit DNA, template sync, Rudra bridge.
+v2.2: Short flags (-t/-T/-H/-c/-q/-s/-n), 3-color Indian logo, blinking highlights, BB-only DB.
 Storage target: <100MB. SQLite-backed. No exploit code cached."""
 
 import argparse
@@ -95,6 +95,17 @@ def main():
     p.add_argument("--reader", action="store_true", help="Launch news reader (reader.py)")
     p.add_argument("-i", "--india", action="store_true",
                    help="India preset scope (cert-in, dpdp, aadhaar, indian banks)")
+    p.add_argument("-t", "--today", action="store_true", help="Today's headlines (reader)")
+    p.add_argument("-T", "--headlines", action="store_true", help="Quick headlines (reader)")
+    p.add_argument("-H", "--summary", action="store_true", help="News summary (reader)")
+    p.add_argument("-c", "--category", nargs='?', const='__help__', default="",
+                   choices=["news", "techniques", "", "__help__"],
+                   help="Category (news|techniques)")
+    p.add_argument("-q", "--query", nargs='?', const='__help__', default="",
+                   help="Search keyword")
+    p.add_argument("-s", "--source", nargs='?', const='__help__', default="",
+                   help="Filter by source name")
+    p.add_argument("-n", "--count", action="store_true", help="Count only")
     p.add_argument("--hunt", action="store_true", help="Run hunting pipeline (hunter.py)")
     p.add_argument("--poc", action="store_true", help="Show PoCs from hunter")
 
@@ -184,15 +195,28 @@ def main():
         _dispatch("on_demand", watch_args)
         return
 
-    # ── Reader (with optional India mode) ──
-    if args.india or args.reader:
+    # ── Reader (with optional India mode + short flags) ──
+    reader_flags = [args.reader, args.today, args.headlines, args.summary,
+                    args.category, args.query or args.source, args.count]
+    if args.india or args.reader or any(reader_flags):
         reader_args = []
         if args.india:
             reader_args.append("-i")
-        if args.reader:
-            _dispatch("reader", reader_args if reader_args else None)
-        else:
-            _dispatch("reader", reader_args)
+        if args.today:
+            reader_args.append("--today")
+        if args.headlines:
+            reader_args.append("--headlines")
+        if args.summary:
+            reader_args.append("--summary")
+        if args.category and args.category != "__help__":
+            reader_args += ["--category", args.category]
+        if args.query and args.query != "__help__":
+            reader_args += ["--query", args.query]
+        if args.source and args.source != "__help__":
+            reader_args += ["--source", args.source]
+        if args.count:
+            reader_args.append("--count")
+        _dispatch("reader", reader_args if reader_args else None)
         return
     if args.hunt or args.poc:
         _dispatch("hunter", [arg for arg in ["--hunt", "--poc"] if getattr(args, arg.strip("-").replace("-", "_"))])

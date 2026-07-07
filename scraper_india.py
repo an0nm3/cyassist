@@ -72,9 +72,14 @@ tags: [{tag_str}]
 
     try:
         from intel_db import IntelDB
-        _db = IntelDB()
-        _db.add_news(source, url, title, tags=tags, date_str=d)
-        _db.close()
+        _bb_tags = {"CVE", "Advisory", "Exploit", "Rce", "Sqli", "Xss",
+                     "Ssti", "Lfi", "Idor", "SsrF", "0day"}
+        _has_cve_in_body = bool(re.search(r'CVE-\d{4}-\d{4,}', body))
+        _has_bb_tag = any(t in _bb_tags or t.startswith("CVE:") for t in tags)
+        if _has_cve_in_body or _has_bb_tag:
+            _db = IntelDB()
+            _db.add_news(source, url, title, tags=tags, date_str=d)
+            _db.close()
     except Exception:
         pass
     return True

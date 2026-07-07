@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Cyassist news reader — browse security news from RSS/Telegram sources.
+"""Cyassist news reader v2.2 — browse security news from RSS/Telegram sources.
+v2.2: 3-color Indian flag logo, blinking highlights, BB-only DB filtering.
 
 Usage:
   python3 reader.py --today           Today's headlines
@@ -60,6 +61,8 @@ class Fmt:
     @classmethod
     def orange(cls, s): return cls._wrap("38;5;214", s)
     @classmethod
+    def blink(cls, s): return cls._wrap("5", s)
+    @classmethod
     def india_green(cls, s): return cls._wrap("38;5;34", s)
     @classmethod
     def hr(cls, char="\u2501", n=60): return cls.dim(char * n)
@@ -102,8 +105,11 @@ LOGO = """
 
 def _compact_header(heading_text: str, india_mode: bool = False):
     logo_lines = LOGO.strip("\n").split("\n")
-    for line in logo_lines:
-        if india_mode:
+    india_colors = [Fmt.orange, Fmt.bold, Fmt.bold, Fmt.india_green]
+    for i, line in enumerate(logo_lines):
+        if india_mode and i < len(india_colors):
+            print(f"  {Fmt.bold(india_colors[i](line))}")
+        elif india_mode:
             print(f"  {Fmt.bold(Fmt.orange(line))}")
         else:
             print(f"  {Fmt.bold(Fmt.green(line))}")
@@ -554,7 +560,7 @@ def today(category: str = "news", source="", query="",
                 continue
             hl_total = len(highlights)
             tag = f" ({len(hl)}/{hl_total})" if hl_total > hl_page_size else f" ({hl_total})"
-            print(f"  {Fmt.bold(Fmt.red(' \u26a0 HIGHLIGHTS '))}{Fmt.dim(tag)}")
+            print(f"  {Fmt.bold(Fmt.blink(Fmt.red(' \u26a0 HIGHLIGHTS ')))}{Fmt.dim(tag)}")
             for e in hl:
                 idx = entries.index(e) + 1
                 print(f"  {Fmt.bold(f'{idx:>3}.')} {e['display']}")

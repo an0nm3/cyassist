@@ -63,6 +63,15 @@ def _clean(html: str) -> str:
     return ' '.join(re.sub(r'<[^>]+>', ' ', html or '').split())
 
 
+_BB_TAGS = {"CVE", "0day", "Exploit", "Rce", "Sqli", "Xss", "Ssti", "Lfi", "Idor", "SsrF"}
+
+
+def _bb_relevant(cve_refs: list[str], tags: list[str]) -> bool:
+    if cve_refs:
+        return True
+    return any(t in _BB_TAGS for t in tags)
+
+
 def _extract_links(html: str, base_url: str) -> list[tuple[str, str]]:
     links = re.findall(r'<a\s+(?:[^>]*?\s+)?href="([^"]+)"[^>]*>(.*?)</a>', html, re.DOTALL)
     result = []
@@ -100,7 +109,7 @@ def scrape_thn(db: IntelDB) -> int:
         tags = ["THN"]
         if cve_refs:
             tags.append("CVE")
-        if db.add_news("the-hacker-news", href, title,
+        if _bb_relevant(cve_refs, tags) and db.add_news("the-hacker-news", href, title,
                        tags=tags, cve_refs=cve_refs):
             count += 1
     return count
@@ -128,7 +137,7 @@ def scrape_bleeping(db: IntelDB) -> int:
         tags = ["BleepingComputer"]
         if cve_refs:
             tags.append("CVE")
-        if db.add_news("bleepingcomputer", href, title,
+        if _bb_relevant(cve_refs, tags) and db.add_news("bleepingcomputer", href, title,
                        tags=tags, cve_refs=cve_refs):
             count += 1
     return count
@@ -154,7 +163,7 @@ def scrape_gbhackers(db: IntelDB) -> int:
         tags = ["GBHackers"]
         if cve_refs:
             tags.append("CVE")
-        if db.add_news("gbhackers-on-security", href, title,
+        if _bb_relevant(cve_refs, tags) and db.add_news("gbhackers-on-security", href, title,
                        tags=tags, cve_refs=cve_refs):
             count += 1
     return count
@@ -180,7 +189,7 @@ def scrape_packetstorm(db: IntelDB) -> int:
         tags = ["PacketStorm"]
         if cve_refs:
             tags.append("CVE")
-        if db.add_news("packetstorm", href, title,
+        if _bb_relevant(cve_refs, tags) and db.add_news("packetstorm", href, title,
                        tags=tags, cve_refs=cve_refs):
             count += 1
     return count
@@ -215,7 +224,7 @@ def scrape_reddit(db: IntelDB) -> dict[str, int]:
             tags = [f"Reddit/{name}"]
             if cve_refs:
                 tags.append("CVE")
-            if db.add_news(f"reddit-{name}", link, title,
+            if _bb_relevant(cve_refs, tags) and db.add_news(f"reddit-{name}", link, title,
                            tags=tags, cve_refs=cve_refs):
                 count += 1
         results[name] = count
@@ -257,7 +266,7 @@ def scrape_security_x(db: IntelDB) -> dict[str, int]:
             tags = [f"x/{name}"]
             if cve_refs:
                 tags.append("CVE")
-            if db.add_news(f"x-{name}", link, title, tags=tags, cve_refs=cve_refs):
+            if _bb_relevant(cve_refs, tags) and db.add_news(f"x-{name}", link, title, tags=tags, cve_refs=cve_refs):
                 count += 1
         results[name] = count
     return results

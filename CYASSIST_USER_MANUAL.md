@@ -3,7 +3,7 @@
 > **Intel-Driven Bug Bounty Assistant**  
 > SQLite-backed threat intel, Indian cybersecurity news, exploit DNA harvesting, template indexing, and Rudra Framework integration.  
 > Storage target: `<100MB` — metadata only, no exploit code cached.  
-> Latest: **v2.0** — on-demand exploit fetcher, watch mode, unified CLI.
+> Latest: **v2.2** — short flags (-t/-T/-H/-c/-q/-s/-n), 3-color Indian logo, blinking highlights, BB-only news DB filtering.
 
 ---
 
@@ -152,15 +152,19 @@ exec python3 /home/kali/bugbounty/cyassist/cyassist.py "$@"
 
 ## 4. Quick Start
 
-### Show Indian cyber news (instant)
+### Show Indian cyber news (instant) — 3-color flag logo
 ```bash
 cyassist -i
 ```
 
-### Launch news reader (with optional India filter)
+### Launch news reader (with optional short flags)
 ```bash
 cyassist --reader
-cyassist --reader -i    # India-filtered
+cyassist -t              # today's headlines
+cyassist -i              # India-filtered
+cyassist -i -t           # India today
+cyassist -q "SSRF"       # search
+cyassist -c techniques    # techniques category
 ```
 
 ### Show database status
@@ -230,7 +234,14 @@ cyassist --watch --watch-interval 600
 | `--watch-interval N` | Watch polling interval in seconds (default: 300) |
 | `--auto-scan-watch` | Auto-trigger Rudra scans on relevant CVEs (watch mode) |
 | `--reader` | Launch the news reader (reader.py) |
-| `-i`, `--india` | India preset scope (cert-in, dpdp, aadhaar, indian banks) — auto-launches reader |
+| `-i`, `--india` | India preset scope (cert-in, dpdp, aadhaar, indian banks) — auto-launches reader with 3-color flag logo |
+| `-t`, `--today` | Launch reader in today's headlines mode |
+| `-T`, `--headlines` | Launch reader in quick headlines mode |
+| `-H`, `--summary` | Launch reader in summary mode |
+| `-c`, `--category` | Filter reader by category (news\|techniques) |
+| `-q`, `--query` | Search keyword via reader |
+| `-s`, `--source` | Filter by source name via reader |
+| `-n`, `--count` | Count-only mode via reader |
 | `--hunt` | Run the hunting pipeline (hunter.py) |
 | `--poc` | Show PoCs from the hunter |
 | `--daily` | Full auto-run: scrapers → harvest → template sync → bridge |
