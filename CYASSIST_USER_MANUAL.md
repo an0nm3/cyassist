@@ -152,6 +152,17 @@ exec python3 /home/kali/bugbounty/cyassist/cyassist.py "$@"
 
 ## 4. Quick Start
 
+### Show Indian cyber news (instant)
+```bash
+cyassist -i
+```
+
+### Launch news reader (with optional India filter)
+```bash
+cyassist --reader
+cyassist --reader -i    # India-filtered
+```
+
 ### Show database status
 ```bash
 cyassist --status
@@ -219,6 +230,7 @@ cyassist --watch --watch-interval 600
 | `--watch-interval N` | Watch polling interval in seconds (default: 300) |
 | `--auto-scan-watch` | Auto-trigger Rudra scans on relevant CVEs (watch mode) |
 | `--reader` | Launch the news reader (reader.py) |
+| `-i`, `--india` | India preset scope (cert-in, dpdp, aadhaar, indian banks) — auto-launches reader |
 | `--hunt` | Run the hunting pipeline (hunter.py) |
 | `--poc` | Show PoCs from the hunter |
 | `--daily` | Full auto-run: scrapers → harvest → template sync → bridge |

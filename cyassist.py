@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Cyassist v2 — unified CLI for Indian news, exploit DNA, template sync, Rudra bridge.
+"""Cyassist v2.1 — unified CLI for Indian news, exploit DNA, template sync, Rudra bridge.
+v2.1: Added -i/--india flag for instant Indian news reader dispatch.
 Storage target: <100MB. SQLite-backed. No exploit code cached."""
 
 import argparse
@@ -92,6 +93,8 @@ def main():
 
     # Reader
     p.add_argument("--reader", action="store_true", help="Launch news reader (reader.py)")
+    p.add_argument("-i", "--india", action="store_true",
+                   help="India preset scope (cert-in, dpdp, aadhaar, indian banks)")
     p.add_argument("--hunt", action="store_true", help="Run hunting pipeline (hunter.py)")
     p.add_argument("--poc", action="store_true", help="Show PoCs from hunter")
 
@@ -181,9 +184,15 @@ def main():
         _dispatch("on_demand", watch_args)
         return
 
-    # ── Reader / Hunter passthrough ──
-    if args.reader:
-        _dispatch("reader")
+    # ── Reader (with optional India mode) ──
+    if args.india or args.reader:
+        reader_args = []
+        if args.india:
+            reader_args.append("-i")
+        if args.reader:
+            _dispatch("reader", reader_args if reader_args else None)
+        else:
+            _dispatch("reader", reader_args)
         return
     if args.hunt or args.poc:
         _dispatch("hunter", [arg for arg in ["--hunt", "--poc"] if getattr(args, arg.strip("-").replace("-", "_"))])

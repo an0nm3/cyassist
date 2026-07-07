@@ -25,73 +25,29 @@ LOGO_LINES = [
     "       \u2584\u2580",
 ]
 
-def render_logo_image(font_size: int = 42, color: tuple = (0, 136, 255)) -> str:
+def render_logo_image(font_size: int = 28, color: tuple = (0, 136, 255)) -> str:
     FONT_MONO = "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf"
     font = ImageFont.truetype(FONT_MONO, font_size)
-    
+    # Calculate max width and total height
     max_chars = max(len(l) for l in LOGO_LINES)
-    char_w = font.getbbox("M")[2]
-    line_h = font.getbbox("M")[3] + 3
+    char_w = font.getbbox("M")[2]  # approximate char width
+    line_h = font.getbbox("M")[3] + 2  # line height with slight spacing
+    pad_x, pad_y = 20, 15
+    img_w = char_w * max_chars + pad_x * 2
+    img_h = line_h * len(LOGO_LINES) + pad_y * 2
     
-    # Inner padding around text + extra for box border
-    inner_pad_x, inner_pad_y = 30, 20
-    box_pad = 12  # extra border around the box
-    
-    text_w = char_w * max_chars
-    text_h = line_h * len(LOGO_LINES)
-    
-    box_w = text_w + inner_pad_x * 2
-    box_h = text_h + inner_pad_y * 2
-    img_w = box_w + box_pad * 2
-    img_h = box_h + box_pad * 2
-    
+    # Draw glow background
     img = Image.new('RGBA', (img_w, img_h), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
     
-    # ── Background placeholder box ──────────────────────────────
-    box_x0, box_y0 = box_pad, box_pad
-    box_x1, box_y1 = box_x0 + box_w, box_y0 + box_h
-    radius = 14
-    
-    # Outer glow ring
-    for i in range(4):
-        glow_alpha = 15 - i * 3
-        off = i * 2
-        draw.rounded_rectangle(
-            [box_x0 - off, box_y0 - off, box_x1 + off, box_y1 + off],
-            radius=radius + off,
-            fill=(0, 136, 255, glow_alpha if glow_alpha > 0 else 1)
-        )
-    
-    # Main box fill (dark semi-transparent)
-    draw.rounded_rectangle(
-        [box_x0, box_y0, box_x1, box_y1],
-        radius=radius,
-        fill=(8, 16, 34, 220),
-        outline=(0, 120, 220, 120),
-        width=1
-    )
-    
-    # Inner subtle border
-    inner = 3
-    draw.rounded_rectangle(
-        [box_x0 + inner, box_y0 + inner, box_x1 - inner, box_y1 - inner],
-        radius=radius - 2,
-        outline=(0, 150, 255, 40),
-        width=1
-    )
-    
-    # ── Render ASCII text ───────────────────────────────────────
-    text_origin_x = box_x0 + inner_pad_x
-    text_origin_y = box_y0 + inner_pad_y
-    
     for li, line in enumerate(LOGO_LINES):
-        x = text_origin_x
-        y = text_origin_y + li * line_h
+        x = pad_x
+        y = pad_y + li * line_h
         for ch in line:
-            # Soft glow
-            for dx, dy in [(-1, -1), (1, -1), (-1, 1), (1, 1)]:
-                draw.text((x + dx, y + dy), ch, font=font, fill=(color[0], color[1], color[2], 55))
+            bbox = font.getbbox(ch)
+            # Glow
+            draw.text((x - 1, y - 1), ch, font=font, fill=(color[0], color[1], color[2], 60))
+            draw.text((x + 1, y + 1), ch, font=font, fill=(color[0], color[1], color[2], 60))
             # Main text
             draw.text((x, y), ch, font=font, fill=(color[0], color[1], color[2], 255))
             x += char_w
@@ -101,7 +57,7 @@ def render_logo_image(font_size: int = 42, color: tuple = (0, 136, 255)) -> str:
     b64 = base64.b64encode(buf.getvalue()).decode()
     return f'data:image/png;base64,{b64}'
 
-logo_data_uri = render_logo_image(42)
+logo_data_uri = render_logo_image(28)
 
 
 
