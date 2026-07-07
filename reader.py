@@ -517,9 +517,14 @@ def today(category: str = "news", source="", query="",
           heading_text="Cyber Global News", india_mode=False):
     items = _collect(category, source=source, query=query, india_mode=india_mode)
     if not items:
-        _compact_header(heading_text, india_mode)
-        print(f"  {Fmt.dim('No ' + category + ' in the last 24 hours.')}\n")
-        return
+        if india_mode:
+            items = _collect(category, days=7, source=source, query=query, india_mode=india_mode)
+            if items:
+                heading_text = "Indian Cyber News (past 7 days)"
+        if not items:
+            _compact_header(heading_text, india_mode)
+            print(f"  {Fmt.dim('No ' + category + ' in the last 24 hours.')}\n")
+            return
 
     items.sort(key=lambda x: (0 if "CVE" in x[2].get("tags", "") else 1, x[2].get("source", "")))
     items, dup_map = _dedup_items(items)
@@ -527,9 +532,17 @@ def today(category: str = "news", source="", query="",
     if india_mode:
         items = [x for x in items if x[3]]
         if not items:
-            _compact_header(heading_text, india_mode)
-            print(f"  {Fmt.dim('No India-relevant ' + category + ' in the last 24 hours.')}\n")
-            return
+            items = _collect(category, days=7, source=source, query=query, india_mode=india_mode)
+            items.sort(key=lambda x: (0 if "CVE" in x[2].get("tags", "") else 1, x[2].get("source", "")))
+            items, dup_map = _dedup_items(items)
+            india_items = [x for x in items if x[3]]
+            if india_items:
+                items = india_items
+                heading_text = "Indian Cyber News (past 7 days)"
+            else:
+                _compact_header(heading_text, india_mode)
+                print(f"  {Fmt.dim('No India-relevant ' + category + ' in the last 24 hours.')}\n")
+                return
 
     entries = [_build_entry(*item, dup_map) for item in items]
     total = len(entries)
@@ -560,7 +573,8 @@ def today(category: str = "news", source="", query="",
                 continue
             hl_total = len(highlights)
             tag = f" ({len(hl)}/{hl_total})" if hl_total > hl_page_size else f" ({hl_total})"
-            print(f"  {Fmt.bold(Fmt.blink(Fmt.red(' \u26a0 HIGHLIGHTS ')))}{Fmt.dim(tag)}")
+            hl_header = f" \u26a0 HIGHLIGHTS "
+            print(f"  \033[47m{Fmt.bold(Fmt.blink(Fmt.red(hl_header)))}\033[0m{Fmt.dim(tag)}")
             for e in hl:
                 idx = entries.index(e) + 1
                 print(f"  {Fmt.bold(f'{idx:>3}.')} {e['display']}")
