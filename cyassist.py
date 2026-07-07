@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Cyassist v2.2 — unified CLI for Indian news, exploit DNA, template sync, Rudra bridge.
-v2.2: Short flags (-t/-T/-H/-c/-q/-s/-n), 3-color Indian logo, blinking highlights, BB-only DB.
+v2.2.1: White-bg blink, India 7d fallback, LinkedIn cleanup, SSRF false-positive fix.
 Storage target: <100MB. SQLite-backed. No exploit code cached."""
 
 import argparse

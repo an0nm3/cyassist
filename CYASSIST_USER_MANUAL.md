@@ -3,7 +3,7 @@
 > **Intel-Driven Bug Bounty Assistant**  
 > SQLite-backed threat intel, Indian cybersecurity news, exploit DNA harvesting, template indexing, and Rudra Framework integration.  
 > Storage target: `<100MB` — metadata only, no exploit code cached.  
-> Latest: **v2.2** — short flags (-t/-T/-H/-c/-q/-s/-n), 3-color Indian logo, blinking highlights, BB-only news DB filtering.
+> Latest: **v2.2.1** — short flags, 3-color Indian logo, white-bg blinking highlights, BB-only news DB, India fallback (7 days), LinkedIn noise removed.
 
 ---
 
@@ -156,6 +156,7 @@ exec python3 /home/kali/bugbounty/cyassist/cyassist.py "$@"
 ```bash
 cyassist -i
 ```
+Falls back to 7-day window if no India-relevant news found in last 24h.
 
 ### Launch news reader (with optional short flags)
 ```bash
@@ -234,7 +235,7 @@ cyassist --watch --watch-interval 600
 | `--watch-interval N` | Watch polling interval in seconds (default: 300) |
 | `--auto-scan-watch` | Auto-trigger Rudra scans on relevant CVEs (watch mode) |
 | `--reader` | Launch the news reader (reader.py) |
-| `-i`, `--india` | India preset scope (cert-in, dpdp, aadhaar, indian banks) — auto-launches reader with 3-color flag logo |
+| `-i`, `--india` | India preset scope — auto-launches reader with 3-color flag logo; falls back to 7 days if no recent India news |
 | `-t`, `--today` | Launch reader in today's headlines mode |
 | `-T`, `--headlines` | Launch reader in quick headlines mode |
 | `-H`, `--summary` | Launch reader in summary mode |
