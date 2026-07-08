@@ -108,8 +108,6 @@ def main():
     p.add_argument("-n", "--count", action="store_true", help="Count only")
     p.add_argument("--hunt", action="store_true", help="Run hunting pipeline (hunter.py)")
     p.add_argument("--poc", action="store_true", help="Show PoCs from hunter")
-    p.add_argument("--feeds-fetch", action="store_true",
-                   help="Fetch from additional RSS sources (THN, MSRC, Project Zero, etc.)")
 
     # Pipeline
     p.add_argument("--daily", action="store_true", help="Daily auto-run: scrape + harvest + sync")
@@ -220,12 +218,8 @@ def main():
             reader_args.append("--count")
         _dispatch("reader", reader_args if reader_args else None)
         return
-    if args.hunt or args.poc or args.feeds_fetch:
-        hunter_args = []
-        if args.hunt:          hunter_args.append("--hunt")
-        if args.poc:           hunter_args.append("--poc")
-        if args.feeds_fetch:   hunter_args.append("--feeds-fetch")
-        _dispatch("hunter", hunter_args if hunter_args else None)
+    if args.hunt or args.poc:
+        _dispatch("hunter", [arg for arg in ["--hunt", "--poc"] if getattr(args, arg.strip("-").replace("-", "_"))])
         return
 
     # ── Daily auto-run ──

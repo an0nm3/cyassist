@@ -524,8 +524,6 @@ def today(category: str = "news", source="", query="",
         if not items:
             _compact_header(heading_text, india_mode)
             print(f"  {Fmt.dim('No ' + category + ' in the last 24 hours.')}\n")
-            if not any(NEWS_DIR.rglob("*.md")):
-                print(f"  {Fmt.yellow('Hint:')} {Fmt.dim('Run')} {Fmt.bold('cyassist --feeds-fetch')} {Fmt.dim('to populate the news database.')}\n")
             return
 
     items.sort(key=lambda x: (0 if "CVE" in x[2].get("tags", "") else 1, x[2].get("source", "")))
@@ -544,8 +542,6 @@ def today(category: str = "news", source="", query="",
             else:
                 _compact_header(heading_text, india_mode)
                 print(f"  {Fmt.dim('No India-relevant ' + category + ' in the last 24 hours.')}\n")
-                if not any(NEWS_DIR.rglob("*.md")):
-                    print(f"  {Fmt.yellow('Hint:')} {Fmt.dim('Run')} {Fmt.bold('cyassist --feeds-fetch')} {Fmt.dim('to populate the news database.')}\n")
                 return
 
     entries = [_build_entry(*item, dup_map) for item in items]
@@ -690,8 +686,6 @@ def headlines(days: int = 1, category: str = "news",
             heading = "Indian Cyber News" if india_mode else "Cyber Global News"
             _compact_header(heading, india_mode)
             print(f"  {Fmt.dim(f'No India-relevant {category} in the last {days} day(s).')}\n")
-            if not any(NEWS_DIR.rglob("*.md")):
-                print(f"  {Fmt.yellow('Hint:')} {Fmt.dim('Run')} {Fmt.bold('cyassist --feeds-fetch')} {Fmt.dim('to populate the news database.')}\n")
             return
 
     for fp, text, m, in_scope in items:
@@ -704,8 +698,6 @@ def headlines(days: int = 1, category: str = "news",
 
     if not by_source:
         print(f"\n  {Fmt.dim(f'No {category} in the last {days} day(s).')}\n")
-        if not any(NEWS_DIR.rglob("*.md")):
-            print(f"  {Fmt.yellow('Hint:')} {Fmt.dim('Run')} {Fmt.bold('cyassist --feeds-fetch')} {Fmt.dim('to populate the news database.')}\n")
         return
 
     total_items = sum(len(v) for v in by_source.values())
@@ -996,7 +988,7 @@ if __name__ == "__main__":
     if args.hunt or args.poc or args.poc_fetch or args.kev or args.kev_fetch \
        or args.auto or args.cve or args.targets or args.target_add \
        or args.setup_telegram or args.setup_discord or args.test_alert \
-       or args.dashboard or args.feeds_fetch:
+       or args.dashboard:
         from hunter import main as hunter_main
         import sys as _sys
         _sys.argv = [_sys.argv[0]]
@@ -1014,7 +1006,6 @@ if __name__ == "__main__":
         if args.test_alert:     _sys.argv.append("--test-alert")
         if args.dashboard:      _sys.argv.append("--dashboard")
         if args.dashboard_port: _sys.argv += ["--dashboard-port", str(args.dashboard_port)]
-        if args.feeds_fetch:    _sys.argv.append("--feeds-fetch")
         hunter_main()
         sys.exit(0)
 
