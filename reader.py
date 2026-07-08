@@ -173,8 +173,7 @@ INDIA_SOURCE_PATTERNS = [
     "cyraacs",
     "indusface",
     "voice-of-greyhat",
-    "the-hacker-news",  # Heavy Indian coverage (CERT-In, UPI, Aadhaar, etc.)
-    # Keyword-filtered (in INDIA_KEYWORDS): gbhackers, etc.
+    # Keyword-filtered (in INDIA_KEYWORDS): the-hacker-news, etc.
 ]
 
 INDIA_KEYWORDS = [
