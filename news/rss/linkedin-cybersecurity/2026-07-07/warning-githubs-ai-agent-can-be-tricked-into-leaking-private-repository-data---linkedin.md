@@ -1,0 +1,12 @@
+---
+source: rss/linkedin-cybersecurity
+title: WARNING: GitHub’s AI Agent Can Be Tricked Into Leaking Private Repository Data - LinkedIn
+url: https://news.google.com/rss/articles/CBMixgFBVV95cUxOeWN3eXdfOTVCdmZOWkJjNWFuOHZBaWdNYTZraDNsa1djMUY5elZqd29vQ1UwWVFBb3h6aTU4cE0teldOZ3Ruejg0N2k2T2s3V3cyVE1MUWFCRFQ4OE1leEJXN0ZUcXBVbUVIbHc2SkhUVGFETVhQRjhFakFLMUl4SV8wOGx2dmZQdE1Gb2NVUWhVd3lCeENqNDZObmxxMjNxVXh6cDMzSFBLM1VYRWo4X1kzaGZMUWVNMVIzM0hKV2JSeUJsYnc?oc=5
+date: 2026-07-07
+item_id: https://news.google.com/rss/articles/CBMixgFBVV95cUxOeWN3eXdfOTVCdmZOWkJjNWFuOHZBaWdNYTZraDNsa1djMUY5elZqd29vQ1UwWVFBb3h6aTU4cE0teldOZ3Ruejg0N2k2T2s3V3cyVE1MUWFCRFQ4OE1leEJXN0ZUcXBVbUVIbHc2SkhUVGFETVhQRjhFakFLMUl4SV8wOGx2dmZQdE1Gb2NVUWhVd3lCeENqNDZObmxxMjNxVXh6cDMzSFBLM1VYRWo4X1kzaGZMUWVNMVIzM0hKV2JSeUJsYnc?oc=5
+category: news---
+
+**Source:** LinkedIn Cybersecurity
+**Link:** https://news.google.com/rss/articles/CBMixgFBVV95cUxOeWN3eXdfOTVCdmZOWkJjNWFuOHZBaWdNYTZraDNsa1djMUY5elZqd29vQ1UwWVFBb3h6aTU4cE0teldOZ3Ruejg0N2k2T2s3V3cyVE1MUWFCRFQ4OE1leEJXN0ZUcXBVbUVIbHc2SkhUVGFETVhQRjhFakFLMUl4SV8wOGx2dmZQdE1Gb2NVUWhVd3lCeENqNDZObmxxMjNxVXh6cDMzSFBLM1VYRWo4X1kzaGZMUWVNMVIzM0hKV2JSeUJsYnc?oc=5
+
+WARNING: GitHub’s AI Agent Can Be Tricked Into Leaking Private Repository Data &nbsp;&nbsp; LinkedIn

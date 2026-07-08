@@ -1,0 +1,12 @@
+---
+source: rss/linkedin-cybersecurity
+title: Great conversations, stronger partnerships, and smarter collaboration—building the future of enterprise communications together. A big thank you to all our partners for joining the workshop, and special thanks to Rafael Vicent for delivering an insightful full-da - LinkedIn
+url: https://news.google.com/rss/articles/CBMi3AFBVV95cUxNZWJ0LVRERkQtSk9WN0VVZzFkN2V0SW5tZ2Y3eDd5bUdfWmJRMlg3NDVoX1VqaG56NnE0dEJiaWdvU21JN2JyNmFpakxkelVJbkJEQ3N5NGJCUVlDMDVEZGd6MWFVRGExQml6dU1ZZGhmTWdYNUpWTTlZbkt1YTZHQUJoR3hkblpEYTY1T0xQZnU2SEFEN01JQkpTaU8tdG5TVnZSUWM1SG9CQ1psV0xBWXBiaGpheUVBWktKMVFBTU9mQ2ZwdWdsWE16R3F4cEdIWk0tQUN1VzFGMU4y?oc=5
+date: 2026-07-05
+item_id: https://news.google.com/rss/articles/CBMi3AFBVV95cUxNZWJ0LVRERkQtSk9WN0VVZzFkN2V0SW5tZ2Y3eDd5bUdfWmJRMlg3NDVoX1VqaG56NnE0dEJiaWdvU21JN2JyNmFpakxkelVJbkJEQ3N5NGJCUVlDMDVEZGd6MWFVRGExQml6dU1ZZGhmTWdYNUpWTTlZbkt1YTZHQUJoR3hkblpEYTY1T0xQZnU2SEFEN01JQkpTaU8tdG5TVnZSUWM1SG9CQ1psV0xBWXBiaGpheUVBWktKMVFBTU9mQ2ZwdWdsWE16R3F4cEdIWk0tQUN1VzFGMU4y?oc=5
+category: news---
+
+**Source:** LinkedIn Cybersecurity
+**Link:** https://news.google.com/rss/articles/CBMi3AFBVV95cUxNZWJ0LVRERkQtSk9WN0VVZzFkN2V0SW5tZ2Y3eDd5bUdfWmJRMlg3NDVoX1VqaG56NnE0dEJiaWdvU21JN2JyNmFpakxkelVJbkJEQ3N5NGJCUVlDMDVEZGd6MWFVRGExQml6dU1ZZGhmTWdYNUpWTTlZbkt1YTZHQUJoR3hkblpEYTY1T0xQZnU2SEFEN01JQkpTaU8tdG5TVnZSUWM1SG9CQ1psV0xBWXBiaGpheUVBWktKMVFBTU9mQ2ZwdWdsWE16R3F4cEdIWk0tQUN1VzFGMU4y?oc=5
+
+Great conversations, stronger partnerships, and smarter collaboration—building the future of enterprise communications together. A big thank you to all our partners for joining the workshop, and special thanks to Rafael Vicent for delivering an insightful full-da &nbsp;&nbsp; LinkedIn

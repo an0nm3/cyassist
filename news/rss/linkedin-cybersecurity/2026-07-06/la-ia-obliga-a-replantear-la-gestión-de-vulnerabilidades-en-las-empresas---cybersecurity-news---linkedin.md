@@ -1,0 +1,12 @@
+---
+source: rss/linkedin-cybersecurity
+title: "La IA obliga a replantear la gestión de vulnerabilidades en las empresas" - CyberSecurity News - LinkedIn
+url: https://news.google.com/rss/articles/CBMisgFBVV95cUxNOFhYUV96SWtsWk9PZ0owcVYyZjdFMHJSakZmUU8xRW1UOFdCQml5a2wyVWdQVDVScFRRMXpzeWZLNlZYTS1xZlRIZFVDZ2g5TWZnNFBkN1pCOTJhakRVMmpRLTJyVzJnUkpmUkNISzh0M1oyY1JWclVYWWJuc3ZSYXJDTzdTUG1YblBKRDdCTXFXT0lZVkUta0k4Z0FhNXFsZ2xyUzIyYm42R3NGaFNPdmF3?oc=5
+date: 2026-07-06
+item_id: https://news.google.com/rss/articles/CBMisgFBVV95cUxNOFhYUV96SWtsWk9PZ0owcVYyZjdFMHJSakZmUU8xRW1UOFdCQml5a2wyVWdQVDVScFRRMXpzeWZLNlZYTS1xZlRIZFVDZ2g5TWZnNFBkN1pCOTJhakRVMmpRLTJyVzJnUkpmUkNISzh0M1oyY1JWclVYWWJuc3ZSYXJDTzdTUG1YblBKRDdCTXFXT0lZVkUta0k4Z0FhNXFsZ2xyUzIyYm42R3NGaFNPdmF3?oc=5
+category: news---
+
+**Source:** LinkedIn Cybersecurity
+**Link:** https://news.google.com/rss/articles/CBMisgFBVV95cUxNOFhYUV96SWtsWk9PZ0owcVYyZjdFMHJSakZmUU8xRW1UOFdCQml5a2wyVWdQVDVScFRRMXpzeWZLNlZYTS1xZlRIZFVDZ2g5TWZnNFBkN1pCOTJhakRVMmpRLTJyVzJnUkpmUkNISzh0M1oyY1JWclVYWWJuc3ZSYXJDTzdTUG1YblBKRDdCTXFXT0lZVkUta0k4Z0FhNXFsZ2xyUzIyYm42R3NGaFNPdmF3?oc=5
+
+"La IA obliga a replantear la gestión de vulnerabilidades en las empresas" - CyberSecurity News &nbsp;&nbsp; LinkedIn

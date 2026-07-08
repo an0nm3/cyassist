@@ -1,0 +1,12 @@
+---
+source: rss/linkedin-cybersecurity
+title: Message from IIT Madras Director Prof V Kamakoti regarding a new Bachelor’s degree program in Cyber Security. As India continues to strengthen its digital ecosystem, the demand for skilled cybersecurity professionals is growing rapidly. Addressing this nee - LinkedIn
+url: https://news.google.com/rss/articles/CBMi3wFBVV95cUxOa2VxYUlBR0RSQWo3eWxCVHQwZVFvSzRSMDJMMTQyR1I5VXZxUjR2WElZMEM3enpHcTI4WXB1NlRsM1MtY2NYVXRGZENMYURKU2Nhcjk5T21IQWNZeUZMSmdCbldZRFJtQV9fVzViNkI4eTBQSk9CZmZaZFFMQmVYYXc1d282RXNxRVVnZG5BNEZiTGhDNzBvOW4yZHpRYzQxRFNnUGRiUjczaV84NmVfWnJmMmFvVW9VRmhoREtsM0FzTmJLWE5TcXVPXzFxLU9FTGJkbi14WHBtVF85cHZZ?oc=5
+date: 2026-07-04
+item_id: https://news.google.com/rss/articles/CBMi3wFBVV95cUxOa2VxYUlBR0RSQWo3eWxCVHQwZVFvSzRSMDJMMTQyR1I5VXZxUjR2WElZMEM3enpHcTI4WXB1NlRsM1MtY2NYVXRGZENMYURKU2Nhcjk5T21IQWNZeUZMSmdCbldZRFJtQV9fVzViNkI4eTBQSk9CZmZaZFFMQmVYYXc1d282RXNxRVVnZG5BNEZiTGhDNzBvOW4yZHpRYzQxRFNnUGRiUjczaV84NmVfWnJmMmFvVW9VRmhoREtsM0FzTmJLWE5TcXVPXzFxLU9FTGJkbi14WHBtVF85cHZZ?oc=5
+category: news---
+
+**Source:** LinkedIn Cybersecurity
+**Link:** https://news.google.com/rss/articles/CBMi3wFBVV95cUxOa2VxYUlBR0RSQWo3eWxCVHQwZVFvSzRSMDJMMTQyR1I5VXZxUjR2WElZMEM3enpHcTI4WXB1NlRsM1MtY2NYVXRGZENMYURKU2Nhcjk5T21IQWNZeUZMSmdCbldZRFJtQV9fVzViNkI4eTBQSk9CZmZaZFFMQmVYYXc1d282RXNxRVVnZG5BNEZiTGhDNzBvOW4yZHpRYzQxRFNnUGRiUjczaV84NmVfWnJmMmFvVW9VRmhoREtsM0FzTmJLWE5TcXVPXzFxLU9FTGJkbi14WHBtVF85cHZZ?oc=5
+
+Message from IIT Madras Director Prof V Kamakoti regarding a new Bachelor’s degree program in Cyber Security. As India continues to strengthen its digital ecosystem, the demand for skilled cybersecurity professionals is growing rapidly. Addressing this nee &nbsp;&nbsp; LinkedIn

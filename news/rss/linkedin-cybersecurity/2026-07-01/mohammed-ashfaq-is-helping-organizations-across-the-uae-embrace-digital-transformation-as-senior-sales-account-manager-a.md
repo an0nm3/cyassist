@@ -1,0 +1,12 @@
+---
+source: rss/linkedin-cybersecurity
+title: Mohammed Ashfaq is helping organizations across the UAE embrace digital transformation as Senior Sales Account Manager at Omnix International, where he works with enterprises to adopt next-generation technologies including AI, cybersecurity, cloud plat - LinkedIn
+url: https://news.google.com/rss/articles/CBMiwwFBVV95cUxPT253VXMxbkVib0xyckk4dDdlaGVWQ2U2WXN6REtZbnZTeEZ1MXYxVl9FcllvTkpYWllqeWN0alcwUzBrcEdJemhlWDRfQjYtZXVpd1FMTnJlaWxyQ0x3bDBEMmNQXzdmdWpjNE5CMnlWZjlKckUwdVpEZFVMcmVTWjZTelJ4Z3k4bWVXSFVraUVvbThqSlBacjRnVlZXWkZqQVFyMGVfWXB3SHFOVUNLOWVjSFlKREo3OThOR0h0bjRWSWM?oc=5
+date: 2026-07-01
+item_id: https://news.google.com/rss/articles/CBMiwwFBVV95cUxPT253VXMxbkVib0xyckk4dDdlaGVWQ2U2WXN6REtZbnZTeEZ1MXYxVl9FcllvTkpYWllqeWN0alcwUzBrcEdJemhlWDRfQjYtZXVpd1FMTnJlaWxyQ0x3bDBEMmNQXzdmdWpjNE5CMnlWZjlKckUwdVpEZFVMcmVTWjZTelJ4Z3k4bWVXSFVraUVvbThqSlBacjRnVlZXWkZqQVFyMGVfWXB3SHFOVUNLOWVjSFlKREo3OThOR0h0bjRWSWM?oc=5
+category: news---
+
+**Source:** LinkedIn Cybersecurity
+**Link:** https://news.google.com/rss/articles/CBMiwwFBVV95cUxPT253VXMxbkVib0xyckk4dDdlaGVWQ2U2WXN6REtZbnZTeEZ1MXYxVl9FcllvTkpYWllqeWN0alcwUzBrcEdJemhlWDRfQjYtZXVpd1FMTnJlaWxyQ0x3bDBEMmNQXzdmdWpjNE5CMnlWZjlKckUwdVpEZFVMcmVTWjZTelJ4Z3k4bWVXSFVraUVvbThqSlBacjRnVlZXWkZqQVFyMGVfWXB3SHFOVUNLOWVjSFlKREo3OThOR0h0bjRWSWM?oc=5
+
+Mohammed Ashfaq is helping organizations across the UAE embrace digital transformation as Senior Sales Account Manager at Omnix International, where he works with enterprises to adopt next-generation technologies including AI, cybersecurity, cloud plat &nbsp;&nbsp; LinkedIn

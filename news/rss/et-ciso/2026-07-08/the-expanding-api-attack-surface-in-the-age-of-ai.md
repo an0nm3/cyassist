@@ -1,0 +1,12 @@
+---
+source: rss/et-ciso
+title: The expanding API attack surface in the age of AI
+url: https://ciso.economictimes.indiatimes.com/news/ot-security/the-expanding-api-attack-surface-in-the-age-of-ai/132238082
+date: 2026-07-08
+item_id: https://ciso.economictimes.indiatimes.com/news/ot-security/the-expanding-api-attack-surface-in-the-age-of-ai/132238082
+category: news---
+
+**Source:** ET CISO
+**Link:** https://ciso.economictimes.indiatimes.com/news/ot-security/the-expanding-api-attack-surface-in-the-age-of-ai/132238082
+
+Application programming interfaces are becoming a significant attack surface due to AI&#039;s rapid expansion.  AI agents are now accelerating these security risks, making defense more challenging.  Security leaders must establish complete visibility and categorize APIs based on business risk.  Conducting threat modeling and continuously managing API security posture are essential steps.  Implementing layered protection controls and strengthening access authorization will mitigate API attacks.

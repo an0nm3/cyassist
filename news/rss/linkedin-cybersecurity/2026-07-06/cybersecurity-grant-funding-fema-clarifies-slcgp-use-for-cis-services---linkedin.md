@@ -1,0 +1,12 @@
+---
+source: rss/linkedin-cybersecurity
+title: Cybersecurity Grant Funding: FEMA Clarifies SLCGP Use for CIS Services - LinkedIn
+url: https://news.google.com/rss/articles/CBMitAFBVV95cUxQMG9MX1gzUGNyVHlkWFRRQXl3ME56d2FSdm9xRlREbDJfNENuSWpjVnpqVWZjRXpWSkRKcGluMUwwVVRaSXl2YmxlQjJ3NmNDQUk4Q0trMFU2NWUzYncwajQ3YnRUVjlkMWxnbDNqUnRCTUpBWGhLVFZMS0dVMHNoQklRN09aM01VVUEzdmdQd3FRRGxmajhoSUVHR2tXejE4R1pmQXg5WDA5R3FDWG90dU5ybEI?oc=5
+date: 2026-07-06
+item_id: https://news.google.com/rss/articles/CBMitAFBVV95cUxQMG9MX1gzUGNyVHlkWFRRQXl3ME56d2FSdm9xRlREbDJfNENuSWpjVnpqVWZjRXpWSkRKcGluMUwwVVRaSXl2YmxlQjJ3NmNDQUk4Q0trMFU2NWUzYncwajQ3YnRUVjlkMWxnbDNqUnRCTUpBWGhLVFZMS0dVMHNoQklRN09aM01VVUEzdmdQd3FRRGxmajhoSUVHR2tXejE4R1pmQXg5WDA5R3FDWG90dU5ybEI?oc=5
+category: news---
+
+**Source:** LinkedIn Cybersecurity
+**Link:** https://news.google.com/rss/articles/CBMitAFBVV95cUxQMG9MX1gzUGNyVHlkWFRRQXl3ME56d2FSdm9xRlREbDJfNENuSWpjVnpqVWZjRXpWSkRKcGluMUwwVVRaSXl2YmxlQjJ3NmNDQUk4Q0trMFU2NWUzYncwajQ3YnRUVjlkMWxnbDNqUnRCTUpBWGhLVFZMS0dVMHNoQklRN09aM01VVUEzdmdQd3FRRGxmajhoSUVHR2tXejE4R1pmQXg5WDA5R3FDWG90dU5ybEI?oc=5
+
+Cybersecurity Grant Funding: FEMA Clarifies SLCGP Use for CIS Services &nbsp;&nbsp; LinkedIn

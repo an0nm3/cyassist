@@ -1,0 +1,12 @@
+---
+source: rss/linkedin-cybersecurity
+title: Aditya University proudly congratulates Dr. Pamarthi Sunitha, Associate Professor, Department of Electronics and Communication Engineering, on the publication of her research article. Title: A Novel Framework for Intrusion Detection in IoT Networks Using Hy - LinkedIn
+url: https://news.google.com/rss/articles/CBMiywFBVV95cUxPckU5a3dGQVJUYVM3bGRJZHhLQjRBT0UtTzZhNDZsSk5iSVpZQzBodWFfYnJtdkJ0QS05M2R1dUhXWjBsZlBoSzNUZ0JuZ0ZZUFo4RUVnd0pfbk1qSVhLUmc3ODFNeVdId0NkTE4zejZucW9rLUE5WktPRzh1RG9zLVctenIwWDlMVks0Q3hYZzJ3T3hnamZIWDhFUmNTMDlGamlOVXZGU1p1anB6aUN0dGZ4ODRiSnhQRVBkelQyUkgzc1lmbDlFeWdKdw?oc=5
+date: 2026-07-04
+item_id: https://news.google.com/rss/articles/CBMiywFBVV95cUxPckU5a3dGQVJUYVM3bGRJZHhLQjRBT0UtTzZhNDZsSk5iSVpZQzBodWFfYnJtdkJ0QS05M2R1dUhXWjBsZlBoSzNUZ0JuZ0ZZUFo4RUVnd0pfbk1qSVhLUmc3ODFNeVdId0NkTE4zejZucW9rLUE5WktPRzh1RG9zLVctenIwWDlMVks0Q3hYZzJ3T3hnamZIWDhFUmNTMDlGamlOVXZGU1p1anB6aUN0dGZ4ODRiSnhQRVBkelQyUkgzc1lmbDlFeWdKdw?oc=5
+category: news---
+
+**Source:** LinkedIn Cybersecurity
+**Link:** https://news.google.com/rss/articles/CBMiywFBVV95cUxPckU5a3dGQVJUYVM3bGRJZHhLQjRBT0UtTzZhNDZsSk5iSVpZQzBodWFfYnJtdkJ0QS05M2R1dUhXWjBsZlBoSzNUZ0JuZ0ZZUFo4RUVnd0pfbk1qSVhLUmc3ODFNeVdId0NkTE4zejZucW9rLUE5WktPRzh1RG9zLVctenIwWDlMVks0Q3hYZzJ3T3hnamZIWDhFUmNTMDlGamlOVXZGU1p1anB6aUN0dGZ4ODRiSnhQRVBkelQyUkgzc1lmbDlFeWdKdw?oc=5
+
+Aditya University proudly congratulates Dr. Pamarthi Sunitha, Associate Professor, Department of Electronics and Communication Engineering, on the publication of her research article. Title: A Novel Framework for Intrusion Detection in IoT Networks Using Hy &nbsp;&nbsp; LinkedIn

@@ -1,0 +1,12 @@
+---
+source: rss/linkedin-cybersecurity
+title: Check Point Software hiring Cybersecurity Services Business Development Manager in Dallas, TX - LinkedIn
+url: https://news.google.com/rss/articles/CBMivgFBVV95cUxNRlk4LThpSHJNU0VBZkNSeVNhb3FWaEd6MTVtS25halNOclpjLW1TNkF6cFdXTjhyMGduaHVEaF9Td3J0UUQ3d3ItYzNLUVY2dFdxM3F3X0hiODl6Nk9wZmdMZmpxaWlmV2RWRWM3dlhnSE1jTVZEUWVjMUpPclh1S0l5bmhudkNSTTZheHh6enh5VUtuUVdBM0c2Z2tSM1ZtWklXcHZrUFdEa19XSVR3YTlKQ2JGQ2VvUEhHRDB3?oc=5
+date: 2026-07-06
+item_id: https://news.google.com/rss/articles/CBMivgFBVV95cUxNRlk4LThpSHJNU0VBZkNSeVNhb3FWaEd6MTVtS25halNOclpjLW1TNkF6cFdXTjhyMGduaHVEaF9Td3J0UUQ3d3ItYzNLUVY2dFdxM3F3X0hiODl6Nk9wZmdMZmpxaWlmV2RWRWM3dlhnSE1jTVZEUWVjMUpPclh1S0l5bmhudkNSTTZheHh6enh5VUtuUVdBM0c2Z2tSM1ZtWklXcHZrUFdEa19XSVR3YTlKQ2JGQ2VvUEhHRDB3?oc=5
+category: news---
+
+**Source:** LinkedIn Cybersecurity
+**Link:** https://news.google.com/rss/articles/CBMivgFBVV95cUxNRlk4LThpSHJNU0VBZkNSeVNhb3FWaEd6MTVtS25halNOclpjLW1TNkF6cFdXTjhyMGduaHVEaF9Td3J0UUQ3d3ItYzNLUVY2dFdxM3F3X0hiODl6Nk9wZmdMZmpxaWlmV2RWRWM3dlhnSE1jTVZEUWVjMUpPclh1S0l5bmhudkNSTTZheHh6enh5VUtuUVdBM0c2Z2tSM1ZtWklXcHZrUFdEa19XSVR3YTlKQ2JGQ2VvUEhHRDB3?oc=5
+
+Check Point Software hiring Cybersecurity Services Business Development Manager in Dallas, TX &nbsp;&nbsp; LinkedIn

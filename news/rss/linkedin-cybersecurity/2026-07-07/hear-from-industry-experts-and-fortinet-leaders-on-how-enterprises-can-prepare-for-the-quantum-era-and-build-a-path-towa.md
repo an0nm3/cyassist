@@ -1,0 +1,12 @@
+---
+source: rss/linkedin-cybersecurity
+title: Hear from industry experts and Fortinet leaders on how enterprises can prepare for the quantum era and build a path toward quantum-resilient cybersecurity. - LinkedIn
+url: https://news.google.com/rss/articles/CBMiwwFBVV95cUxNS3Bkc2kwdTNUbkxBdEFJM25keFZrLTVFQWc3NVpHZC0wZU9IU1Y4VTBIU1Fmd1VfWWRrSWhQeW1MSnUxejNwekVYWnV6bDlKVlhJU1ZZSXZvNkZtdzZodDNCUTl1bThxd1A3SWVURHhQM0RNSWRIdHRGUWtXX0pCZm5zQXlQbl96WWN1VnE4S3FMaVRyRUhtOFZtaW5aRXpaN1lmejh1NXJXbUMwamdndWlMTHVvdWlTSDB6am1WbjJIOE0?oc=5
+date: 2026-07-07
+item_id: https://news.google.com/rss/articles/CBMiwwFBVV95cUxNS3Bkc2kwdTNUbkxBdEFJM25keFZrLTVFQWc3NVpHZC0wZU9IU1Y4VTBIU1Fmd1VfWWRrSWhQeW1MSnUxejNwekVYWnV6bDlKVlhJU1ZZSXZvNkZtdzZodDNCUTl1bThxd1A3SWVURHhQM0RNSWRIdHRGUWtXX0pCZm5zQXlQbl96WWN1VnE4S3FMaVRyRUhtOFZtaW5aRXpaN1lmejh1NXJXbUMwamdndWlMTHVvdWlTSDB6am1WbjJIOE0?oc=5
+category: news---
+
+**Source:** LinkedIn Cybersecurity
+**Link:** https://news.google.com/rss/articles/CBMiwwFBVV95cUxNS3Bkc2kwdTNUbkxBdEFJM25keFZrLTVFQWc3NVpHZC0wZU9IU1Y4VTBIU1Fmd1VfWWRrSWhQeW1MSnUxejNwekVYWnV6bDlKVlhJU1ZZSXZvNkZtdzZodDNCUTl1bThxd1A3SWVURHhQM0RNSWRIdHRGUWtXX0pCZm5zQXlQbl96WWN1VnE4S3FMaVRyRUhtOFZtaW5aRXpaN1lmejh1NXJXbUMwamdndWlMTHVvdWlTSDB6am1WbjJIOE0?oc=5
+
+Hear from industry experts and Fortinet leaders on how enterprises can prepare for the quantum era and build a path toward quantum-resilient cybersecurity. &nbsp;&nbsp; LinkedIn
