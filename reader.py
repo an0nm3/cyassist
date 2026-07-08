@@ -160,20 +160,9 @@ def _strip_fm(text: str) -> str:
 
 
 INDIA_SOURCE_PATTERNS = [
-    # Auto-include: every article inherently India-relevant
-    "et-ciso",
-    "seqrite-blog",
-    "cybertimesindia",
-    "ringsafe",
-    "k7computing",
-    "quickheal",
-    "cyble",
-    "securityji",
-    "kratikal",
-    "cyraacs",
-    "indusface",
-    "voice-of-greyhat",
-    # Keyword-filtered (in INDIA_KEYWORDS): the-hacker-news, etc.
+    # Empty: India relevance is determined by keyword content matching only,
+    # not by source. An article from an Indian source about a global CVE is
+    # not Indian news.
 ]
 
 INDIA_KEYWORDS = [
