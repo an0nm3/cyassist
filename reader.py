@@ -599,7 +599,8 @@ def today(category: str = "news", source="", query="",
     items, dup_map = _dedup_items(items)
 
     all_entries = [_build_entry(*item, dup_map) for item in items]
-    highlights = sorted([e for e in all_entries if e['priority'] >= 45],
+    hl_threshold = 25 if india_mode else 45
+    highlights = sorted([e for e in all_entries if e['priority'] >= hl_threshold],
                         key=lambda x: -x['priority'])
     news_candidates = [e for e in all_entries if e not in highlights]
 
@@ -611,7 +612,8 @@ def today(category: str = "news", source="", query="",
             items.sort(key=lambda x: (0 if "CVE" in x[2].get("tags", "") else 1, x[2].get("source", "")))
             items, dup_map = _dedup_items(items)
             all_entries = [_build_entry(*item, dup_map) for item in items]
-            highlights = sorted([e for e in all_entries if e['priority'] >= 45],
+            hl_threshold = 25 if india_mode else 45
+            highlights = sorted([e for e in all_entries if e['priority'] >= hl_threshold],
                                 key=lambda x: -x['priority'])
             news_candidates = [e for e in all_entries if e not in highlights and e['in_scope']]
             highlights = [e for e in highlights if e['in_scope']]
@@ -679,6 +681,9 @@ def today(category: str = "news", source="", query="",
                 body_preview = _clean_body(e['body'], max_words=125)[:600]
                 if body_preview:
                     print(f"      {Fmt.dim(body_preview)}")
+                elif e['meta'].get('tags', '') and e['meta']['tags'] != "[]":
+                    tags = e['meta']['tags'].strip('[]').replace(',', '  ')
+                    print(f"      {Fmt.tag(tags[:60])}")
                 if e['url']:
                     print(f"      {Fmt.url(e['url'])}")
             print(f"  {Fmt.dim(f'{total} items')}")
@@ -813,13 +818,14 @@ def summary(days: int = 1, category: str = "news",
         all_entries.append({"meta": m, "body": body, "cves": cves,
                             "in_scope": in_scope, "priority": priority})
 
+    hl_threshold = 25 if india_mode else 45
     if india_mode:
-        entries = [e for e in all_entries if e['in_scope'] or e['priority'] >= 45]
+        entries = [e for e in all_entries if e['in_scope'] or e['priority'] >= hl_threshold]
     else:
         entries = all_entries
 
     total = len(entries)
-    priority_items = sorted([e for e in entries if e['priority'] >= 45],
+    priority_items = sorted([e for e in entries if e['priority'] >= hl_threshold],
                             key=lambda x: -x['priority'])
 
     _compact_header(heading_text, india_mode)
