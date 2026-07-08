@@ -210,7 +210,7 @@ INDIA_KEYWORDS = [
     "quickheal", "seqrite", "k7 computing", "k7cloud",
     "cyble", "kratikal", "cyraacs", "indusface",
     "netskope india", "paladion", "securityji",
-    "payatu", "cloudsek", "appsecco",
+    "cloudsek", "appsecco",
     # Govt agencies & initiatives
     "indian navy", "indian army", "indian air force",
     "ministry of defence", "mod india",
@@ -261,7 +261,7 @@ _HIGH_CONF_KW = frozenset({
     "digital rupee", "cbdc india",
     "qcommerce india", "indian startup",
     "quickheal", "seqrite", "cyble", "kratikal",
-    "payatu", "cloudsek", "appsecco",
+    "cloudsek", "appsecco",
     "isro", "drdo", "barc",
     "nse india", "sebi",
 })
