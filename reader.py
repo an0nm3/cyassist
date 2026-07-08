@@ -464,9 +464,11 @@ def _build_entry(fp, text, m, in_scope, dup_map):
     dup_note = ""
     if url and url in dup_map:
         dup_note = f"  {Fmt.yellow(f'\u262f +{len(dup_map[url])} src')}"
+    priority = _priority_score(text, title, cves, src, body)
     display = f"{marker}{Fmt.source(f'[{src}]')} {Fmt.bold(title)}{cve_str}{dup_note}"
     return {"fp": fp, "text": text, "meta": m, "body": body, "display": display,
-            "title": title, "source": src, "url": url, "cves": cves, "in_scope": in_scope}
+            "title": title, "source": src, "url": url, "cves": cves,
+            "in_scope": in_scope, "priority": priority}
 
 
 def _clean_body(body: str, max_words: int = 150) -> str:
@@ -487,6 +489,82 @@ def _clean_body(body: str, max_words: int = 150) -> str:
     if len(words) > max_words:
         text = ' '.join(words[:max_words]) + ' ...'
     return text
+
+
+_SEVERITY_KW = {
+    # tier 1: critical
+    frozenset(["critical", "emergency", "urgent", "0-day", "zero-day", "exploit",
+               "active exploitation"]): 25,
+    # tier 2: high
+    frozenset(["ransomware", "data breach", "in the wild", "zero-day exploit"]): 20,
+    # tier 3: significant
+    frozenset(["vulnerability", "patch now", "immediate action", "alert",
+               "advisory", "security advisory", "cisa"]): 15,
+    # tier 4: notable
+    frozenset(["hacked", "attack", "compromised", "malware", "fraud",
+               "account takeover", "credential theft"]): 10,
+    # tier 5: strategic
+    frozenset(["supply chain", "nation state", "apt", "backdoor",
+               "espionage", "campaign"]): 10,
+}
+
+_TITLE_BONUS = {
+    frozenset(["critical", "emergency", "urgent", "exploit", "0-day"]): 15,
+    frozenset(["alert", "advisory", "warning", "ransomware"]): 10,
+    frozenset(["cisa", "cert-in", "cert-in advisory"]): 10,
+    frozenset(["breach", "data breach", "exposed", "leaked"]): 8,
+}
+
+
+def _priority_score(text: str, title: str, cves: list, source: str, body: str) -> int:
+    score = 0
+    combined = f"{title} {title} {text}"  # double-weight title
+    lower = combined.lower()
+
+    if cves:
+        score += 30
+        score += min(5 * (len(cves) - 1), 15)  # up to +15 for multiple CVEs
+
+    for kws, pts in _SEVERITY_KW.items():
+        for kw in kws:
+            if re.search(r'\b' + re.escape(kw) + r'\b', lower):
+                score += pts
+                break
+
+    title_lower = title.lower()
+    for kws, pts in _TITLE_BONUS.items():
+        for kw in kws:
+            if re.search(r'\b' + re.escape(kw) + r'\b', title_lower):
+                score += pts
+                break
+
+    # combo bonus: CVE + exploitation keywords = active threat
+    if cves and any(kw in lower for kw in ["exploit", "in the wild", "active", "ransomware"]):
+        score += 10
+
+    # source bonus
+    src_lower = source.lower()
+    if "cert-in" in src_lower or "cisa" in src_lower:
+        score += 15
+    elif "et-ciso" in src_lower:
+        score += 5
+
+    # penalty: no body content
+    if not body or len(body.strip()) < 50:
+        score -= 10
+
+    # LinkedIn noise penalty: LinkedIn posts are often marketing, not news
+    if "linkedin" in src_lower:
+        score = max(0, score - 20)
+        # Even with CVEs, a LinkedIn post is commentary, not a primary source
+        if cves:
+            score = max(10, score - 15)
+
+    # penalty: no CVEs + only marketing keywords = not priority
+    if not cves and score > 0 and "brandconnect" in lower:
+        score = max(0, score - 30)
+
+    return score
 
 
 def _show_expanded(entry):
@@ -520,15 +598,24 @@ def today(category: str = "news", source="", query="",
     items.sort(key=lambda x: (0 if "CVE" in x[2].get("tags", "") else 1, x[2].get("source", "")))
     items, dup_map = _dedup_items(items)
 
+    all_entries = [_build_entry(*item, dup_map) for item in items]
+    highlights = sorted([e for e in all_entries if e['priority'] >= 45],
+                        key=lambda x: -x['priority'])
+    news_candidates = [e for e in all_entries if e not in highlights]
+
     if india_mode:
-        items = [x for x in items if x[3]]
-        if not items:
+        news_candidates = [e for e in news_candidates if e['in_scope']]
+        highlights = [e for e in highlights if e['in_scope']]
+        if not news_candidates and not highlights:
             items = _collect(category, days=7, source=source, query=query, india_mode=india_mode)
             items.sort(key=lambda x: (0 if "CVE" in x[2].get("tags", "") else 1, x[2].get("source", "")))
             items, dup_map = _dedup_items(items)
-            india_items = [x for x in items if x[3]]
-            if india_items:
-                items = india_items
+            all_entries = [_build_entry(*item, dup_map) for item in items]
+            highlights = sorted([e for e in all_entries if e['priority'] >= 45],
+                                key=lambda x: -x['priority'])
+            news_candidates = [e for e in all_entries if e not in highlights and e['in_scope']]
+            highlights = [e for e in highlights if e['in_scope']]
+            if news_candidates or highlights:
                 heading_text = "Indian Cyber News (past 7 days)"
             else:
                 _compact_header(heading_text, india_mode)
@@ -537,7 +624,7 @@ def today(category: str = "news", source="", query="",
                     print(f"  {Fmt.yellow('Hint:')} {Fmt.dim('Run')} {Fmt.bold('cyassist --feeds-fetch')} {Fmt.dim('to populate the news database.')}\n")
                 return
 
-    entries = [_build_entry(*item, dup_map) for item in items]
+    entries = highlights + news_candidates
     total = len(entries)
 
     if not sys.stdout.isatty():
@@ -546,8 +633,7 @@ def today(category: str = "news", source="", query="",
             print(f"  {Fmt.bold(f'{i+1:>3}.')} {e['display']}")
         return
 
-    highlights = [e for e in entries if e['cves']]
-    news_items = [e for e in entries if not e['cves']]
+    news_items = news_candidates  # rename for downstream use
     page_size = 10
     page = 0
     hl_page = 0
@@ -719,20 +805,25 @@ def summary(days: int = 1, category: str = "news",
     items, _ = _dedup_items(items)
     items.sort(key=lambda x: (0 if "CVE" in x[2].get("tags", "") else 1, x[2].get("source", "")))
 
-    if india_mode:
-        items = [x for x in items if x[3]]
-
-    entries = []
+    all_entries = []
     for fp, text, m, in_scope in items:
         cves = re.findall(r"CVE-\d{4}-\d{4,}", text)
         body = _strip_fm(text)
-        entries.append({"meta": m, "body": body, "cves": cves})
+        priority = _priority_score(text, m.get("title", ""), cves, m.get("source", ""), body)
+        all_entries.append({"meta": m, "body": body, "cves": cves,
+                            "in_scope": in_scope, "priority": priority})
+
+    if india_mode:
+        entries = [e for e in all_entries if e['in_scope'] or e['priority'] >= 45]
+    else:
+        entries = all_entries
 
     total = len(entries)
-    cve_items = [e for e in entries if e['cves']]
+    priority_items = sorted([e for e in entries if e['priority'] >= 45],
+                            key=lambda x: -x['priority'])
 
     _compact_header(heading_text, india_mode)
-    print(f"  {Fmt.dim(f'{total} items \u00b7 {len(cve_items)} with CVEs')}")
+    print(f"  {Fmt.dim(f'{total} items \u00b7 {len(priority_items)} priority items')}")
     print()
 
     srcs = {}
@@ -740,23 +831,26 @@ def summary(days: int = 1, category: str = "news",
         s = e['meta'].get('source', '?')
         srcs[s] = srcs.get(s, 0) + 1
     top_sources = sorted(srcs, key=srcs.get, reverse=True)[:3]
-    cve_part = f"{len(cve_items)} vulnerability disclosures" if cve_items else "no CVEs"
+    cve_count = sum(1 for e in entries if e['cves'])
+    cve_part = f"{len(priority_items)} priority items, {cve_count} with CVEs" if cve_count else f"{len(priority_items)} priority items"
     print(f"  Today's security roundup: {total} articles from {len(srcs)} sources "
           f"covering {cve_part}. Leading sources: {', '.join(top_sources)}.")
     print()
 
-    if cve_items:
-        print(f"  {Fmt.bold(' TOP VULNERABILITIES ')}\n")
-        for e in cve_items[:5]:
+    if priority_items:
+        print(f"  {Fmt.bold(' TOP PRIORITY ITEMS ')}\n")
+        for e in priority_items[:5]:
             title = e['meta'].get('title', '?')
             src = e['meta'].get('source', '?')
-            cves = " ".join(e['cves'][:3])
-            first_line = _clean_body(e['body'], max_words=25)[:120] if e['body'] else ""
-            print(f"  {Fmt.bold(title)} [{Fmt.cve(cves)}]")
-            print(f"  {Fmt.source(src)} \u2014 {Fmt.dim(first_line)}")
+            cves = " ".join(e['cves'][:3]) if e['cves'] else ""
+            cve_tag = f" [{Fmt.cve(cves)}]" if cves else ""
+            body_text = _clean_body(e['body'], max_words=25)[:120] if e['body'] else ""
+            fallback = Fmt.dim("(no summary)") if not body_text else body_text
+            print(f"  {Fmt.bold(title)}{cve_tag}")
+            print(f"  {Fmt.source(src)} \u2014 {Fmt.dim(body_text) if body_text else fallback}")
             print()
 
-    shown_titles = {e['meta'].get('title', '') for e in cve_items[:5]}
+    shown_titles = {e['meta'].get('title', '') for e in priority_items[:5]}
     remaining = [e for e in entries if e['meta'].get('title', '') not in shown_titles]
     if remaining:
         print(f"  {Fmt.bold(' TODAY\'S HEADLINES ')}\n")
