@@ -1213,13 +1213,30 @@ def fetch_additional_feeds(max_items: int = 10) -> int:
                          re.search(r'<link[^>]*>(.*?)</link>', entry_xml)
                 pub_m = re.search(r'<published[^>]*>(.*?)</published>', entry_xml) or \
                         re.search(r'<pubDate[^>]*>(.*?)</pubDate>', entry_xml)
+                desc_m = re.search(r'<description[^>]*>(.*?)</description>', entry_xml, re.DOTALL)
+                content_m = re.search(r'<content:encoded[^>]*>(.*?)</content:encoded>', entry_xml, re.DOTALL)
+                summary_m = re.search(r'<summary[^>]*>(.*?)</summary>', entry_xml, re.DOTALL)
                 title = title_m.group(1).strip() if title_m else ""
+                title = title.replace('<![CDATA[', '').replace(']]>', '')
                 link = link_m.group(1).strip() if link_m else ""
                 pub = pub_m.group(1).strip()[:10] if pub_m else ""
                 date_str = pub or datetime.datetime.now().strftime("%Y-%m-%d")
-                cves = _cves_from_text(title)
+                body = ""
+                raw_body = (content_m or desc_m or summary_m)
+                if raw_body:
+                    raw = raw_body.group(1)
+                    # Strip CDATA first (<![CDATA[...]]> has no > in opener,
+                    # so HTML-strip regex would eat everything searching for >)
+                    raw = raw.replace('<![CDATA[', '').replace(']]>', '')
+                    raw = re.sub(r'<[^>]+>', '', raw)  # strip remaining HTML tags
+                    raw = raw.replace('&amp;', '&').replace('&lt;', '<').replace('&gt;', '>')
+                    raw = raw.replace('&quot;', '"').replace('&#39;', "'").replace('&#8217;', "'")
+                    raw = raw.replace('&#8211;', '-').replace('&#8212;', '--').replace('&#8230;', '...')
+                    raw = ' '.join(raw.split()).strip()[:1000]
+                    body = raw
+                cves = _cves_from_text(title + " " + body)
                 tags = [name] + [f"CVE:{c}" for c in cves[:3]]
-                if _save_article(news_dir / name / date_str, name, title, link, "", tags, date_str):
+                if _save_article(news_dir / name / date_str, name, title, link, body, tags, date_str):
                     count += 1
         except Exception as e:
             print(f"  {Fmt.red(f'Feed {name} parse error: {e}')}", file=sys.stderr)
