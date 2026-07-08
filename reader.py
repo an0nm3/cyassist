@@ -199,7 +199,7 @@ INDIA_KEYWORDS = [
     # Indian companies & banks
     "tcs", "infosys", "wipro", "hcl", "tech mahindra",
     "ltimindtree", "l&t technology", "mphasis",
-    "reliance jio", "jio", "airtel", "bsnl", "vodafone idea", "vi",
+    "reliance jio", "jio", "airtel", "bsnl", "vodafone idea",
     "sbi", "state bank of india", "hdfc", "icici", "rbi", "npci",
     "paytm", "phonepe", "razorpay", "bharatpe",
     "cred", "gpay india", "google pay india",
@@ -238,7 +238,7 @@ INDIA_KEYWORDS = [
     # Domains
     "gov.in", "nic.in", "ac.in", "edu.in", "co.in",
     # Indian financial infra
-    "nse", "bse", "sebi", "stock exchange india",
+    "sebi", "stock exchange india",
     "indian rupee", "inr",
 ]
 
@@ -282,13 +282,14 @@ def _matches_india(text, title, source):
     combined = f"{title} {text}"
     lower = combined.lower()
     for kw in _HIGH_CONF_KWS:
-        if kw in lower:
+        if re.search(r'\b' + re.escape(kw) + r'\b', lower):
             return True
-    if lower.count('india') >= 2:
+    # "india" must appear as a whole word 2+ times
+    if len(re.findall(r'\bindia\b', lower)) >= 2:
         return True
     kw_hits = set()
     for kw in _GENERAL_KWS:
-        if kw in lower:
+        if re.search(r'\b' + re.escape(kw) + r'\b', lower):
             kw_hits.add(kw)
             if len(kw_hits) >= 2:
                 return True
