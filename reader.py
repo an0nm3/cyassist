@@ -19,6 +19,7 @@ Usage:
 import argparse
 import datetime
 import hashlib
+import html
 import json
 import os
 import re
@@ -454,10 +455,10 @@ def _dedup_items(items):
 
 
 def _build_entry(fp, text, m, in_scope, dup_map):
-    title = m.get("title", fp.stem)
+    title = html.unescape(m.get("title", fp.stem))
     src = m.get("source", "?")
     url = m.get("url", "")
-    body = _strip_fm(text)
+    body = html.unescape(_strip_fm(text))
     cves = re.findall(r"CVE-\d{4}-\d{4,}", text)
     cve_str = f" {Fmt.cve('\u26a0 ' + ' '.join(cves[:3]))}" if cves else ""
     marker = Fmt.green("\u25cf ") if in_scope else ""
@@ -776,7 +777,7 @@ def headlines(days: int = 1, category: str = "news",
 
     for fp, text, m, in_scope in items:
         src = m.get("source", "unknown")
-        title = m.get("title", fp.stem)
+        title = html.unescape(m.get("title", fp.stem))
         tags = m.get("tags", "")
         tag_str = f" {Fmt.tag(tags)}" if tags and tags != "[]" else ""
         marker = Fmt.green("\u25cf ") if in_scope else ""
@@ -813,7 +814,8 @@ def summary(days: int = 1, category: str = "news",
     all_entries = []
     for fp, text, m, in_scope in items:
         cves = re.findall(r"CVE-\d{4}-\d{4,}", text)
-        body = _strip_fm(text)
+        body = html.unescape(_strip_fm(text))
+        m["title"] = html.unescape(m.get("title", ""))
         priority = _priority_score(text, m.get("title", ""), cves, m.get("source", ""), body)
         all_entries.append({"meta": m, "body": body, "cves": cves,
                             "in_scope": in_scope, "priority": priority})
@@ -931,7 +933,7 @@ def search(query="", source="", days=0, category="",
                 continue
         if query and query.lower() not in text.lower():
             continue
-        title = m.get("title", fp.stem)
+        title = html.unescape(m.get("title", fp.stem))
         in_scope = _matches_india(text, title, m.get("source", "")) if india_mode else True
         if india_mode and not in_scope:
             continue
@@ -948,7 +950,7 @@ def search(query="", source="", days=0, category="",
     print(Fmt.banner("SEARCH", f"{len(results)} results"))
 
     for fp, text, m, in_scope in results:
-        title = m.get("title", fp.stem)
+        title = html.unescape(m.get("title", fp.stem))
         src = m.get("source", "?")
         cat = m.get("category", "?")
         tag_str = m.get("tags", "")
