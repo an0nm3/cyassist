@@ -693,6 +693,14 @@ def generate_hunting_brief(news_dir: Path, exploit_dir: Path,
     today = datetime.datetime.now().strftime("%Y-%m-%d")
     print(Fmt.banner(f"HUNTING BRIEF — {today}"))
 
+    # Step 0: Fetch RSS feeds (including India)
+    try:
+        n = fetch_additional_feeds(max_items=10)
+        if n:
+            print(f"  {Fmt.dim(f'  RSS: {n} new articles')}")
+    except Exception:
+        pass
+
     # Step 1: Collect news CVEs
     print(f"  {Fmt.bold('Phase 1: Scanning news for CVEs...')}")
     news_cves = collect_news_cves(news_dir, days)
@@ -855,6 +863,7 @@ def auto_run(news_dir: Path, exploit_dir: Path, techniques_dir: Path = None):
     targets = load_targets()
 
     # Collect
+    fetch_additional_feeds(max_items=10)
     fetch_exploitdb()
     fetch_packetstorm()
     news_cves = collect_news_cves(news_dir, 1)
