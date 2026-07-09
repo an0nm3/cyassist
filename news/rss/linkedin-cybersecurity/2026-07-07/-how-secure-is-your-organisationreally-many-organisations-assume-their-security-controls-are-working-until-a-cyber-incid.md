@@ -1,0 +1,12 @@
+---
+source: rss/linkedin-cybersecurity
+title: 🔍 How secure is your organisation—really? Many organisations assume their security controls are working until a cyber incident proves otherwise. Penetration testing helps uncover vulnerabilities before attackers do by simulating real-world attack techniques t - LinkedIn
+url: https://news.google.com/rss/articles/CBMiwgFBVV95cUxPMlMxcmJHVnRMYjB3YjlxVkV5eDMzUU1vUVVLaGFPMDg1Zm9haUY4c1RiRXhJZnJyVzk0Z0NjaVhkVE1uR1AzdVhQa094N1JaMDZ2XzlZVC0zZklUa0lkSEh3ZGlaTi12NlkwdjdiaGNBZjNOZVp4VTI5RWcxdGs5aTE5T1VSRC1hQWJzSlpabVV4WUljR0V6X2hfek9ZaEZwMGI4U2hTMmpjVU5ULVY2c2NsRk1LR28wZXJ2T3QyZnVzdw?oc=5
+date: 2026-07-07
+item_id: https://news.google.com/rss/articles/CBMiwgFBVV95cUxPMlMxcmJHVnRMYjB3YjlxVkV5eDMzUU1vUVVLaGFPMDg1Zm9haUY4c1RiRXhJZnJyVzk0Z0NjaVhkVE1uR1AzdVhQa094N1JaMDZ2XzlZVC0zZklUa0lkSEh3ZGlaTi12NlkwdjdiaGNBZjNOZVp4VTI5RWcxdGs5aTE5T1VSRC1hQWJzSlpabVV4WUljR0V6X2hfek9ZaEZwMGI4U2hTMmpjVU5ULVY2c2NsRk1LR28wZXJ2T3QyZnVzdw?oc=5
+category: news---
+
+**Source:** LinkedIn Cybersecurity
+**Link:** https://news.google.com/rss/articles/CBMiwgFBVV95cUxPMlMxcmJHVnRMYjB3YjlxVkV5eDMzUU1vUVVLaGFPMDg1Zm9haUY4c1RiRXhJZnJyVzk0Z0NjaVhkVE1uR1AzdVhQa094N1JaMDZ2XzlZVC0zZklUa0lkSEh3ZGlaTi12NlkwdjdiaGNBZjNOZVp4VTI5RWcxdGs5aTE5T1VSRC1hQWJzSlpabVV4WUljR0V6X2hfek9ZaEZwMGI4U2hTMmpjVU5ULVY2c2NsRk1LR28wZXJ2T3QyZnVzdw?oc=5
+
+🔍 How secure is your organisation—really? Many organisations assume their security controls are working until a cyber incident proves otherwise. Penetration testing helps uncover vulnerabilities before attackers do by simulating real-world attack techniques t &nbsp;&nbsp; LinkedIn

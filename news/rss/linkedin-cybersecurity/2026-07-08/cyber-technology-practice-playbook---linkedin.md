@@ -1,0 +1,12 @@
+---
+source: rss/linkedin-cybersecurity
+title: Cyber & Technology Practice Playbook - LinkedIn
+url: https://news.google.com/rss/articles/CBMirgFBVV95cUxOSWV4SnFpUkk5amR2ZHc3alYtbDhkbG12Yk9yYWVGTHdncEZKaVBQMHZDeFRnM3M2SUpOU0VGLXBsemQ0NnBiQ1hiaS1SakktcW1hcURYMXVYYlFtRi15NDRxaGVjcFVOaFJ3Tnc2NFFxRFpCbXViMUxlUjdTTnJoRllDWm9GaW5mek41NXp1NW1ZVHZUbDlvWnE1MTBGMzVNUGQzRVRVbl9vd0xfQmc?oc=5
+date: 2026-07-08
+item_id: https://news.google.com/rss/articles/CBMirgFBVV95cUxOSWV4SnFpUkk5amR2ZHc3alYtbDhkbG12Yk9yYWVGTHdncEZKaVBQMHZDeFRnM3M2SUpOU0VGLXBsemQ0NnBiQ1hiaS1SakktcW1hcURYMXVYYlFtRi15NDRxaGVjcFVOaFJ3Tnc2NFFxRFpCbXViMUxlUjdTTnJoRllDWm9GaW5mek41NXp1NW1ZVHZUbDlvWnE1MTBGMzVNUGQzRVRVbl9vd0xfQmc?oc=5
+category: news---
+
+**Source:** LinkedIn Cybersecurity
+**Link:** https://news.google.com/rss/articles/CBMirgFBVV95cUxOSWV4SnFpUkk5amR2ZHc3alYtbDhkbG12Yk9yYWVGTHdncEZKaVBQMHZDeFRnM3M2SUpOU0VGLXBsemQ0NnBiQ1hiaS1SakktcW1hcURYMXVYYlFtRi15NDRxaGVjcFVOaFJ3Tnc2NFFxRFpCbXViMUxlUjdTTnJoRllDWm9GaW5mek41NXp1NW1ZVHZUbDlvWnE1MTBGMzVNUGQzRVRVbl9vd0xfQmc?oc=5
+
+Cyber & Technology Practice Playbook &nbsp;&nbsp; LinkedIn

@@ -1,0 +1,12 @@
+---
+source: rss/linkedin-cybersecurity
+title: 2026 Software Sector Overview - LinkedIn
+url: https://news.google.com/rss/articles/CBMiowFBVV95cUxPTHhGcE05R0RzMDc2R2RJa3ZHb2ZxN3F6cnlsUVpBQUd5ejkyTXJ4WllhX1FTSEJ0NjYzSzlXTmt3TWtUeUdfMTBnOWtHRDJuNFptMXZSMzlJN01iRnBTaWY0VldYd1QyRWl3Wk9SZ3dNRU1HNkFub1FPVTNEaEltTFBmdDVNRDJzSWZNZmszVGFGeV8tS3BOMXJVbWZLX2NydTBj?oc=5
+date: 2026-07-03
+item_id: https://news.google.com/rss/articles/CBMiowFBVV95cUxPTHhGcE05R0RzMDc2R2RJa3ZHb2ZxN3F6cnlsUVpBQUd5ejkyTXJ4WllhX1FTSEJ0NjYzSzlXTmt3TWtUeUdfMTBnOWtHRDJuNFptMXZSMzlJN01iRnBTaWY0VldYd1QyRWl3Wk9SZ3dNRU1HNkFub1FPVTNEaEltTFBmdDVNRDJzSWZNZmszVGFGeV8tS3BOMXJVbWZLX2NydTBj?oc=5
+category: news---
+
+**Source:** LinkedIn Cybersecurity
+**Link:** https://news.google.com/rss/articles/CBMiowFBVV95cUxPTHhGcE05R0RzMDc2R2RJa3ZHb2ZxN3F6cnlsUVpBQUd5ejkyTXJ4WllhX1FTSEJ0NjYzSzlXTmt3TWtUeUdfMTBnOWtHRDJuNFptMXZSMzlJN01iRnBTaWY0VldYd1QyRWl3Wk9SZ3dNRU1HNkFub1FPVTNEaEltTFBmdDVNRDJzSWZNZmszVGFGeV8tS3BOMXJVbWZLX2NydTBj?oc=5
+
+2026 Software Sector Overview &nbsp;&nbsp; LinkedIn

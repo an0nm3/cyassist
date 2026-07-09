@@ -1,0 +1,12 @@
+---
+source: rss/linkedin-cybersecurity
+title: Check Point Software hiring Cybersecurity Services Business Development Manager in Tampa, FL - LinkedIn
+url: https://news.google.com/rss/articles/CBMivgFBVV95cUxNZll4RnhIUzM1SWpkdlZTZU1HeUV4WWJnUzdWUUxITTl3cTY2RXNxaDZVMVRRM3d2T3lFYUtzY1Q1d1dHMXQtZFpoN2ZMMlRKUEd2dzU3QVhpbnpxYThpRFhlWl93T2ZYTHdFLTlNdlQxWWZRcDgxUGozeDJ6S2ZRYzNFOTI4cUE0MVN4TEVrNVBiQkpKalcteGJYdUFXYlAzaXd1d2txX2xuOVRTYTVHNE9MWXREb1hNbTFzbERB?oc=5
+date: 2026-07-06
+item_id: https://news.google.com/rss/articles/CBMivgFBVV95cUxNZll4RnhIUzM1SWpkdlZTZU1HeUV4WWJnUzdWUUxITTl3cTY2RXNxaDZVMVRRM3d2T3lFYUtzY1Q1d1dHMXQtZFpoN2ZMMlRKUEd2dzU3QVhpbnpxYThpRFhlWl93T2ZYTHdFLTlNdlQxWWZRcDgxUGozeDJ6S2ZRYzNFOTI4cUE0MVN4TEVrNVBiQkpKalcteGJYdUFXYlAzaXd1d2txX2xuOVRTYTVHNE9MWXREb1hNbTFzbERB?oc=5
+category: news---
+
+**Source:** LinkedIn Cybersecurity
+**Link:** https://news.google.com/rss/articles/CBMivgFBVV95cUxNZll4RnhIUzM1SWpkdlZTZU1HeUV4WWJnUzdWUUxITTl3cTY2RXNxaDZVMVRRM3d2T3lFYUtzY1Q1d1dHMXQtZFpoN2ZMMlRKUEd2dzU3QVhpbnpxYThpRFhlWl93T2ZYTHdFLTlNdlQxWWZRcDgxUGozeDJ6S2ZRYzNFOTI4cUE0MVN4TEVrNVBiQkpKalcteGJYdUFXYlAzaXd1d2txX2xuOVRTYTVHNE9MWXREb1hNbTFzbERB?oc=5
+
+Check Point Software hiring Cybersecurity Services Business Development Manager in Tampa, FL &nbsp;&nbsp; LinkedIn

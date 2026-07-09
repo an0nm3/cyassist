@@ -1,0 +1,12 @@
+---
+source: rss/linkedin-cybersecurity
+title: Cyber Anchor | The Digital Bulkhead for Maritime Cybersecurity - LinkedIn
+url: https://news.google.com/rss/articles/CBMixAFBVV95cUxOcmVfRkZKYTJmOVQ0VGRzQVN6Z3FRcndGUm5pNE10R2RPMmxUVDZuUVcxUm9GbTlNejBnNU1aRXFISTR4QzdQbXhIZFU3NXJmd2VPM1dqQzRzLS1uWUdDaHR1OE5TanpOcnFqRVdlc0VJQnl6azlzaWdjSlJTb3YxckFFS19XaXh5LTZKaEVObGJONGRUNmk1NDJUTTFyUlc1bWdhOVhhaTNfWEN2Wmk5S3JhQWVqdmpuUnZDZHFWNGZta3Vy?oc=5
+date: 2026-07-07
+item_id: https://news.google.com/rss/articles/CBMixAFBVV95cUxOcmVfRkZKYTJmOVQ0VGRzQVN6Z3FRcndGUm5pNE10R2RPMmxUVDZuUVcxUm9GbTlNejBnNU1aRXFISTR4QzdQbXhIZFU3NXJmd2VPM1dqQzRzLS1uWUdDaHR1OE5TanpOcnFqRVdlc0VJQnl6azlzaWdjSlJTb3YxckFFS19XaXh5LTZKaEVObGJONGRUNmk1NDJUTTFyUlc1bWdhOVhhaTNfWEN2Wmk5S3JhQWVqdmpuUnZDZHFWNGZta3Vy?oc=5
+category: news---
+
+**Source:** LinkedIn Cybersecurity
+**Link:** https://news.google.com/rss/articles/CBMixAFBVV95cUxOcmVfRkZKYTJmOVQ0VGRzQVN6Z3FRcndGUm5pNE10R2RPMmxUVDZuUVcxUm9GbTlNejBnNU1aRXFISTR4QzdQbXhIZFU3NXJmd2VPM1dqQzRzLS1uWUdDaHR1OE5TanpOcnFqRVdlc0VJQnl6azlzaWdjSlJTb3YxckFFS19XaXh5LTZKaEVObGJONGRUNmk1NDJUTTFyUlc1bWdhOVhhaTNfWEN2Wmk5S3JhQWVqdmpuUnZDZHFWNGZta3Vy?oc=5
+
+Cyber Anchor | The Digital Bulkhead for Maritime Cybersecurity &nbsp;&nbsp; LinkedIn

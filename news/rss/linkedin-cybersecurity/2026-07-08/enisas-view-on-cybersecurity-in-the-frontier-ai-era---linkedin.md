@@ -1,0 +1,12 @@
+---
+source: rss/linkedin-cybersecurity
+title: ENISA’s view on Cybersecurity in the Frontier AI Era - LinkedIn
+url: https://news.google.com/rss/articles/CBMiwgFBVV95cUxPRUYyaDJBRmZjNFh2MmxDM2FEbGIxV1F6N1RjRm8xRzdpVjlvOTlyZkZEZ3RpMURpMW9Selc1Tk5Vd1NFWFZPaFY3M1NkUUItR1c3MldLbklBYWhGc2lRbEhKWHFkWUdlQjZZY0hJblhwTTVhOXJnWmEtcV9NUE5PT1VPUlhWb3pzR0xlVk5tQWhla0dNOHRXZUVKcEpIa1FGVlRGN2xGVEtyTXc0T1pmT1lldDNwUDctZmZjVFo3a1A4UQ?oc=5
+date: 2026-07-08
+item_id: https://news.google.com/rss/articles/CBMiwgFBVV95cUxPRUYyaDJBRmZjNFh2MmxDM2FEbGIxV1F6N1RjRm8xRzdpVjlvOTlyZkZEZ3RpMURpMW9Selc1Tk5Vd1NFWFZPaFY3M1NkUUItR1c3MldLbklBYWhGc2lRbEhKWHFkWUdlQjZZY0hJblhwTTVhOXJnWmEtcV9NUE5PT1VPUlhWb3pzR0xlVk5tQWhla0dNOHRXZUVKcEpIa1FGVlRGN2xGVEtyTXc0T1pmT1lldDNwUDctZmZjVFo3a1A4UQ?oc=5
+category: news---
+
+**Source:** LinkedIn Cybersecurity
+**Link:** https://news.google.com/rss/articles/CBMiwgFBVV95cUxPRUYyaDJBRmZjNFh2MmxDM2FEbGIxV1F6N1RjRm8xRzdpVjlvOTlyZkZEZ3RpMURpMW9Selc1Tk5Vd1NFWFZPaFY3M1NkUUItR1c3MldLbklBYWhGc2lRbEhKWHFkWUdlQjZZY0hJblhwTTVhOXJnWmEtcV9NUE5PT1VPUlhWb3pzR0xlVk5tQWhla0dNOHRXZUVKcEpIa1FGVlRGN2xGVEtyTXc0T1pmT1lldDNwUDctZmZjVFo3a1A4UQ?oc=5
+
+ENISA’s view on Cybersecurity in the Frontier AI Era &nbsp;&nbsp; LinkedIn

@@ -1,0 +1,12 @@
+---
+source: rss/linkedin-cybersecurity
+title: Bitcrack Cyber Security hiring Cyber Security Consultant – Penetration Testing in Johannesburg, Gauteng, South Africa - LinkedIn South Africa
+url: https://news.google.com/rss/articles/CBMixgFBVV95cUxPUjN6Q3FXNU5DM1ZSNlF3ekVQcVk4eGNacnR2ZjJHOWM1ZUNqT1Z4S0QxbWwzenBTbzhoSEJsTWlhMzllSkpqWHF2WDZrUU4zVVF3Sk96YlpieDVTTlBwdlhQVjJPMkpLVW1VMnFQcndrcmp2cjc3NkRaWXAzYnhSOE8tZURxUmpETTFNTWpBQjZQNUJxLTJVTWl4TWVQajdsaVdmZXd5bEVGa3luOVpSZlBNLTZxWENvVVlDR1ktZ1dZMkd0cVE?oc=5
+date: 2026-07-08
+item_id: https://news.google.com/rss/articles/CBMixgFBVV95cUxPUjN6Q3FXNU5DM1ZSNlF3ekVQcVk4eGNacnR2ZjJHOWM1ZUNqT1Z4S0QxbWwzenBTbzhoSEJsTWlhMzllSkpqWHF2WDZrUU4zVVF3Sk96YlpieDVTTlBwdlhQVjJPMkpLVW1VMnFQcndrcmp2cjc3NkRaWXAzYnhSOE8tZURxUmpETTFNTWpBQjZQNUJxLTJVTWl4TWVQajdsaVdmZXd5bEVGa3luOVpSZlBNLTZxWENvVVlDR1ktZ1dZMkd0cVE?oc=5
+category: news---
+
+**Source:** LinkedIn Cybersecurity
+**Link:** https://news.google.com/rss/articles/CBMixgFBVV95cUxPUjN6Q3FXNU5DM1ZSNlF3ekVQcVk4eGNacnR2ZjJHOWM1ZUNqT1Z4S0QxbWwzenBTbzhoSEJsTWlhMzllSkpqWHF2WDZrUU4zVVF3Sk96YlpieDVTTlBwdlhQVjJPMkpLVW1VMnFQcndrcmp2cjc3NkRaWXAzYnhSOE8tZURxUmpETTFNTWpBQjZQNUJxLTJVTWl4TWVQajdsaVdmZXd5bEVGa3luOVpSZlBNLTZxWENvVVlDR1ktZ1dZMkd0cVE?oc=5
+
+Bitcrack Cyber Security hiring Cyber Security Consultant – Penetration Testing in Johannesburg, Gauteng, South Africa &nbsp;&nbsp; LinkedIn South Africa

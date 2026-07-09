@@ -1,0 +1,12 @@
+---
+source: rss/linkedin-cybersecurity
+title: Uni Internship Jan to July 2027 - Cybersecurity Awareness & Engagement Internship - LinkedIn Singapore
+url: https://news.google.com/rss/articles/CBMizgFBVV95cUxOZWtDMnNmc0ZUZ09Za1NXTmYzRjh6TDdxaGNtSmdRdzJXdk5JSGdKX1h4a0t5YW96bW5RWjBIaDg5NTNjQmp6QlpKeUtxRWI1Mkx3RGdwa0hZbW1KbkNRZXJBRmswamd6cHdqRU5mUVVBQzNBYk40TGVrc1E1N0N1MWk4UW44UjFIcHpVZVdWNTFacVZwbVdZbm0yejU2OERpMU9MRkxEMHp4dFhWUzhILVdDd3lVSGRxUXpfR3laVFo5a1BPWVVEWTd0WlB3dw?oc=5
+date: 2026-07-09
+item_id: https://news.google.com/rss/articles/CBMizgFBVV95cUxOZWtDMnNmc0ZUZ09Za1NXTmYzRjh6TDdxaGNtSmdRdzJXdk5JSGdKX1h4a0t5YW96bW5RWjBIaDg5NTNjQmp6QlpKeUtxRWI1Mkx3RGdwa0hZbW1KbkNRZXJBRmswamd6cHdqRU5mUVVBQzNBYk40TGVrc1E1N0N1MWk4UW44UjFIcHpVZVdWNTFacVZwbVdZbm0yejU2OERpMU9MRkxEMHp4dFhWUzhILVdDd3lVSGRxUXpfR3laVFo5a1BPWVVEWTd0WlB3dw?oc=5
+category: news---
+
+**Source:** LinkedIn Cybersecurity
+**Link:** https://news.google.com/rss/articles/CBMizgFBVV95cUxOZWtDMnNmc0ZUZ09Za1NXTmYzRjh6TDdxaGNtSmdRdzJXdk5JSGdKX1h4a0t5YW96bW5RWjBIaDg5NTNjQmp6QlpKeUtxRWI1Mkx3RGdwa0hZbW1KbkNRZXJBRmswamd6cHdqRU5mUVVBQzNBYk40TGVrc1E1N0N1MWk4UW44UjFIcHpVZVdWNTFacVZwbVdZbm0yejU2OERpMU9MRkxEMHp4dFhWUzhILVdDd3lVSGRxUXpfR3laVFo5a1BPWVVEWTd0WlB3dw?oc=5
+
+Uni Internship Jan to July 2027 - Cybersecurity Awareness & Engagement Internship &nbsp;&nbsp; LinkedIn Singapore
