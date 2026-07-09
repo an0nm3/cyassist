@@ -395,8 +395,12 @@ def _collect(category: str = "news", days: int = 0, source: str = "",
                 if query and query.lower() not in text.lower():
                     continue
                 title = m.get("title", fp.stem)
-                in_scope = _matches_india(text, title, m.get("source", "")) if india_mode else True
-                items.append((fp, text, m, in_scope))
+                if india_mode:
+                    body = re.sub(r'^---.*?---\s*', '', text, flags=re.DOTALL)
+                    in_scope = _matches_india(body, title, m.get("source", ""))
+                else:
+                    in_scope = True
+                items.append((fp, text, m, in_scope, title))
 
     if CUSTOM_NEWS_DIR.exists():
         for fp in CUSTOM_NEWS_DIR.rglob("*.md"):
@@ -413,10 +417,30 @@ def _collect(category: str = "news", days: int = 0, source: str = "",
             if query and query.lower() not in text.lower():
                 continue
             title = m.get("title", fp.stem)
-            in_scope = _matches_india(text, title, m.get("source", "")) if india_mode else True
-            items.append((fp, text, m, in_scope))
+            if india_mode:
+                body = re.sub(r'^---.*?---\s*', '', text, flags=re.DOTALL)
+                in_scope = _matches_india(body, title, m.get("source", ""))
+            else:
+                in_scope = True
+            items.append((fp, text, m, in_scope, title))
 
-    return items
+    # Deduplicate in India mode: group by normalized title (strip source suffix after " - ")
+    if india_mode:
+        seen_titles = {}
+        deduped = []
+        for fp, text, m, in_scope, raw_title in items:
+            norm = raw_title.strip(' "')
+            # Normalize: strip source suffix after last " - " (Google News appends publisher)
+            if ' - ' in norm:
+                norm = norm.rsplit(' - ', 1)[0]
+            norm = norm.lower()
+            if norm not in seen_titles:
+                seen_titles[norm] = True
+                deduped.append((fp, text, m, in_scope))
+            # else: skip duplicate
+        return deduped
+
+    return [(fp, text, m, in_scope) for fp, text, m, in_scope, _ in items]
 
 
 TECH_TAGS = {"CVE", "Rce", "Sqli", "Xss", "Ssti", "Lfi", "Idor",
@@ -934,7 +958,11 @@ def search(query="", source="", days=0, category="",
         if query and query.lower() not in text.lower():
             continue
         title = html.unescape(m.get("title", fp.stem))
-        in_scope = _matches_india(text, title, m.get("source", "")) if india_mode else True
+        if india_mode:
+            body = re.sub(r'^---.*?---\s*', '', text, flags=re.DOTALL)
+            in_scope = _matches_india(body, title, m.get("source", ""))
+        else:
+            in_scope = True
         if india_mode and not in_scope:
             continue
         results.append((fp, text, m, in_scope))
