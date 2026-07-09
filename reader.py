@@ -534,7 +534,7 @@ def _short_url(url: str, max_len: int = 70) -> str:
         return url[:max_len] + '...'
 
 
-def _clean_body(body: str, max_words: int = 150) -> str:
+def _clean_body(body: str, max_words: int = 150, title: str = "") -> str:
     body = re.sub(r'<[^>]+>', '', body)
     body = html.unescape(body)
     lines = body.strip().split('\n')
@@ -551,6 +551,12 @@ def _clean_body(body: str, max_words: int = 150) -> str:
             cleaned.append(stripped)
     text = ' '.join(cleaned).strip()
     words = text.split()
+    # Suppress body if it's just the title repeated (Google News feeds)
+    if title and len(words) < 20:
+        title_norm = re.sub(r'[^a-z0-9]+', '', title.lower())
+        body_norm = re.sub(r'[^a-z0-9]+', '', text.lower())
+        if body_norm and len(body_norm) / max(len(title_norm), 1) > 0.8:
+            return ""
     if len(words) > max_words:
         text = ' '.join(words[:max_words]) + ' ...'
     return text
@@ -641,7 +647,7 @@ def _show_expanded(entry):
     if entry['url']:
         print(f" {Fmt.dim('link:')} {Fmt.url(_short_url(entry['url']))}")
     print(Fmt.hr('\u2550', 70))
-    body = _clean_body(entry['body'])
+    body = _clean_body(entry['body'], title=entry['title'])
     print(f" {body}")
 
 
@@ -743,7 +749,7 @@ def today(category: str = "news", source="", query="",
                 cve_tag = ' ' + Fmt.cve('\u26a0 ' + ' '.join(e['cves'][:2])) if e['cves'] else ''
                 print(f"  {Fmt.bold(f'{idx:>3}.')} {Fmt.source(f'[{src_name}]')} {Fmt.bold(e['title'])}"
                       f"{cve_tag}")
-                body_preview = _clean_body(e['body'], max_words=125)[:600]
+                body_preview = _clean_body(e['body'], max_words=125, title=e['title'])[:600]
                 if body_preview:
                     print(f"      {Fmt.dim(body_preview)}")
                 elif e['meta'].get('tags', '') and e['meta']['tags'] != "[]":
@@ -916,7 +922,7 @@ def summary(days: int = 1, category: str = "news",
             src = e['meta'].get('source', '?')
             cves = " ".join(e['cves'][:3]) if e['cves'] else ""
             cve_tag = f" [{Fmt.cve(cves)}]" if cves else ""
-            body_text = _clean_body(e['body'], max_words=25)[:120] if e['body'] else ""
+            body_text = _clean_body(e['body'], max_words=25, title=e['title'])[:120] if e['body'] else ""
             fallback = Fmt.dim("(no summary)") if not body_text else body_text
             print(f"  {Fmt.bold(title)}{cve_tag}")
             print(f"  {Fmt.source(src)} \u2014 {Fmt.dim(body_text) if body_text else fallback}")
