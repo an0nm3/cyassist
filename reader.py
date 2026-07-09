@@ -424,20 +424,41 @@ def _collect(category: str = "news", days: int = 0, source: str = "",
                 in_scope = True
             items.append((fp, text, m, in_scope, title))
 
-    # Deduplicate in India mode: group by normalized title (strip source suffix after " - ")
+    # Deduplicate in India mode
     if india_mode:
-        seen_titles = {}
+        seen_exact = {}
+        fingerprint_clusters = []
         deduped = []
+        _STOP_WORDS = frozenset({'the', 'a', 'an', 'is', 'are', 'was', 'were',
+            'in', 'on', 'at', 'to', 'for', 'of', 'and', 'or', 'but', 'its',
+            'it', 'with', 'by', 'from', 'as', 'be', 'has', 'have', 'had',
+            'new', 'after', 'over', 'into', 'amid', 'says', 'said'})
         for fp, text, m, in_scope, raw_title in items:
             norm = raw_title.strip(' "')
-            # Normalize: strip source suffix after last " - " (Google News appends publisher)
             if ' - ' in norm:
                 norm = norm.rsplit(' - ', 1)[0]
-            norm = norm.lower()
-            if norm not in seen_titles:
-                seen_titles[norm] = True
-                deduped.append((fp, text, m, in_scope))
-            # else: skip duplicate
+            norm_lower = norm.lower()
+            # Exact dedup
+            if norm_lower in seen_exact:
+                continue
+            # Topic fingerprint: top 6 key words (skip stop words)
+            words = re.sub(r'[^a-z0-9\s]', '', norm_lower).split()
+            fp_words = [w for w in words if w not in _STOP_WORDS][:6]
+            if not fp_words:
+                fp_words = words[:4]
+            fp_set = frozenset(fp_words)
+            # Fuzzy dedup: check 30%+ containment overlap with 3+ shared keywords
+            dup = False
+            for cluster in fingerprint_clusters:
+                inter = len(fp_set & cluster)
+                if inter >= 3 and inter / max(len(fp_set), len(cluster)) >= 0.3:
+                    dup = True
+                    break
+            if dup:
+                continue
+            seen_exact[norm_lower] = True
+            fingerprint_clusters.append(fp_set)
+            deduped.append((fp, text, m, in_scope))
         return deduped
 
     return [(fp, text, m, in_scope) for fp, text, m, in_scope, _ in items]
