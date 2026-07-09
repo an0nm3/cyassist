@@ -283,6 +283,95 @@ def scrape_cloudsek() -> int:
     return count
 
 
+# ── Source: SISA Blog (Indian payment security) ────────────────────────────
+SISA_URL = "https://www.sisainfosec.com/blog/"
+
+def scrape_sisa() -> int:
+    count = 0
+    html = _fetch(SISA_URL)
+    if not html:
+        print(f"  {Fmt.dim('SISA: fetch failed')}")
+        return 0
+    articles = re.findall(r'<a\s+href="(/blog/[^"]+)"[^>]*>(.*?)</a>', html, re.DOTALL)
+    seen = set()
+    for href, title_html in articles:
+        full_url = "https://www.sisainfosec.com" + href if href.startswith("/") else href
+        if full_url in seen:
+            continue
+        seen.add(full_url)
+        title = re.sub(r'<[^>]+>', '', title_html).strip()
+        if not title or len(title) < 5 or "tag" in href:
+            continue
+        tags = ["SISA", "India", "PaymentSecurity"]
+        body = ""
+        art_html = _fetch(full_url)
+        if art_html:
+            body = ' '.join(re.sub(r'<[^>]+>', ' ', art_html).split()[:300])
+        if _save("sisa-blog", title, full_url, body, tags):
+            count += 1
+    return count
+
+
+# ── Source: Appknox Blog (Indian mobile security) ─────────────────────────
+APKNOX_URL = "https://www.appknox.com/blog"
+
+def scrape_appknox() -> int:
+    count = 0
+    html = _fetch(APKNOX_URL)
+    if not html:
+        print(f"  {Fmt.dim('Appknox: fetch failed')}")
+        return 0
+    articles = re.findall(r'<a\s+href="(https://www\.appknox\.com/blog/[^"]+)"[^>]*>(.*?)</a>', html, re.DOTALL)
+    seen = set()
+    for href, title_html in articles:
+        if href in seen:
+            continue
+        seen.add(href)
+        title = re.sub(r'<[^>]+>', '', title_html).strip()
+        if not title or len(title) < 5:
+            continue
+        tags = ["Appknox", "India", "MobileSecurity"]
+        body = ""
+        art_html = _fetch(href)
+        if art_html:
+            body = ' '.join(re.sub(r'<[^>]+>', ' ', art_html).split()[:300])
+        if _save("appknox-blog", title, href, body, tags):
+            count += 1
+    return count
+
+
+# ── Source: DSCI (Data Security Council of India) ─────────────────────────
+DSCI_URL = "https://www.dsci.in"
+
+def scrape_dsci() -> int:
+    count = 0
+    for path in ["/blogs", "/news", "/publications"]:
+        html = _fetch(f"{DSCI_URL}{path}")
+        if not html:
+            continue
+        articles = re.findall(r'<a\s+href="(/[^"]*)"[^>]*>(.*?)</a>', html, re.DOTALL)
+        seen = set()
+        for href, title_html in articles:
+            full_url = DSCI_URL + href if href.startswith("/") else href
+            if full_url in seen:
+                continue
+            seen.add(full_url)
+            lower_title = (re.sub(r'<[^>]+>', '', title_html).strip()).lower()
+            if not any(kw in lower_title for kw in ["cyber", "security", "data", "privacy", "breach", "ransomware", "compliance", "dpdp"]):
+                continue
+            title = re.sub(r'<[^>]+>', '', title_html).strip()
+            if not title or len(title) < 5:
+                continue
+            tags = ["DSCI", "India", "DataSecurity"]
+            body = ""
+            art_html = _fetch(full_url)
+            if art_html:
+                body = ' '.join(re.sub(r'<[^>]+>', ' ', art_html).split()[:300])
+            if _save("dsci-india", title, full_url, body, tags):
+                count += 1
+    return count
+
+
 # ── Source: RBI/SEBI Advisories ────────────────────────────────────────────
 def scrape_rbi_advisories() -> int:
     """Scrape RBI cybersecurity advisories and circulars."""
@@ -321,6 +410,9 @@ INDIA_SCRAPERS = [
     ("Seqrite Blog", scrape_seqrite),
     ("Payatu Blog", scrape_payatu),
     ("CloudSEK Blog", scrape_cloudsek),
+    ("SISA Blog", scrape_sisa),
+    ("Appknox Blog", scrape_appknox),
+    ("DSCI India", scrape_dsci),
     ("RBI Advisories", scrape_rbi_advisories),
 ]
 

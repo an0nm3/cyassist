@@ -957,6 +957,21 @@ NITTER_FALLBACK_INSTANCES = [
     "https://nitter.1d4.us",
     "https://nitter.nl",
 ]
+INDIA_FEEDS = {
+    "toi-tech": "https://timesofindia.indiatimes.com/rssfeeds/66949542.cms",
+    "indian-express-tech": "https://indianexpress.com/section/technology/feed/",
+    "inc42": "https://inc42.com/feed/",
+    "yourstory": "https://yourstory.com/feed",
+    "medianama": "https://www.medianama.com/feed/",
+    "et-ciso": "https://ciso.economictimes.indiatimes.com/rss/topstories",
+    "cso-india": "https://www.csoonline.com/in/feed/",
+    "k7-computing": "https://blog.k7computing.com/feed/",
+    "google-news-india-cyber": "https://news.google.com/rss/search?q=cybersecurity+India&hl=en-IN&gl=IN&ceid=IN:en",
+    "google-news-india-data-breach": "https://news.google.com/rss/search?q=data+breach+India&hl=en-IN&gl=IN&ceid=IN:en",
+    "google-news-india-hacking": "https://news.google.com/rss/search?q=hacking+India&hl=en-IN&gl=IN&ceid=IN:en",
+    "google-news-india-fintech": "https://news.google.com/rss/search?q=fintech+security+India&hl=en-IN&gl=IN&ceid=IN:en",
+    "google-news-india-advisory": "https://news.google.com/rss/search?q=CERT-In+advisory&hl=en-IN&gl=IN&ceid=IN:en",
+}
 X_FEEDS_FLAT = dict(X_FEEDS)
 MEDIUM_FEEDS_FLAT = dict(MEDIUM_FEEDS)
 LINKEDIN_FEEDS = {
@@ -964,7 +979,7 @@ LINKEDIN_FEEDS = {
     "linkedin-infosec": "https://news.google.com/rss/search?q=site:linkedin.com+infosec&hl=en-US&gl=US&ceid=US:en",
     "linkedin-bugbounty": "https://news.google.com/rss/search?q=site:linkedin.com+bug+bounty&hl=en-US&gl=US&ceid=US:en",
 }
-ALL_FEEDS = {**ADDITIONAL_FEEDS, **X_FEEDS_FLAT, **MEDIUM_FEEDS_FLAT}
+ALL_FEEDS = {**ADDITIONAL_FEEDS, **X_FEEDS_FLAT, **MEDIUM_FEEDS_FLAT, **INDIA_FEEDS}
 
 
 def _opencode_summarize(prompt: str, timeout: int = 60) -> Optional[str]:

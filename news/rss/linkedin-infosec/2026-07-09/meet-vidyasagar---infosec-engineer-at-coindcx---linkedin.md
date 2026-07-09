@@ -1,0 +1,12 @@
+---
+source: rss/linkedin-infosec
+title: Meet Vidyasagar - InfoSec Engineer at CoinDCX! - LinkedIn
+url: https://news.google.com/rss/articles/CBMitwFBVV95cUxNaDgwd3g1Qlhrb25BX0x3cEw5am51b1IycmhaMTluYkVvX0VpcEhZUlU4eVRuaDhMdEFWZTh5QVM1MTBJU1c3Y2hpelhoYnllZ3BIVTFoVXk5Vmx5a21makFSX0FiRDg2OUIzX3RBbkgxR2xrQmZsY1Jaa01XYkJrS1UybWZuTWRORGhIQzBibWFyakF2Z1hKeUQ4SzUzSEtiOVltNndEUnV4WTJfTnNHdklBWlltS0E?oc=5
+date: 2026-07-09
+item_id: https://news.google.com/rss/articles/CBMitwFBVV95cUxNaDgwd3g1Qlhrb25BX0x3cEw5am51b1IycmhaMTluYkVvX0VpcEhZUlU4eVRuaDhMdEFWZTh5QVM1MTBJU1c3Y2hpelhoYnllZ3BIVTFoVXk5Vmx5a21makFSX0FiRDg2OUIzX3RBbkgxR2xrQmZsY1Jaa01XYkJrS1UybWZuTWRORGhIQzBibWFyakF2Z1hKeUQ4SzUzSEtiOVltNndEUnV4WTJfTnNHdklBWlltS0E?oc=5
+category: news---
+
+**Source:** LinkedIn Infosec
+**Link:** https://news.google.com/rss/articles/CBMitwFBVV95cUxNaDgwd3g1Qlhrb25BX0x3cEw5am51b1IycmhaMTluYkVvX0VpcEhZUlU4eVRuaDhMdEFWZTh5QVM1MTBJU1c3Y2hpelhoYnllZ3BIVTFoVXk5Vmx5a21makFSX0FiRDg2OUIzX3RBbkgxR2xrQmZsY1Jaa01XYkJrS1UybWZuTWRORGhIQzBibWFyakF2Z1hKeUQ4SzUzSEtiOVltNndEUnV4WTJfTnNHdklBWlltS0E?oc=5
+
+Meet Vidyasagar - InfoSec Engineer at CoinDCX! &nbsp;&nbsp; LinkedIn

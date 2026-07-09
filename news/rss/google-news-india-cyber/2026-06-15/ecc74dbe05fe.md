@@ -1,0 +1,10 @@
+---
+source: rss/google-news-india-cyber
+title: "Oracle to Train 300,000 Students and Professionals across Uttar Pradesh in AI, Cloud, Cybersecurity, and Data Science - Oracle"
+url: "https://news.google.com/rss/articles/CBMi4wFBVV95cUxQUHMzVE52bDRhanA0OG1mQ1huaUdFLWhRNkpubF9BMm1iWVRxcGNQc3hLbkdJM1YyclFQejJKVklEd1U5U1VVbmhMNkx3VnVqbGdQbk9TLTB2T2VYblJsQUJJMTI4REpMOXBjZy10aURPZDBzenRBOExIb1d0dlVUQWhhWm03Tlc4ZHVMSnlfeUdWT2VDcGVQTVJEaDNNQWNvMnhTczdjWWxvMmZCbkRWNUVBaUJ1VFdmSXdpLWxMT3dJM0JzMWt1Wi1Qc3gwWUhNYWdpZTZuSHpPT2I1SENlRXNvUQ?oc=5"
+date: "2026-06-15"
+item_id: "https://news.google.com/rss/articles/CBMi4wFBVV95cUxQUHMzVE52bDRhanA0OG1mQ1huaUdFLWhRNkpubF9BMm1iWVRxcGNQc3hLbkdJM1YyclFQejJKVklEd1U5U1VVbmhMNkx3VnVqbGdQbk9TLTB2T2VYblJsQUJJMTI4REpMOXBjZy10aURPZDBzenRBOExIb1d0dlVUQWhhWm03Tlc4ZHVMSnlfeUdWT2VDcGVQTVJEaDNNQWNvMnhTczdjWWxvMmZCbkRWNUVBaUJ1VFdmSXdpLWxMT3dJM0JzMWt1Wi1Qc3gwWUhNYWdpZTZuSHpPT2I1SENlRXNvUQ?oc=5"
+category: news
+tags: [google-news-india-cyber]
+---
+<a href="https://news.google.com/rss/articles/CBMi4wFBVV95cUxQUHMzVE52bDRhanA0OG1mQ1huaUdFLWhRNkpubF9BMm1iWVRxcGNQc3hLbkdJM1YyclFQejJKVklEd1U5U1VVbmhMNkx3VnVqbGdQbk9TLTB2T2VYblJsQUJJMTI4REpMOXBjZy10aURPZDBzenRBOExIb1d0dlVUQWhhWm03Tlc4ZHVMSnlfeUdWT2VDcGVQTVJEaDNNQWNvMnhTczdjWWxvMmZCbkRWNUVBaUJ1VFdmSXdpLWxMT3dJM0JzMWt1Wi1Qc3gwWUhNYWdpZTZuSHpPT2I1SENlRXNvUQ?oc=5" target="_blank">Oracle to Train 300,000 Students and Professionals across Uttar Pradesh in AI, Cloud, Cybersecurity, and Data Science</a>&nbsp;&nbsp;<font color="#6f6f6f">Oracle</font>

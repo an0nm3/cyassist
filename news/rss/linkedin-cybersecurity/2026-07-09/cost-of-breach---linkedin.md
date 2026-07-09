@@ -1,0 +1,12 @@
+---
+source: rss/linkedin-cybersecurity
+title: Cost Of Breach - LinkedIn
+url: https://news.google.com/rss/articles/CBMiqwFBVV95cUxPVFN0eEc5UjkxMHNKVnVZcFlpeFJiRzlWRnpfQkxtSXBmTEswc0tNczlWTXRENWEwanJCaDl5RFp3ck9uV0M3TnJmeFpxeEgxRWZhdERUdXhNSU5zZkY2eHQtblNLRURCcU9ubHdtZU9uRFRjY0VLLWhBRFhHeE5ZWHR2X2s2ZUNqMFk0aFl5R3FZdEFwdW9PTnptNUs2MV9qQlNraXIxMUpQM0U?oc=5
+date: 2026-07-09
+item_id: https://news.google.com/rss/articles/CBMiqwFBVV95cUxPVFN0eEc5UjkxMHNKVnVZcFlpeFJiRzlWRnpfQkxtSXBmTEswc0tNczlWTXRENWEwanJCaDl5RFp3ck9uV0M3TnJmeFpxeEgxRWZhdERUdXhNSU5zZkY2eHQtblNLRURCcU9ubHdtZU9uRFRjY0VLLWhBRFhHeE5ZWHR2X2s2ZUNqMFk0aFl5R3FZdEFwdW9PTnptNUs2MV9qQlNraXIxMUpQM0U?oc=5
+category: news---
+
+**Source:** LinkedIn Cybersecurity
+**Link:** https://news.google.com/rss/articles/CBMiqwFBVV95cUxPVFN0eEc5UjkxMHNKVnVZcFlpeFJiRzlWRnpfQkxtSXBmTEswc0tNczlWTXRENWEwanJCaDl5RFp3ck9uV0M3TnJmeFpxeEgxRWZhdERUdXhNSU5zZkY2eHQtblNLRURCcU9ubHdtZU9uRFRjY0VLLWhBRFhHeE5ZWHR2X2s2ZUNqMFk0aFl5R3FZdEFwdW9PTnptNUs2MV9qQlNraXIxMUpQM0U?oc=5
+
+Cost Of Breach &nbsp;&nbsp; LinkedIn

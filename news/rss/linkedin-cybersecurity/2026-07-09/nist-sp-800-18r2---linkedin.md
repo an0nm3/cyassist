@@ -1,0 +1,12 @@
+---
+source: rss/linkedin-cybersecurity
+title: NIST SP 800-18r2 - LinkedIn
+url: https://news.google.com/rss/articles/CBMiqgFBVV95cUxOQk5nRlhNQ0tiT0RqUm1JaDNaWXlIeXh1Z2gxVWI5aXFKLW5FdVB3RFlYVmNfQWw4QkQ2Y1VVRXJqbnJBMnRQUm1fVGE1Ujk0UzNKY3dWbUU1Q1Q0UG01aF8zRkhVMHMtOVFLYWJiVGQxcWRHaDNaaDc1YmMwX0ljbFVkYnlBZWdqNTAzM2Fxb2NBRXlfbWVVQzE5WGJqUlU4eDBXZDlEbmlRdw?oc=5
+date: 2026-07-09
+item_id: https://news.google.com/rss/articles/CBMiqgFBVV95cUxOQk5nRlhNQ0tiT0RqUm1JaDNaWXlIeXh1Z2gxVWI5aXFKLW5FdVB3RFlYVmNfQWw4QkQ2Y1VVRXJqbnJBMnRQUm1fVGE1Ujk0UzNKY3dWbUU1Q1Q0UG01aF8zRkhVMHMtOVFLYWJiVGQxcWRHaDNaaDc1YmMwX0ljbFVkYnlBZWdqNTAzM2Fxb2NBRXlfbWVVQzE5WGJqUlU4eDBXZDlEbmlRdw?oc=5
+category: news---
+
+**Source:** LinkedIn Cybersecurity
+**Link:** https://news.google.com/rss/articles/CBMiqgFBVV95cUxOQk5nRlhNQ0tiT0RqUm1JaDNaWXlIeXh1Z2gxVWI5aXFKLW5FdVB3RFlYVmNfQWw4QkQ2Y1VVRXJqbnJBMnRQUm1fVGE1Ujk0UzNKY3dWbUU1Q1Q0UG01aF8zRkhVMHMtOVFLYWJiVGQxcWRHaDNaaDc1YmMwX0ljbFVkYnlBZWdqNTAzM2Fxb2NBRXlfbWVVQzE5WGJqUlU4eDBXZDlEbmlRdw?oc=5
+
+NIST SP 800-18r2 &nbsp;&nbsp; LinkedIn

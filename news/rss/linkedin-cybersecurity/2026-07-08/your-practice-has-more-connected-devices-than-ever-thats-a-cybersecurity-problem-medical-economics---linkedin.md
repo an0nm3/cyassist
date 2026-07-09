@@ -1,0 +1,12 @@
+---
+source: rss/linkedin-cybersecurity
+title: Your practice has more connected devices than ever. That's a cybersecurity problem | Medical Economics - LinkedIn
+url: https://news.google.com/rss/articles/CBMivAFBVV95cUxOeWJDR0dDYjAySzU0M01sTFVna0lUSmhXZ1Ztd2dIdEJxaUlZSVl6ODZTVV92ZkdWVF9vdjZsQVdOa25wZFBrM043cW9DU2R6V2tBQTRfTkY2eHlXZkVvcnNQM0gzcEVBd2E4d2k3Y2ctT2dabWJCSEZDeHMzdUtpZGZMSEFqd1FIc3dIUHZYUFVqazVULUx0VmxPS0lYTWRTWTVFU3YycE9wcU5XYUtLZWxydjdVSWRnblNLag?oc=5
+date: 2026-07-08
+item_id: https://news.google.com/rss/articles/CBMivAFBVV95cUxOeWJDR0dDYjAySzU0M01sTFVna0lUSmhXZ1Ztd2dIdEJxaUlZSVl6ODZTVV92ZkdWVF9vdjZsQVdOa25wZFBrM043cW9DU2R6V2tBQTRfTkY2eHlXZkVvcnNQM0gzcEVBd2E4d2k3Y2ctT2dabWJCSEZDeHMzdUtpZGZMSEFqd1FIc3dIUHZYUFVqazVULUx0VmxPS0lYTWRTWTVFU3YycE9wcU5XYUtLZWxydjdVSWRnblNLag?oc=5
+category: news---
+
+**Source:** LinkedIn Cybersecurity
+**Link:** https://news.google.com/rss/articles/CBMivAFBVV95cUxOeWJDR0dDYjAySzU0M01sTFVna0lUSmhXZ1Ztd2dIdEJxaUlZSVl6ODZTVV92ZkdWVF9vdjZsQVdOa25wZFBrM043cW9DU2R6V2tBQTRfTkY2eHlXZkVvcnNQM0gzcEVBd2E4d2k3Y2ctT2dabWJCSEZDeHMzdUtpZGZMSEFqd1FIc3dIUHZYUFVqazVULUx0VmxPS0lYTWRTWTVFU3YycE9wcU5XYUtLZWxydjdVSWRnblNLag?oc=5
+
+Your practice has more connected devices than ever. That's a cybersecurity problem | Medical Economics &nbsp;&nbsp; LinkedIn
