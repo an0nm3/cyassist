@@ -502,7 +502,7 @@ def _dedup_items(items):
 def _build_entry(fp, text, m, in_scope, dup_map):
     title = html.unescape(m.get("title", fp.stem))
     src = m.get("source", "?")
-    url = m.get("url", "")
+    url = m.get("url", "").strip(' "')
     body = html.unescape(_strip_fm(text))
     cves = re.findall(r"CVE-\d{4}-\d{4,}", text)
     cve_str = f" {Fmt.cve('\u26a0 ' + ' '.join(cves[:3]))}" if cves else ""
@@ -517,7 +517,26 @@ def _build_entry(fp, text, m, in_scope, dup_map):
             "in_scope": in_scope, "priority": priority}
 
 
+def _short_url(url: str, max_len: int = 70) -> str:
+    if len(url) <= max_len:
+        return url
+    # Show domain + start and end of path
+    from urllib.parse import urlparse
+    try:
+        parsed = urlparse(url)
+        domain = parsed.netloc or parsed.path.split('/')[0]
+        path = parsed.path + ('?' + parsed.query if parsed.query else '')
+        if len(path) > max_len - len(domain) - 5:
+            mid = max_len - len(domain) - 10
+            path = path[:mid//2] + '...' + path[-mid//2:]
+        return f"{domain}{path}"
+    except Exception:
+        return url[:max_len] + '...'
+
+
 def _clean_body(body: str, max_words: int = 150) -> str:
+    body = re.sub(r'<[^>]+>', '', body)
+    body = html.unescape(body)
     lines = body.strip().split('\n')
     cleaned = []
     for line in lines:
@@ -620,7 +639,7 @@ def _show_expanded(entry):
     print(f" {Fmt.dim('source:')} {entry['source']}")
     print(f" {Fmt.dim('tags:')} {entry['meta'].get('tags', 'None')}")
     if entry['url']:
-        print(f" {Fmt.dim('link:')} {Fmt.url(entry['url'])}")
+        print(f" {Fmt.dim('link:')} {Fmt.url(_short_url(entry['url']))}")
     print(Fmt.hr('\u2550', 70))
     body = _clean_body(entry['body'])
     print(f" {body}")
@@ -731,7 +750,7 @@ def today(category: str = "news", source="", query="",
                     tags = e['meta']['tags'].strip('[]').replace(',', '  ')
                     print(f"      {Fmt.tag(tags[:60])}")
                 if e['url']:
-                    print(f"      {Fmt.url(e['url'])}")
+                    print(f"      {Fmt.url(_short_url(e['url']))}")
             print(f"  {Fmt.dim(f'{total} items')}")
 
         hl_nav = f"  [{Fmt.bold('h')}]hl" if mode == "news" and highlights else f"  [{Fmt.bold('n')}]news" if mode == "highlights" else ""
