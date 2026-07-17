@@ -119,7 +119,7 @@ content_lines = body_html.split('\n')
 filtered = []
 skip_until_content = True
 for line in content_lines:
-    if '<h1>Cyassist v2' in line:
+    if '<h1>Cyassist v3' in line:
         continue
     if skip_until_content:
         if 'id="s1"' in line or '<h2>1. Overview' in line or '<h2>1.' in line:
@@ -300,6 +300,15 @@ body {{
   height: auto;
 }}
 
+.title-page .version-below-logo {{
+  font-family: 'DejaVu Sans', 'Liberation Sans', sans-serif;
+  font-size: 28pt;
+  color: #6f42c1;
+  font-weight: bold;
+  margin: 2pt 0 14pt;
+  letter-spacing: 3pt;
+}}
+
 .title-page .gradient-line {{
   width: 60%;
   height: 2pt;
@@ -309,6 +318,7 @@ body {{
 }}
 
 .title-page .subtitle {{
+  margin-top: 0;
   font-family: 'DejaVu Sans', 'Liberation Sans', sans-serif;
   font-size: 18pt;
   color: #00ddff;
@@ -322,14 +332,6 @@ body {{
   font-size: 12pt;
   color: #667;
   margin-bottom: 5pt;
-}}
-
-.title-page .version {{
-  font-family: 'DejaVu Sans', 'Liberation Sans', sans-serif;
-  font-size: 18pt;
-  color: #6f42c1;
-  font-weight: bold;
-  margin: 35pt 0 0;
 }}
 
 .title-page .author-name {{
@@ -602,11 +604,11 @@ li {{
 <!-- PAGE 1: TITLE PAGE -->
 <div class="title-page">
   <img class="logo-img" src="{logo_data_uri}" alt="Cyassist" />
+  <div class="version-below-logo">v3.0</div>
   <hr class="gradient-line" />
-  <div class="subtitle">Intel-Driven Bug Bounty Assistant</div>
+  <div class="subtitle">Engine-Driven Bug Bounty Assistant</div>
   <div class="tagline">SQLite-backed threat intel &bull; Indian-first news &bull; Rudra-native bridge</div>
   <div class="tagline">Metadata only &bull; Zero exploit code cached &bull; 8 Indian scrapers</div>
-  <div class="version">Version 2.0</div>
   <div class="author-name">Pinaki Ranjan Patra</div>
   <div class="handle">&lt; 4n0n0n3 &gt;</div>
   <div class="footer-text">Built for bug bounty intel gathering and authorized security research</div>
@@ -614,7 +616,7 @@ li {{
 
 <!-- PAGE 2: MANUAL TITLE -->
 <div class="manual-title-page">
-  <div class="manual-title">Cyassist v2.0<br/>&mdash; User Manual</div>
+  <div class="manual-title">Cyassist v3.0<br/>&mdash; User Manual</div>
 </div>
 
 <!-- PAGE 3: TABLE OF CONTENTS -->
@@ -638,6 +640,6 @@ li {{
 </body>
 </html>'''
 
-print("Building Cyassist v2 User Manual PDF ...")
+print("Building Cyassist v3 User Manual PDF ...")
 HTML(string=html_template).write_pdf(str(OUT_PDF))
 print(f"  {OUT_PDF.name} — {os.path.getsize(str(OUT_PDF)) / 1024:.0f}KB")

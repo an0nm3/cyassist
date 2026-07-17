@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
-"""Cyassist v2.2 — unified CLI for Indian news, exploit DNA, template sync, Rudra bridge.
-v2.2.1: White-bg blink, India 7d fallback, LinkedIn cleanup, SSRF false-positive fix.
+"""Cyassist v3 — unified CLI for Indian news, exploit DNA, template sync, Rudra bridge, Cyassist engine.
+v3: Pattern Query API, report parser, tech detector, curl parser, vector schema.
 Storage target: <100MB. SQLite-backed. No exploit code cached."""
+
+VERSION = "3.0"
 
 import argparse
 import sys
@@ -59,8 +61,8 @@ def _dispatch(module: str, args: list[str] = None):
 
 
 def main():
-    p = argparse.ArgumentParser(description="Cyassist v2 — intel-driven bug bounty assistant")
-    p.add_argument("--status", action="store_true", help="Show intel DB stats")
+    p = argparse.ArgumentParser(description="Cyassist v3 — intel-driven bug bounty assistant")
+    p.add_argument("--version", action="store_true", help="Show version and exit")
     p.add_argument("--size", action="store_true", help="Show DB size only")
 
     # News
@@ -116,6 +118,12 @@ def main():
 
     args = p.parse_args()
 
+    # ── Version ──
+    if args.version:
+        print(f"Cyassist v{VERSION}")
+        print("Pattern Query API | Report Parser | Tech Detector | Curl Parser")
+        return
+
     # ── Status / Size ──
     if args.size or args.status:
         try:
@@ -126,7 +134,7 @@ def main():
             if args.size:
                 print(f"{stats['size_mb']:.3f}")
             else:
-                print(f"\n  {Fmt.bold('Cyassist v2 — Intel DB')}")
+                print(f"\n  {Fmt.bold('Cyassist v3 — Intel DB')}")
                 sz = stats["size_mb"]
                 print(f"  Size:     {Fmt.cyan(f'{sz:.2f}MB')} "
                       f"{Fmt.dim('(target: <100MB)')}")
