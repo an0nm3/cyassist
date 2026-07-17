@@ -129,6 +129,8 @@ def _compact_header(heading_text: str, india_mode: bool = False):
     else:
         heading = "\n".join(f"  {Fmt.bold(Fmt.green(line))}" for line in lines)
     print(heading)
+    from cyassist import VERSION
+    print(f"  {Fmt.bold('v' + VERSION)}  —  intel-driven bug bounty pipeline")
     print(Fmt.signature())
 
 
