@@ -62,8 +62,9 @@ def _dispatch(module: str, args: list[str] = None):
 
 def main():
     p = argparse.ArgumentParser(description="Cyassist v3 — intel-driven bug bounty assistant")
-    p.add_argument("--version", action="store_true", help="Show version and exit")
-    p.add_argument("--size", action="store_true", help="Show DB size only")
+    p.add_argument("-v", "--version", action="store_true", help="Show version and exit")
+    p.add_argument("--size", action="store_true", help="Show DB size only (machine-readable)")
+    p.add_argument("--status", action="store_true", help="Show full DB status")
 
     # News
     p.add_argument("--news-india", action="store_true", help="Scrape Indian news sources (CERT-In, ET CISO, etc.)")
@@ -117,6 +118,16 @@ def main():
     p.add_argument("--daily", action="store_true", help="Daily auto-run: scrape + harvest + sync")
 
     args = p.parse_args()
+
+    # ── Banner ──
+    print("   ██████╗██╗   ██╗ █████╗ ███████╗███████╗██╗███████╗████████╗")
+    print("  ██╔════╝╚██╗ ██╔╝██╔══██╗██╔════╝██╔════╝██║██╔════╝╚══██╔══╝")
+    print("  ██║      ╚████╔╝ ███████║███████╗███████╗██║███████╗   ██║   ")
+    print("  ██║       ╚██╔╝  ██╔══██║╚════██║╚════██║██║╚════██║   ██║   ")
+    print("  ╚██████╗   ██║   ██║  ██║███████║███████║██║███████║   ██║   ")
+    print("   ╚═════╝   ╚═╝   ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝╚══════╝   ╚═╝   ")
+    print(f"  v{VERSION}  —  intel-driven bug bounty pipeline")
+    print()
 
     # ── Version ──
     if args.version:
