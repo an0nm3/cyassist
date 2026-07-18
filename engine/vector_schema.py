@@ -179,6 +179,13 @@ class FeatureVector:
     status: str = "active"  # "active" | "pending_review" | "promoted"
     rudra_session_id: str = ""  # dedup key for Rudra feedback submissions
 
+    # Feedback outcome (Phase E — v3.2.0)
+    accepted: bool = False   # True = finding was accepted by triage
+    dup_of: str = ""         # Report ID if marked duplicate
+    informative: bool = False  # True = marked informative/N-A
+    reward: str = ""         # Bounty amount (e.g. "$500")
+    notes: str = ""          # Free-text notes about outcome
+
     def __post_init__(self):
         if not self.normalized_payload_hash and self.payload:
             self.normalized_payload_hash = payload_hash(self.payload)
@@ -205,6 +212,11 @@ class FeatureVector:
             "created_at": self.created_at,
             "status": self.status,
             "rudra_session_id": self.rudra_session_id,
+            "accepted": int(self.accepted),
+            "dup_of": self.dup_of,
+            "informative": int(self.informative),
+            "reward": self.reward,
+            "notes": self.notes,
         }
 
     @classmethod
@@ -228,6 +240,11 @@ class FeatureVector:
             created_at=row["created_at"],
             status=row["status"],
             rudra_session_id=row["rudra_session_id"],
+            accepted=bool(row["accepted"]),
+            dup_of=row["dup_of"],
+            informative=bool(row["informative"]),
+            reward=row["reward"],
+            notes=row["notes"],
         )
 
     def estimated_bytes(self) -> int:
@@ -264,6 +281,11 @@ class VectorStore:
         created_at TEXT DEFAULT '',
         status TEXT DEFAULT 'active',
         rudra_session_id TEXT DEFAULT '',
+        accepted INTEGER DEFAULT 0,
+        dup_of TEXT DEFAULT '',
+        informative INTEGER DEFAULT 0,
+        reward TEXT DEFAULT '',
+        notes TEXT DEFAULT '',
         UNIQUE(payload_hash, cwe, status)
     );
 
@@ -295,7 +317,12 @@ class VectorStore:
         """Add columns from newer schema versions if missing."""
         existing = {r["name"] for r in self.conn.execute("PRAGMA table_info(feature_vectors)")}
         for col, col_def in [("status", "TEXT DEFAULT 'active'"),
-                              ("rudra_session_id", "TEXT DEFAULT ''")]:
+                              ("rudra_session_id", "TEXT DEFAULT ''"),
+                              ("accepted", "INTEGER DEFAULT 0"),
+                              ("dup_of", "TEXT DEFAULT ''"),
+                              ("informative", "INTEGER DEFAULT 0"),
+                              ("reward", "TEXT DEFAULT ''"),
+                              ("notes", "TEXT DEFAULT ''")]:
             if col not in existing:
                 self.conn.execute(f"ALTER TABLE feature_vectors ADD COLUMN {col} {col_def}")
         # Recreate index if UNIQUE constraint changed — ignore error if exists
@@ -320,11 +347,13 @@ class VectorStore:
                 (source_url, source_platform, report_title,
                  cwe, tech, sink, param_type, payload_class, payload,
                  response_shape, auth_required, confidence, evidence_count,
-                 payload_hash, created_at)
+                 payload_hash, created_at, status, rudra_session_id,
+                 accepted, dup_of, informative, reward, notes)
                 VALUES (:source_url, :source_platform, :report_title,
                         :cwe, :tech, :sink, :param_type, :payload_class, :payload,
                         :response_shape, :auth_required, :confidence, :evidence_count,
-                        :payload_hash, :created_at)""",
+                        :payload_hash, :created_at, :status, :rudra_session_id,
+                        :accepted, :dup_of, :informative, :reward, :notes)""",
                 row,
             )
             self.conn.commit()
@@ -357,11 +386,13 @@ class VectorStore:
                 (source_url, source_platform, report_title,
                  cwe, tech, sink, param_type, payload_class, payload,
                  response_shape, auth_required, confidence, evidence_count,
-                 payload_hash, created_at, status, rudra_session_id)
+                 payload_hash, created_at, status, rudra_session_id,
+                 accepted, dup_of, informative, reward, notes)
                 VALUES (:source_url, :source_platform, :report_title,
                         :cwe, :tech, :sink, :param_type, :payload_class, :payload,
                         :response_shape, :auth_required, :confidence, :evidence_count,
-                        :payload_hash, :created_at, :status, :rudra_session_id)""",
+                        :payload_hash, :created_at, :status, :rudra_session_id,
+                        :accepted, :dup_of, :informative, :reward, :notes)""",
                 row,
             )
             self.conn.commit()

@@ -3,7 +3,7 @@
 Extracts chain patterns from H1 disclosed reports and provides a seeded index
 of known vulnerability chains. A chain combines 2+ primitives for greater impact.
 
-Seeded with 15 known chain patterns from real bug bounty writeups.
+Seeded with YAML chain definitions from chains/*.yaml.
 H1 parser enriches the index over time.
 
 Storage: SQLite table `chain_patterns` in the same VectorStore database.
@@ -17,6 +17,12 @@ import time
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
+
+try:
+    import yaml
+    HAS_YAML = True
+except ImportError:
+    HAS_YAML = False
 
 logger = logging.getLogger("chain_extractor")
 
@@ -135,7 +141,71 @@ def _primitive_to_sink(name: str) -> str:
 
 # ── Seed Patterns ───────────────────────────────────────────────────────
 
-_SEED_PATTERNS = [
+def _find_chains_dir() -> Path:
+    """Find the chains/ directory relative to this file."""
+    here = Path(__file__).resolve().parent.parent  # engine/.. → project root
+    chains_dir = here / "chains"
+    if chains_dir.is_dir():
+        return chains_dir
+    # Fall back to cwd
+    return Path("chains")
+
+
+def load_chains_from_yaml(chains_dir: Optional[Path] = None) -> list[ChainPattern]:
+    """Load chain patterns from YAML files in chains/ directory.
+
+    Reads all *.yaml files, returns deduplicated list of ChainPatterns.
+    Falls back to hardcoded _SEED_PATTERNS if PyYAML is unavailable.
+    """
+    if not HAS_YAML:
+        logger.info("PyYAML not available — using hardcoded seed patterns")
+        return list(_HARDCODED_PATTERNS)
+
+    chains_dir = chains_dir or _find_chains_dir()
+    if not chains_dir.is_dir():
+        logger.warning(f"chains/ directory not found at {chains_dir}")
+        return list(_HARDCODED_PATTERNS)
+
+    patterns: list[ChainPattern] = []
+    seen_keys: set[tuple[str, str]] = set()
+
+    for yaml_file in sorted(chains_dir.glob("*.yaml")):
+        try:
+            with open(yaml_file) as f:
+                data = yaml.safe_load(f)
+            if not data:
+                continue
+            for entry in data:
+                if not isinstance(entry, dict):
+                    continue
+                prim_a = str(entry.get("primitive_a", ""))
+                prim_b = str(entry.get("primitive_b", ""))
+                if not prim_a or not prim_b:
+                    continue
+                key = tuple(sorted([prim_a, prim_b]))
+                if key in seen_keys:
+                    continue
+                seen_keys.add(key)
+                patterns.append(ChainPattern(
+                    primitive_a=prim_a,
+                    primitive_b=prim_b,
+                    impact=entry.get("impact", f"{prim_a} + {prim_b}"),
+                    conditions=entry.get("conditions", []),
+                    cvss_bump=float(entry.get("cvss_bump", 1.0)),
+                    source_platform="seed",
+                ))
+        except Exception as e:
+            logger.warning(f"Failed to load chain YAML {yaml_file}: {e}")
+
+    if patterns:
+        logger.info(f"Loaded {len(patterns)} chain patterns from YAML")
+        return patterns
+
+    return list(_HARDCODED_PATTERNS)
+
+
+# Fallback hardcoded patterns (when PyYAML unavailable)
+_HARDCODED_PATTERNS = [
     ChainPattern(
         "open_redirect", "oauth_misconfig",
         "OAuth redirect_uri bypass leads to auth code theft — attacker intercepts OAuth callback via open redirect",
@@ -453,7 +523,8 @@ class ChainIndex:
         _ = self.conn  # ensure schema created
 
     def _load_seeds(self):
-        for p in _SEED_PATTERNS:
+        patterns = load_chains_from_yaml()
+        for p in patterns:
             self._upsert(p)
         self._load_persisted()
 

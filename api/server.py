@@ -107,6 +107,11 @@ class QueryHandler(BaseHTTPRequestHandler):
             payload_class=data.get("payload_class", ""),
             payload=data.get("payload", ""),
             confidence=float(data.get("confidence", 0.5)),
+            accepted=bool(data.get("accepted", False)),
+            dup_of=data.get("dup_of", ""),
+            informative=bool(data.get("informative", False)),
+            reward=data.get("reward", ""),
+            notes=data.get("notes", ""),
         )
         store = self._get_store()
         result = store.insert_pending(vector, session_id=session_id)

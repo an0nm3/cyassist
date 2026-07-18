@@ -1,0 +1,179 @@
+# OAuth + Open Redirect chains
+- primitive_a: open_redirect
+  primitive_b: oauth_misconfig
+  impact: "OAuth redirect_uri bypass leads to auth code theft — attacker intercepts OAuth callback via open redirect"
+  conditions:
+    - "OAuth flow uses redirect_uri parameter"
+    - "redirect_uri not validated against allowlist"
+    - "open redirect on same origin or whitelisted domain"
+  cvss_bump: 3.0
+
+# IDOR + Rate Limit
+- primitive_a: idors
+  primitive_b: rate_limit
+  impact: "IDOR + missing rate limit enables mass data exfiltration — iterate user IDs to dump all records"
+  conditions:
+    - "IDOR in list/view endpoint"
+    - "no rate limiting on the endpoint"
+    - "predictable or enumerable user IDs"
+  cvss_bump: 2.5
+
+# SSRF + Cloud Metadata
+- primitive_a: ssrf
+  primitive_b: cloud_metadata
+  impact: "SSRF to cloud metadata service leaks cloud provider credentials (AWS IMDS / GCP metadata / Azure IMDS)"
+  conditions:
+    - "outbound HTTP request to attacker-controlled URL"
+    - "cloud metadata endpoint not blocked"
+    - "IMDSv1 enabled (no token required)"
+  cvss_bump: 3.5
+
+# XSS + CSRF
+- primitive_a: xss
+  primitive_b: csrf
+  impact: "Stored XSS bypasses CSRF protections — attacker executes authenticated actions on victim's behalf"
+  conditions:
+    - "stored XSS in user-content field"
+    - "CSRF token not bound to session or missing"
+    - "sensitive action endpoint accessible via XSS"
+  cvss_bump: 2.0
+
+# File Upload + Path Traversal
+- primitive_a: file_upload
+  primitive_b: path_traversal
+  impact: "File upload with path traversal in filename overwrites system files -> RCE"
+  conditions:
+    - "file upload endpoint accepts filename with ../"
+    - "uploaded files stored on same filesystem as application code"
+    - "web server serves uploaded files with execute permission"
+  cvss_bump: 3.0
+
+# Subdomain Takeover + OAuth
+- primitive_a: subdomain_takeover
+  primitive_b: oauth_misconfig
+  impact: "Subdomain takeover on OAuth redirect_uri domain enables auth code theft for any user"
+  conditions:
+    - "OAuth redirect_uri points to subdomain with dangling DNS"
+    - "attacker can claim the subdomain (AWS S3, GitHub Pages, Heroku, etc.)"
+    - "OAuth client_id is the target application's registered client"
+  cvss_bump: 3.5
+
+# Rate Limit + SQLi
+- primitive_a: rate_limit
+  primitive_b: sqli
+  impact: "No rate limit on login enables blind SQLi exploitation via timing-based payload repetition"
+  conditions:
+    - "SQLi exists but requires many requests to extract data"
+    - "no rate limiting on the vulnerable endpoint"
+    - "time-based or error-based extraction feasible"
+  cvss_bump: 1.0
+
+# Host Header Injection + IDOR (Password Reset ATO)
+- primitive_a: host_header_injection
+  primitive_b: idors
+  impact: "Host header injection in password reset link redirects reset token to attacker -> account takeover"
+  conditions:
+    - "password reset flow uses Host header to generate reset link"
+    - "reset token is a one-time URL with no additional auth check"
+    - "attacker can intercept the victim's reset email"
+  cvss_bump: 3.0
+
+# Prototype Pollution + XSS
+- primitive_a: prototype_pollution
+  primitive_b: xss
+  impact: "Server-side prototype pollution in Object.assign/lodash.merge enables RCE or XSS via polluted prototype reaching a sink"
+  conditions:
+    - "application merges user-controlled JSON with objects"
+    - "merged property reaches dangerous sink (eval, innerHTML, res.send)"
+    - "Node.js or browser environment"
+  cvss_bump: 3.0
+
+# Cache Poisoning + XSS
+- primitive_a: cache_poisoning
+  primitive_b: xss
+  impact: "Web cache poisoning with XSS payload delivers persistent XSS to every user hitting the cached page"
+  conditions:
+    - "CDN or reverse proxy caches responses based on request headers"
+    - "unkeyed header contains XSS payload that gets reflected in cached response"
+    - "no Cache-Control: no-store on dynamic pages"
+  cvss_bump: 2.5
+
+# Session Fixation + JWT Attack
+- primitive_a: session_fixation
+  primitive_b: jwt_attack
+  impact: "Session fixation combined with missing re-auth on privilege escalation enables persistent ATO"
+  conditions:
+    - "application accepts pre-set session ID"
+    - "no session regeneration after login"
+    - "attacker can force victim to use known session"
+  cvss_bump: 2.5
+
+# SSRF + Blind SSRF
+- primitive_a: ssrf
+  primitive_b: ssrf_blind
+  impact: "Blind SSRF to internal port scan maps internal network topology -> enables targeted attacks"
+  conditions:
+    - "application fetches attacker-controlled URL"
+    - "response timing or error messages reveal port state"
+    - "internal network segments accessible from application server"
+  cvss_bump: 2.0
+
+# Clickjacking + CORS Misconfig
+- primitive_a: clickjacking
+  primitive_b: cors_misconfig
+  impact: "Clickjacking on sensitive action endpoint combined with CORS misconfig enables data theft"
+  conditions:
+    - "X-Frame-Options missing on sensitive action page"
+    - "CORS allows credentialed requests from attacker origin"
+    - "victim can be lured to attacker-controlled page"
+  cvss_bump: 1.5
+
+# Debug Endpoints + SQLi
+- primitive_a: debug_endpoints
+  primitive_b: sqli
+  impact: "Debug endpoint leaks SQL query structure enabling precise blind SQLi payload crafting"
+  conditions:
+    - "debug endpoint exposes query structure or error messages"
+    - "SQLi exists but requires complex syntax to exploit"
+    - "information leak narrows payload injection points"
+  cvss_bump: 0.5
+
+# XSS + OAuth Misconfig
+- primitive_a: xss
+  primitive_b: oauth_misconfig
+  impact: "XSS on OAuth-authenticated app steals access tokens from localStorage or cookies -> persistent ATO"
+  conditions:
+    - "OAuth access token stored in browser storage accessible via JS"
+    - "XSS on same origin"
+    - "no httpOnly flag on auth cookies or token in localStorage"
+  cvss_bump: 2.5
+
+# NoSQLi + Path Discovery
+- primitive_a: nosqli
+  primitive_b: path_discovery
+  impact: "NoSQL injection in $where operator leaks hidden API endpoints and internal paths via error messages"
+  conditions:
+    - "$where or $regex injection possible in NoSQL query"
+    - "error messages or timing reveal internal endpoint names"
+    - "hidden endpoints discovered expand attack surface"
+  cvss_bump: 1.0
+
+# SQLi + SSRF (File Write)
+- primitive_a: sqli
+  primitive_b: ssrf
+  impact: "SQLi with INTO OUTFILE / LOAD_FILE writes web shell onto application server SSRF-accessible endpoint"
+  conditions:
+    - "MySQL/MariaDB with FILE privilege"
+    - "writeable web directory reachable from DB server"
+    - "SSRF or direct access to written file"
+  cvss_bump: 3.5
+
+# SSTI + SSRF
+- primitive_a: ssti
+  primitive_b: ssrf
+  impact: "SSTI in template engine with file read capability enables SSRF to internal services using fetched credentials"
+  conditions:
+    - "SSTI with file read (Jinja2 cycler, Freemarker TemplateModel)"
+    - "credentials found in config files point to internal service"
+    - "internal service accessible from application server"
+  cvss_bump: 2.5

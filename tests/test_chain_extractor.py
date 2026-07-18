@@ -6,7 +6,7 @@ from engine.chain_extractor import (
     ChainPattern,
     ChainIndex,
     extract_chains_from_report,
-    _SEED_PATTERNS,
+    _HARDCODED_PATTERNS,
 )
 
 
@@ -53,7 +53,7 @@ def test_chain_pattern_to_row_roundtrip():
 
 def test_chain_index_seeds_loaded():
     idx = ChainIndex(db_path=":memory:")
-    assert idx.count() == len(_SEED_PATTERNS)
+    assert idx.count() == len(_HARDCODED_PATTERNS)
     assert idx.count() >= 15
 
 
@@ -113,7 +113,7 @@ def test_chain_index_add_duplicate():
 def test_chain_index_stats():
     idx = ChainIndex(db_path=":memory:")
     s = idx.stats()
-    assert s["total"] == len(_SEED_PATTERNS)
+    assert s["total"] == len(_HARDCODED_PATTERNS)
     assert "seed" in s["by_source"]
 
 
@@ -181,7 +181,7 @@ def test_add_from_report():
 def test_chain_index_persistence():
     db = tempfile.mktemp(suffix=".db")
     idx = ChainIndex(db_path=db)
-    assert idx.count() == len(_SEED_PATTERNS)
+    assert idx.count() == len(_HARDCODED_PATTERNS)
 
     # Add a new pattern (unique pair not in seeds)
     p = ChainPattern(
@@ -190,9 +190,9 @@ def test_chain_index_persistence():
         source_platform="test",
     )
     idx.add(p)
-    assert idx.count() == len(_SEED_PATTERNS) + 1
+    assert idx.count() == len(_HARDCODED_PATTERNS) + 1
 
     # Open new instance on same DB
     idx2 = ChainIndex(db_path=db)
-    assert idx2.count() == len(_SEED_PATTERNS) + 1
+    assert idx2.count() == len(_HARDCODED_PATTERNS) + 1
     assert idx2.lookup("nosqli", "debug_endpoints") is not None

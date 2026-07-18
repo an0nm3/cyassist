@@ -15,6 +15,7 @@ from typing import Optional
 
 from engine.policy_parser import PolicyStore, ProgramPolicy
 from engine.rejection_analyzer import RejectionDB, EvidenceSummary
+from engine.chain_extractor import ChainIndex
 
 logger = logging.getLogger("triage_oracle")
 
@@ -85,9 +86,17 @@ class TriageOracle:
     """
 
     def __init__(self, policy_store: Optional[PolicyStore] = None,
-                 rejection_db: Optional[RejectionDB] = None):
-        self.policy_store = policy_store or PolicyStore()
-        self.rejection_db = rejection_db or RejectionDB()
+                 rejection_db: Optional[RejectionDB] = None,
+                 chain_index: Optional[ChainIndex] = None,
+                 db_path: str = ""):
+        if db_path:
+            self.policy_store = policy_store or PolicyStore(db_path=db_path)
+            self.rejection_db = rejection_db or RejectionDB(db_path=db_path)
+            self.chain_index = chain_index or ChainIndex(db_path=db_path)
+        else:
+            self.policy_store = policy_store or PolicyStore()
+            self.rejection_db = rejection_db or RejectionDB()
+            self.chain_index = chain_index or ChainIndex()
 
     def evaluate(self, finding_class: str, program_name: str = "",
                  severity: str = "", tech: str = "",
@@ -173,7 +182,18 @@ class TriageOracle:
                 f"{program_name or 'unknown program'}"
             )
 
-        # ── 3. Determine verdict ───────────────────────────────────
+        # ── 3. Check chain patterns ────────────────────────────────
+        chains = self.chain_index.lookup_by_sink(finding_class) if self.chain_index else []
+        chain_suggestions: list[str] = []
+        for c in chains:
+            label = f"{c.primitive_a} + {c.primitive_b}"
+            if label not in chain_suggestions:
+                chain_suggestions.append(label)
+                suggestions.append(
+                    f"Chain available: {c.primitive_a} + {c.primitive_b} → {c.impact}"
+                )
+
+        # ── 4. Determine verdict ───────────────────────────────────
         verdict, reasoning = self._compute_verdict(
             finding_class, policy_excluded, ev, is_high_value_finding,
         )
