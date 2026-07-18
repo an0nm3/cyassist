@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build Cyassist v2 User Manual PDF — cyber-blue theme, ASCII logo as image."""
+"""Build Cyassist v3 User Manual PDF — cyber-blue theme, ASCII logo as image."""
 import os, re, base64, io
 from pathlib import Path
 import mistune
@@ -9,7 +9,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 SRC_MD = Path(__file__).parent / "CYASSIST_USER_MANUAL.md"
 FONT_OTF = Path("/home/kali/bugbounty/Cambridge.otf")
-OUT_PDF = Path("/home/kali/bugbounty/Cyassist_v2_User_Manual.pdf")
+OUT_PDF = Path("/home/kali/bugbounty/Cyassist_v3_User_Manual.pdf")
 
 with open(SRC_MD, 'r') as f:
     md_content = f.read()

@@ -18,7 +18,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from typing import Optional
 from urllib.parse import urlparse
 
-from engine.vector_schema import VectorStore
+from engine.vector_schema import VectorStore, FeatureVector
 from api.schema import QueryRequest, QueryResponse
 from api.query_engine import PatternQueryEngine
 
@@ -50,6 +50,8 @@ class QueryHandler(BaseHTTPRequestHandler):
         parsed = urlparse(self.path)
         if parsed.path == "/query":
             self._handle_query()
+        elif parsed.path == "/feedback":
+            self._handle_feedback()
         else:
             self._json_response({"error": "not found"}, status=404)
 
@@ -82,6 +84,38 @@ class QueryHandler(BaseHTTPRequestHandler):
             self._json_response(resp.to_dict())
         except Exception as e:
             self._json_response({"error": str(e)}, status=500)
+
+    def _handle_feedback(self):
+        length = int(self.headers.get("Content-Length", 0))
+        if length == 0:
+            self._json_response({"error": "empty body"}, status=400)
+            return
+        body = self.rfile.read(length).decode()
+        try:
+            data = json.loads(body)
+        except json.JSONDecodeError:
+            self._json_response({"error": "invalid JSON"}, status=400)
+            return
+
+        session_id = data.get("rudra_session_id", "")
+        vector = FeatureVector(
+            source_url=data.get("source_url", ""),
+            source_platform="rudra_feedback",
+            cwe=data.get("cwe", ""),
+            tech=data.get("tech", []),
+            sink=data.get("sink", ""),
+            payload_class=data.get("payload_class", ""),
+            payload=data.get("payload", ""),
+            confidence=float(data.get("confidence", 0.5)),
+        )
+        store = self._get_store()
+        result = store.insert_pending(vector, session_id=session_id)
+        if result == "accepted":
+            self._json_response({"status": "accepted"})
+        elif result == "duplicate":
+            self._json_response({"status": "duplicate", "message": "already exists"})
+        else:
+            self._json_response({"error": "storage error"}, status=500)
 
     # ── Helpers ────────────────────────────────────────────────────
 

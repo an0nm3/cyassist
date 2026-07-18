@@ -175,6 +175,10 @@ class FeatureVector:
     normalized_payload_hash: str = ""  # dedup hash, computed from payload
     created_at: str = ""
 
+    # Lifecycle (v11.15.0 — Phase B4)
+    status: str = "active"  # "active" | "pending_review" | "promoted"
+    rudra_session_id: str = ""  # dedup key for Rudra feedback submissions
+
     def __post_init__(self):
         if not self.normalized_payload_hash and self.payload:
             self.normalized_payload_hash = payload_hash(self.payload)
@@ -199,6 +203,8 @@ class FeatureVector:
             "evidence_count": self.evidence_count,
             "payload_hash": self.normalized_payload_hash,
             "created_at": self.created_at,
+            "status": self.status,
+            "rudra_session_id": self.rudra_session_id,
         }
 
     @classmethod
@@ -220,6 +226,8 @@ class FeatureVector:
             evidence_count=row["evidence_count"],
             normalized_payload_hash=row["payload_hash"],
             created_at=row["created_at"],
+            status=row["status"],
+            rudra_session_id=row["rudra_session_id"],
         )
 
     def estimated_bytes(self) -> int:
@@ -254,7 +262,9 @@ class VectorStore:
         evidence_count INTEGER DEFAULT 1,
         payload_hash TEXT DEFAULT '',
         created_at TEXT DEFAULT '',
-        UNIQUE(payload_hash, cwe)
+        status TEXT DEFAULT 'active',
+        rudra_session_id TEXT DEFAULT '',
+        UNIQUE(payload_hash, cwe, status)
     );
 
     CREATE INDEX IF NOT EXISTS idx_vector_cwe ON feature_vectors(cwe);
@@ -273,12 +283,26 @@ class VectorStore:
     @property
     def conn(self) -> sqlite3.Connection:
         if self._conn is None:
-            self._conn = sqlite3.connect(str(self.db_path))
+            self._conn = sqlite3.connect(str(self.db_path), check_same_thread=False)
             self._conn.row_factory = sqlite3.Row
             self._conn.execute("PRAGMA journal_mode=WAL")
             self._conn.execute("PRAGMA synchronous=NORMAL")
             self._conn.executescript(self.SCHEMA)
+            self._migrate_schema()
         return self._conn
+
+    def _migrate_schema(self):
+        """Add columns from newer schema versions if missing."""
+        existing = {r["name"] for r in self.conn.execute("PRAGMA table_info(feature_vectors)")}
+        for col, col_def in [("status", "TEXT DEFAULT 'active'"),
+                              ("rudra_session_id", "TEXT DEFAULT ''")]:
+            if col not in existing:
+                self.conn.execute(f"ALTER TABLE feature_vectors ADD COLUMN {col} {col_def}")
+        # Recreate index if UNIQUE constraint changed — ignore error if exists
+        try:
+            self.conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_vector_unique ON feature_vectors(payload_hash, cwe, status)")
+        except Exception:
+            pass
 
     def close(self):
         if self._conn:
@@ -315,6 +339,52 @@ class VectorStore:
             if self.insert(v):
                 count += 1
         return count
+
+    # ── Pending Review (Phase B4 — Rudra Feedback) ─────────────────────
+
+    def insert_pending(self, vector: FeatureVector, session_id: str = "") -> str:
+        """Insert a Rudra-submitted finding as pending_review.
+
+        Returns "accepted" if new, "duplicate" if already exists, "error" on failure.
+        """
+        vector.status = "pending_review"
+        vector.source_platform = "rudra_feedback"
+        vector.rudra_session_id = session_id
+        try:
+            row = vector.to_row()
+            cur = self.conn.execute(
+                """INSERT OR IGNORE INTO feature_vectors
+                (source_url, source_platform, report_title,
+                 cwe, tech, sink, param_type, payload_class, payload,
+                 response_shape, auth_required, confidence, evidence_count,
+                 payload_hash, created_at, status, rudra_session_id)
+                VALUES (:source_url, :source_platform, :report_title,
+                        :cwe, :tech, :sink, :param_type, :payload_class, :payload,
+                        :response_shape, :auth_required, :confidence, :evidence_count,
+                        :payload_hash, :created_at, :status, :rudra_session_id)""",
+                row,
+            )
+            self.conn.commit()
+            if cur.rowcount > 0:
+                return "accepted"
+            return "duplicate"
+        except Exception:
+            return "error"
+
+    def pending_count(self) -> int:
+        row = self.conn.execute(
+            "SELECT COUNT(*) as c FROM feature_vectors WHERE status = 'pending_review'"
+        ).fetchone()
+        return row["c"] if row else 0
+
+    def promote_pending(self, payload_hash: str) -> bool:
+        """Promote a pending_review vector to active status."""
+        cur = self.conn.execute(
+            "UPDATE feature_vectors SET status = 'promoted' WHERE payload_hash = ? AND status = 'pending_review'",
+            (payload_hash,),
+        )
+        self.conn.commit()
+        return cur.rowcount > 0
 
     # ── Query ────────────────────────────────────────────────────────────
 
