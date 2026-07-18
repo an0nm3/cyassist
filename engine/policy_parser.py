@@ -1,20 +1,28 @@
 """Phase D1: Program Policy Parser — structured exclusion rules.
 
 Parses HackerOne/Bugcrowd program policy pages into structured rules.
-For the initial release, uses a seeded set of known public program policies
-and manual extraction. Future: HTML scraper for live policy pages.
+Policies use structured fields (boolean/string scope) instead of plain text.
 
 Schema:
     ProgramPolicy:
-        name: str           # Program name
-        platform: str       # "hackerone" | "bugcrowd"
-        url: str            # Program page URL
-        exclusions: list     # Always-rejected categories (e.g. "self-xss")
-        score_range: str    # Bounty range string
-        requires_poc: bool  # Must include proof of concept
-        requires_browser_poc: bool  # Requires browser-based PoC (CORS, etc.)
-        out_of_scope: list  # OOS statements from the policy
-        notes: str          # Additional context
+        name: str
+        platform: str              # "hackerone" | "bugcrowd"
+        url: str
+        exclusions: list[str]      # Generic exclusion categories
+        out_of_scope: list[str]    # OOS text snippets
+        score_range: str           # "$500-$5000"
+        requires_poc: bool
+        requires_browser_poc: bool
+        allow_self_xss: bool       # True = self-XSS accepted
+        allow_clickjacking: bool   # True = clickjacking accepted
+        requires_account: bool     # True = need test account
+        minimum_severity: str      # "none", "low", "medium", "high", "critical"
+        accepts_duplicates: bool   # True = duplicate reports accepted
+        csrf_scope: str            # "any", "authenticated", "out_of_scope"
+        oauth_scope: str           # "in_scope", "informative", "out_of_scope"
+        api_scope: str             # "in_scope", "restricted", "out_of_scope"
+        mobile_scope: str          # "in_scope", "out_of_scope"
+        notes: str
 
 Storage: SQLite table `program_policies`, indexed by name.
 """
@@ -33,6 +41,10 @@ logger = logging.getLogger("policy_parser")
 # ── Data Model ──────────────────────────────────────────────────────────
 
 
+_VALID_SEVERITIES = frozenset({"none", "low", "medium", "high", "critical"})
+_VALID_SCOPES = frozenset({"in_scope", "out_of_scope", "informative", "restricted", "authenticated", "any"})
+
+
 @dataclass
 class ProgramPolicy:
     """Structured program policy / scope rules."""
@@ -41,10 +53,19 @@ class ProgramPolicy:
     platform: str = "hackerone"
     url: str = ""
     exclusions: list[str] = field(default_factory=list)
+    out_of_scope: list[str] = field(default_factory=list)
     score_range: str = ""
     requires_poc: bool = True
     requires_browser_poc: bool = False
-    out_of_scope: list[str] = field(default_factory=list)
+    allow_self_xss: bool = False
+    allow_clickjacking: bool = False
+    requires_account: bool = False
+    minimum_severity: str = "none"
+    accepts_duplicates: bool = False
+    csrf_scope: str = "any"
+    oauth_scope: str = "in_scope"
+    api_scope: str = "in_scope"
+    mobile_scope: str = "out_of_scope"
     notes: str = ""
     created_at: str = ""
     updated_at: str = ""
@@ -55,6 +76,13 @@ class ProgramPolicy:
             self.created_at = now
         if not self.updated_at:
             self.updated_at = now
+        # Validate enum-like fields
+        if self.minimum_severity not in _VALID_SEVERITIES:
+            self.minimum_severity = "none"
+        for scope_field in ("csrf_scope", "oauth_scope", "api_scope", "mobile_scope"):
+            val = getattr(self, scope_field)
+            if val not in _VALID_SCOPES:
+                object.__setattr__(self, scope_field, "out_of_scope")
 
     def to_row(self) -> dict:
         return {
@@ -62,10 +90,19 @@ class ProgramPolicy:
             "platform": self.platform,
             "url": self.url,
             "exclusions": _serialize_list(self.exclusions),
+            "out_of_scope": _serialize_list(self.out_of_scope),
             "score_range": self.score_range,
             "requires_poc": int(self.requires_poc),
             "requires_browser_poc": int(self.requires_browser_poc),
-            "out_of_scope": _serialize_list(self.out_of_scope),
+            "allow_self_xss": int(self.allow_self_xss),
+            "allow_clickjacking": int(self.allow_clickjacking),
+            "requires_account": int(self.requires_account),
+            "minimum_severity": self.minimum_severity,
+            "accepts_duplicates": int(self.accepts_duplicates),
+            "csrf_scope": self.csrf_scope,
+            "oauth_scope": self.oauth_scope,
+            "api_scope": self.api_scope,
+            "mobile_scope": self.mobile_scope,
             "notes": self.notes,
             "created_at": self.created_at,
             "updated_at": self.updated_at,
@@ -74,51 +111,91 @@ class ProgramPolicy:
     @classmethod
     def from_row(cls, row) -> "ProgramPolicy":
         """Create from sqlite3.Row or dict."""
-        if isinstance(row, dict):
-            return cls(
-                name=row["name"], platform=row.get("platform", "hackerone"),
-                url=row.get("url", ""),
-                exclusions=_deserialize_list(row.get("exclusions", "")),
-                score_range=row.get("score_range", ""),
-                requires_poc=bool(row.get("requires_poc", 1)),
-                requires_browser_poc=bool(row.get("requires_browser_poc", 0)),
-                out_of_scope=_deserialize_list(row.get("out_of_scope", "")),
-                notes=row.get("notes", ""),
-                created_at=row.get("created_at", ""),
-                updated_at=row.get("updated_at", ""),
-            )
+        def _get(key, default=""):
+            try:
+                return row[key]
+            except (KeyError, IndexError, TypeError):
+                return default
         return cls(
-            name=row["name"], platform=row["platform"],
-            url=row["url"],
-            exclusions=_deserialize_list(row["exclusions"]),
-            score_range=row["score_range"],
-            requires_poc=bool(row["requires_poc"]),
-            requires_browser_poc=bool(row["requires_browser_poc"]),
-            out_of_scope=_deserialize_list(row["out_of_scope"]),
-            notes=row["notes"],
-            created_at=row["created_at"],
-            updated_at=row["updated_at"],
+            name=row["name"],
+            platform=_get("platform", "hackerone"),
+            url=_get("url", ""),
+            exclusions=_deserialize_list(_get("exclusions", "")),
+            out_of_scope=_deserialize_list(_get("out_of_scope", "")),
+            score_range=_get("score_range", ""),
+            requires_poc=bool(_get("requires_poc", 1)),
+            requires_browser_poc=bool(_get("requires_browser_poc", 0)),
+            allow_self_xss=bool(_get("allow_self_xss", 0)),
+            allow_clickjacking=bool(_get("allow_clickjacking", 0)),
+            requires_account=bool(_get("requires_account", 0)),
+            minimum_severity=_get("minimum_severity", "none"),
+            accepts_duplicates=bool(_get("accepts_duplicates", 0)),
+            csrf_scope=_get("csrf_scope", "any"),
+            oauth_scope=_get("oauth_scope", "in_scope"),
+            api_scope=_get("api_scope", "in_scope"),
+            mobile_scope=_get("mobile_scope", "out_of_scope"),
+            notes=_get("notes", ""),
+            created_at=_get("created_at", ""),
+            updated_at=_get("updated_at", ""),
         )
 
-    def matches_finding(self, finding_class: str) -> tuple[bool, str]:
-        """Check if a finding class is excluded by this policy.
+    def matches_finding(self, sink_id: str, severity: str = "") -> tuple[bool, str]:
+        """Check if a finding should be excluded under this policy.
 
         Returns (excluded, reason).
         """
-        finding_lower = finding_class.lower().replace("_", "-")
+        # Severity gate
+        if severity and self.minimum_severity != "none":
+            sev_order = ["none", "low", "medium", "high", "critical"]
+            if sev_order.index(severity) < sev_order.index(self.minimum_severity):
+                return True, f"Below minimum severity ({self.minimum_severity})"
+
+        # Check structured allow_* flags
+        finding_normalized = sink_id.lower().replace("-", "_")
+        if not self.allow_self_xss and "self_xss" in finding_normalized:
+            return True, "Self-XSS not accepted"
+        if not self.allow_clickjacking and "clickjack" in finding_normalized:
+            return True, "Clickjacking not accepted"
+
+        # Scope checks
+        if (self.csrf_scope == "out_of_scope"
+                and ("csrf" in finding_normalized or "cors" in finding_normalized)):
+            return True, "CSRF out of scope per policy"
+
+        # Check exclusion list (generic catch-all)
         for exc in self.exclusions:
-            exc_lower = exc.lower().replace("_", "-")
-            if exc_lower in finding_lower or finding_lower in exc_lower:
+            exc_lower = exc.lower().replace("_", "-").replace(" ", "-")
+            if exc_lower in finding_normalized.replace("_", "-") or finding_normalized.replace("_", "-") in exc_lower:
                 return True, f"Excluded by program policy: '{exc}'"
-        # Normalize OOS text: replace underscores, hyphens, and spaces with a common separator
-        finding_normalized = finding_lower.replace("-", " ").replace("_", " ")
+
+        # OOS text snippets (word-level matching)
+        finding_words = set(finding_normalized.replace("-", " ").replace("_", " ").split())
         for oos in self.out_of_scope:
-            oos_normalized = oos.lower().replace("-", " ").replace("_", " ")
-            # Check if finding words appear in OOS statement
-            finding_words = set(finding_normalized.split())
-            if finding_words and finding_words.intersection(oos_normalized.split()):
-                return True, f"Out of scope: '{oos}'"
+            oos_words = set(oos.lower().replace("-", " ").replace("_", " ").split())
+            if finding_words and len(finding_words & oos_words) >= 2:
+                return True, f"Out of scope: '{oos[:80]}'"
+
         return False, ""
+
+    def to_summary(self) -> str:
+        """One-line summary for display."""
+        parts = [f"Policy: {self.name} ({self.platform})"]
+        if self.exclusions:
+            parts.append(f"excludes {len(self.exclusions)} categories")
+        if self.minimum_severity != "none":
+            parts.append(f"min severity: {self.minimum_severity}")
+        scope_flags = []
+        if self.allow_self_xss:
+            scope_flags.append("self-xss OK")
+        if self.allow_clickjacking:
+            scope_flags.append("clickjacking OK")
+        if self.requires_account:
+            scope_flags.append("needs account")
+        if scope_flags:
+            parts.append(", ".join(scope_flags))
+        if self.score_range:
+            parts.append(f"bounty: {self.score_range}")
+        return " | ".join(parts)
 
 
 # ── Serialization helpers ───────────────────────────────────────────────
@@ -134,76 +211,41 @@ def _deserialize_list(text: str) -> list[str]:
 
 # ── Exclusion categories (common across programs) ───────────────────────
 
-# These are well-known exclusion categories seen across H1/Bugcrowd programs.
-# Source: never-report skill + public program policies.
 _EXCLUSION_CATEGORIES = frozenset({
-    "self-xss",
-    "self_xss",
-    "rate-limiting",
-    "rate_limiting",
-    "missing-csp-headers",
-    "missing_csp_headers",
-    "missing-security-headers",
-    "missing_security_headers",
-    "csrf-logout",
-    "csrf_logout",
-    "clickjacking",
-    "click_jacking",
-    "cors-misconfig-without-xss",
-    "cors_misconfig_without_xss",
-    "host-header-injection-without-chain",
-    "host_header_injection_without_chain",
-    "open-redirect-without-chain",
-    "open_redirect_without_chain",
-    "version-disclosure",
-    "version_disclosure",
-    "server-side-information-disclosure",
-    "server_side_information_disclosure",
-    "debug-endpoint",
-    "debug_endpoint",
-    "username-enumeration",
-    "username_enumeration",
-    "password-policy",
-    "password_policy",
-    "content-spoofing",
-    "content_spoofing",
-    "cache-poisoning-without-chain",
-    "cache_poisoning_without_chain",
-    "null-origin-cors",
-    "null_origin_cors",
-    "subdomain-takeover-without-service",
-    "subdomain_takeover_without_service",
-    "session-timeout",
-    "session_timeout",
-    "directory-listing",
-    "directory_listing",
-    "dangling-dns-record",
-    "dangling_dns_record",
-    "http-verbose",
-    "http_verbose",
-    "next-data-leak",
-    "next_data_leak",
-    "firebase-api-key-leak",
-    "firebase_api_key_leak",
-    "datadog-rum-token",
-    "datadog_rum_token",
-    "account-lockout",
-    "account_lockout",
-    "denial-of-service",
-    "denial_of_service",
-    "two-factor-authentication-bypass-without-demo",
-    "two_factor_authentication_bypass_without_demo",
-    "internal-ip-disclosure",
-    "internal_ip_disclosure",
-    "stack-trace",
-    "stack_trace",
-    "email-harvesting",
-    "email_harvesting",
-    "captcha-bypass",
-    "captcha_bypass",
+    "self-xss", "self_xss",
+    "rate-limiting", "rate_limiting",
+    "missing-csp-headers", "missing_csp_headers",
+    "missing-security-headers", "missing_security_headers",
+    "csrf-logout", "csrf_logout",
+    "clickjacking", "click_jacking",
+    "cors-misconfig-without-xss", "cors_misconfig_without_xss",
+    "host-header-injection-without-chain", "host_header_injection_without_chain",
+    "open-redirect-without-chain", "open_redirect_without_chain",
+    "version-disclosure", "version_disclosure",
+    "server-side-information-disclosure", "server_side_information_disclosure",
+    "debug-endpoint", "debug_endpoint",
+    "username-enumeration", "username_enumeration",
+    "password-policy", "password_policy",
+    "content-spoofing", "content_spoofing",
+    "cache-poisoning-without-chain", "cache_poisoning_without_chain",
+    "null-origin-cors", "null_origin_cors",
+    "subdomain-takeover-without-service", "subdomain_takeover_without_service",
+    "session-timeout", "session_timeout",
+    "directory-listing", "directory_listing",
+    "dangling-dns-record", "dangling_dns_record",
+    "http-verbose", "http_verbose",
+    "next-data-leak", "next_data_leak",
+    "firebase-api-key-leak", "firebase_api_key_leak",
+    "datadog-rum-token", "datadog_rum_token",
+    "account-lockout", "account_lockout",
+    "denial-of-service", "denial_of_service",
+    "two-factor-authentication-bypass-without-demo", "two_factor_authentication_bypass_without_demo",
+    "internal-ip-disclosure", "internal_ip_disclosure",
+    "stack-trace", "stack_trace",
+    "email-harvesting", "email_harvesting",
+    "captcha-bypass", "captcha_bypass",
 })
 
-# Well-known exclusion patterns mapped to detector sink IDs
 _EXCLUSION_TO_SINK: dict[str, str] = {
     "self_xss": "xss_reflected",
     "rate_limiting": "rate_limit",
@@ -234,172 +276,122 @@ _EXCLUSION_TO_SINK: dict[str, str] = {
 
 
 def exclusion_to_sink(name: str) -> str:
-    """Map exclusion name to its corresponding sink ID (with normalisation)."""
     normalized = name.lower().replace("-", "_").strip()
     return _EXCLUSION_TO_SINK.get(normalized, normalized)
 
 
 # ── Seeded policies ─────────────────────────────────────────────────────
 
-# Known public program policies (sampled). These represent common exclusion patterns.
 _SEEDED_POLICIES = [
     ProgramPolicy(
-        name="security",
-        platform="hackerone",
+        name="security", platform="hackerone",
         url="https://hackerone.com/security",
-        exclusions=[
-            "self-xss", "rate-limiting", "missing-csp-headers",
-            "csrf-logout", "clickjacking", "version-disclosure",
-            "debug-endpoint", "username-enumeration",
-        ],
-        score_range="$500-$5000",
-        requires_poc=True,
+        exclusions=["self-xss", "rate-limiting", "missing-csp-headers",
+                     "csrf-logout", "clickjacking", "version-disclosure",
+                     "debug-endpoint", "username-enumeration"],
+        score_range="$500-$5000", csrf_scope="authenticated",
     ),
     ProgramPolicy(
-        name="twitter",
-        platform="hackerone",
+        name="twitter", platform="hackerone",
         url="https://hackerone.com/twitter",
-        exclusions=[
-            "self-xss", "rate-limiting", "missing-security-headers",
-            "csrf-logout", "clickjacking", "version-disclosure",
-            "debug-endpoint", "username-enumeration", "password-policy",
-            "content-spoofing", "open-redirect-without-chain",
-        ],
-        score_range="$560-$1120",
-        requires_poc=True,
+        exclusions=["self-xss", "rate-limiting", "missing-security-headers",
+                     "csrf-logout", "clickjacking", "version-disclosure",
+                     "debug-endpoint", "username-enumeration", "password-policy",
+                     "content-spoofing", "open-redirect-without-chain"],
+        score_range="$560-$1120", minimum_severity="low",
     ),
     ProgramPolicy(
-        name="paypal",
-        platform="hackerone",
+        name="paypal", platform="hackerone",
         url="https://hackerone.com/paypal",
-        exclusions=[
-            "self-xss", "rate-limiting", "missing-csp-headers",
-            "csrf-logout", "clickjacking", "version-disclosure",
-            "debug-endpoint", "username-enumeration",
-            "open-redirect-without-chain", "null-origin-cors",
-            "cache-poisoning-without-chain",
-        ],
-        score_range="$50-$10000",
-        requires_poc=True,
-        requires_browser_poc=True,
+        exclusions=["self-xss", "rate-limiting", "missing-csp-headers",
+                     "csrf-logout", "clickjacking", "version-disclosure",
+                     "debug-endpoint", "username-enumeration",
+                     "open-redirect-without-chain", "null-origin-cors",
+                     "cache-poisoning-without-chain"],
+        score_range="$50-$10000", requires_browser_poc=True,
     ),
     ProgramPolicy(
-        name="shopify",
-        platform="hackerone",
+        name="shopify", platform="hackerone",
         url="https://hackerone.com/shopify",
-        exclusions=[
-            "self-xss", "rate-limiting", "missing-csp-headers",
-            "csrf-logout", "clickjacking", "version-disclosure",
-            "debug-endpoint", "username-enumeration",
-            "open-redirect-without-chain", "subdomain-takeover-without-service",
-        ],
-        score_range="$500-$10000",
-        requires_poc=True,
+        exclusions=["self-xss", "rate-limiting", "missing-csp-headers",
+                     "csrf-logout", "clickjacking", "version-disclosure",
+                     "debug-endpoint", "username-enumeration",
+                     "open-redirect-without-chain", "subdomain-takeover-without-service"],
+        score_range="$500-$10000", minimum_severity="medium",
     ),
     ProgramPolicy(
-        name="cloudflare",
-        platform="hackerone",
+        name="cloudflare", platform="hackerone",
         url="https://hackerone.com/cloudflare",
-        exclusions=[
-            "self-xss", "rate-limiting", "missing-csp-headers",
-            "csrf-logout", "clickjacking", "version-disclosure",
-            "debug-endpoint", "username-enumeration",
-            "open-redirect-without-chain", "dangling-dns-record",
-        ],
+        exclusions=["self-xss", "rate-limiting", "missing-csp-headers",
+                     "csrf-logout", "clickjacking", "version-disclosure",
+                     "debug-endpoint", "username-enumeration",
+                     "open-redirect-without-chain", "dangling-dns-record"],
         score_range="$200-$3000",
-        requires_poc=True,
     ),
     ProgramPolicy(
-        name="discord",
-        platform="hackerone",
+        name="discord", platform="hackerone",
         url="https://hackerone.com/discord",
-        exclusions=[
-            "self-xss", "rate-limiting", "missing-csp-headers",
-            "csrf-logout", "clickjacking", "version-disclosure",
-            "debug-endpoint", "username-enumeration",
-            "open-redirect-without-chain",
-        ],
-        score_range="$500-$5000",
-        requires_poc=True,
+        exclusions=["self-xss", "rate-limiting", "missing-csp-headers",
+                     "csrf-logout", "clickjacking", "version-disclosure",
+                     "debug-endpoint", "username-enumeration",
+                     "open-redirect-without-chain"],
+        score_range="$500-$5000", requires_account=True,
     ),
     ProgramPolicy(
-        name="gitlab",
-        platform="hackerone",
+        name="gitlab", platform="hackerone",
         url="https://hackerone.com/gitlab",
-        exclusions=[
-            "self-xss", "rate-limiting", "missing-csp-headers",
-            "csrf-logout", "clickjacking", "version-disclosure",
-            "debug-endpoint", "username-enumeration",
-            "open-redirect-without-chain", "host-header-injection-without-chain",
-        ],
-        score_range="$500-$10000",
-        requires_poc=True,
+        exclusions=["self-xss", "rate-limiting", "missing-csp-headers",
+                     "csrf-logout", "clickjacking", "version-disclosure",
+                     "debug-endpoint", "username-enumeration",
+                     "open-redirect-without-chain", "host-header-injection-without-chain"],
+        score_range="$500-$10000", csrf_scope="authenticated",
     ),
     ProgramPolicy(
-        name="slack",
-        platform="hackerone",
+        name="slack", platform="hackerone",
         url="https://hackerone.com/slack",
-        exclusions=[
-            "self-xss", "rate-limiting", "missing-csp-headers",
-            "csrf-logout", "clickjacking", "version-disclosure",
-            "debug-endpoint", "username-enumeration",
-            "open-redirect-without-chain",
-        ],
+        exclusions=["self-xss", "rate-limiting", "missing-csp-headers",
+                     "csrf-logout", "clickjacking", "version-disclosure",
+                     "debug-endpoint", "username-enumeration",
+                     "open-redirect-without-chain"],
         score_range="$500-$5000",
-        requires_poc=True,
     ),
     ProgramPolicy(
-        name="uber",
-        platform="hackerone",
+        name="uber", platform="hackerone",
         url="https://hackerone.com/uber",
-        exclusions=[
-            "self-xss", "rate-limiting", "missing-csp-headers",
-            "csrf-logout", "clickjacking", "version-disclosure",
-            "debug-endpoint", "username-enumeration",
-            "open-redirect-without-chain",
-        ],
+        exclusions=["self-xss", "rate-limiting", "missing-csp-headers",
+                     "csrf-logout", "clickjacking", "version-disclosure",
+                     "debug-endpoint", "username-enumeration",
+                     "open-redirect-without-chain"],
         score_range="$500-$5000",
-        requires_poc=True,
     ),
     ProgramPolicy(
-        name="facebook",
-        platform="bugcrowd",
+        name="facebook", platform="bugcrowd",
         url="https://bugcrowd.com/facebook",
-        exclusions=[
-            "self-xss", "rate-limiting", "missing-csp-headers",
-            "csrf-logout", "clickjacking", "version-disclosure",
-            "debug-endpoint", "username-enumeration",
-            "open-redirect-without-chain",
-            "account-lockout", "denial-of-service",
-        ],
-        score_range="$500-$40000",
-        requires_poc=True,
+        exclusions=["self-xss", "rate-limiting", "missing-csp-headers",
+                     "csrf-logout", "clickjacking", "version-disclosure",
+                     "debug-endpoint", "username-enumeration",
+                     "open-redirect-without-chain",
+                     "account-lockout", "denial-of-service"],
+        score_range="$500-$40000", accepts_duplicates=False,
+        oauth_scope="out_of_scope",
     ),
     ProgramPolicy(
-        name="bugcrowd",
-        platform="bugcrowd",
+        name="bugcrowd", platform="bugcrowd",
         url="https://bugcrowd.com/bugcrowd",
-        exclusions=[
-            "self-xss", "rate-limiting", "missing-security-headers",
-            "csrf-logout", "clickjacking", "version-disclosure",
-            "debug-endpoint", "username-enumeration",
-            "open-redirect-without-chain",
-        ],
+        exclusions=["self-xss", "rate-limiting", "missing-security-headers",
+                     "csrf-logout", "clickjacking", "version-disclosure",
+                     "debug-endpoint", "username-enumeration",
+                     "open-redirect-without-chain"],
         score_range="$250-$2500",
-        requires_poc=True,
     ),
     ProgramPolicy(
-        name="general-hackerone",
-        platform="hackerone",
+        name="general-hackerone", platform="hackerone",
         url="https://hackerone.com/",
-        exclusions=[
-            "self-xss", "rate-limiting", "missing-csp-headers",
-            "csrf-logout", "clickjacking", "version-disclosure",
-            "debug-endpoint", "username-enumeration",
-            "open-redirect-without-chain",
-        ],
+        exclusions=["self-xss", "rate-limiting", "missing-csp-headers",
+                     "csrf-logout", "clickjacking", "version-disclosure",
+                     "debug-endpoint", "username-enumeration",
+                     "open-redirect-without-chain"],
         score_range="Varies",
-        requires_poc=True,
     ),
 ]
 
@@ -408,10 +400,7 @@ _SEEDED_POLICIES = [
 
 
 class PolicyStore:
-    """SQLite-backed store for program policies.
-
-    Seeded with common program policies. Extendable via add() / parse_policy_text().
-    """
+    """SQLite-backed store for program policies."""
 
     SCHEMA = """
     CREATE TABLE IF NOT EXISTS program_policies (
@@ -420,10 +409,19 @@ class PolicyStore:
         platform TEXT NOT NULL DEFAULT 'hackerone',
         url TEXT DEFAULT '',
         exclusions TEXT DEFAULT '',
+        out_of_scope TEXT DEFAULT '',
         score_range TEXT DEFAULT '',
         requires_poc INTEGER DEFAULT 1,
         requires_browser_poc INTEGER DEFAULT 0,
-        out_of_scope TEXT DEFAULT '',
+        allow_self_xss INTEGER DEFAULT 0,
+        allow_clickjacking INTEGER DEFAULT 0,
+        requires_account INTEGER DEFAULT 0,
+        minimum_severity TEXT DEFAULT 'none',
+        accepts_duplicates INTEGER DEFAULT 0,
+        csrf_scope TEXT DEFAULT 'any',
+        oauth_scope TEXT DEFAULT 'in_scope',
+        api_scope TEXT DEFAULT 'in_scope',
+        mobile_scope TEXT DEFAULT 'out_of_scope',
         notes TEXT DEFAULT '',
         created_at TEXT DEFAULT '',
         updated_at TEXT DEFAULT ''
@@ -438,7 +436,6 @@ class PolicyStore:
         self.db_path = Path(db_path)
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self._conn: Optional[sqlite3.Connection] = None
-        # In-memory lookup: name.lower() -> ProgramPolicy
         self._by_name: dict[str, ProgramPolicy] = {}
         self._init_db()
         self._load_seeds()
@@ -459,11 +456,9 @@ class PolicyStore:
     def _load_seeds(self):
         for p in _SEEDED_POLICIES:
             self._upsert(p)
-        # Load persisted non-seed entries from DB
         self._load_persisted()
 
     def _load_persisted(self):
-        """Load non-seed policies from SQLite into _by_name."""
         seed_names = {p.name.lower() for p in _SEEDED_POLICIES}
         rows = self.conn.execute("SELECT * FROM program_policies").fetchall()
         for row in rows:
@@ -475,14 +470,10 @@ class PolicyStore:
         self._by_name[policy.name.lower()] = policy
         try:
             row = policy.to_row()
+            cols = ", ".join(row.keys())
+            placeholders = ", ".join(f":{k}" for k in row)
             self.conn.execute(
-                """INSERT OR REPLACE INTO program_policies
-                (name, platform, url, exclusions, score_range,
-                 requires_poc, requires_browser_poc, out_of_scope,
-                 notes, created_at, updated_at)
-                VALUES (:name, :platform, :url, :exclusions, :score_range,
-                        :requires_poc, :requires_browser_poc, :out_of_scope,
-                        :notes, :created_at, :updated_at)""",
+                f"INSERT OR REPLACE INTO program_policies ({cols}) VALUES ({placeholders})",
                 row,
             )
             self.conn.commit()
@@ -492,7 +483,6 @@ class PolicyStore:
     # ── Public API ───────────────────────────────────────────────────
 
     def lookup(self, name: str) -> Optional[ProgramPolicy]:
-        """Look up a program by name (case-insensitive, partial match)."""
         key = name.lower().strip()
         if key in self._by_name:
             return self._by_name[key]
@@ -502,10 +492,6 @@ class PolicyStore:
         return None
 
     def lookup_by_sink(self, sink_id: str) -> list[tuple[str, list[str]]]:
-        """Find programs that exclude a given sink.
-
-        Returns list of (program_name, [exclusion_reasons]).
-        """
         results = []
         sink_norm = sink_id.lower()
         for name, policy in self._by_name.items():
@@ -519,7 +505,6 @@ class PolicyStore:
         return results
 
     def add(self, policy: ProgramPolicy) -> bool:
-        """Add or update a policy. Returns True if new."""
         existing = self._by_name.get(policy.name.lower())
         is_new = existing is None
         if not is_new:
@@ -529,7 +514,6 @@ class PolicyStore:
         return is_new
 
     def remove(self, name: str) -> bool:
-        """Remove a policy by name."""
         key = name.lower().strip()
         if key in self._by_name:
             del self._by_name[key]
@@ -539,7 +523,6 @@ class PolicyStore:
         return False
 
     def all_policies(self) -> list[ProgramPolicy]:
-        """Return all indexed policies."""
         rows = self.conn.execute("SELECT * FROM program_policies").fetchall()
         return [ProgramPolicy.from_row(r) for r in rows]
 
@@ -560,41 +543,28 @@ class PolicyStore:
 
     def parse_policy_text(self, text: str, name: str = "", url: str = "",
                           platform: str = "hackerone") -> Optional[ProgramPolicy]:
-        """Parse a program policy page text into structured rules.
-
-        Uses regex patterns to extract common policy elements.
-        Returns None if parsing fails to find meaningful structure.
-        """
         if not text.strip():
             return None
 
         exclusions = []
         out_of_scope = []
         score_range = ""
-        notes = []
+        text_lower = text.lower()
 
-        # Extract bounty range
         score_match = re.search(
             r'(?:\$|USD)\s*(\d[\d,]*)\s*(?:-|–|to)\s*(?:\$|USD)?\s*(\d[\d,]*)',
             text, re.IGNORECASE
         )
         if score_match:
-            low, high = score_match.group(1), score_match.group(2)
-            score_range = f"${low}-${high}"
+            score_range = f"${score_match.group(1)}-${score_match.group(2)}"
 
-        # Detect exclusion categories mentioned in the text
-        text_lower = text.lower()
         for category in _EXCLUSION_CATEGORIES:
             normalized = category.replace("_", "-").replace("-", " ")
             if normalized in text_lower or category.replace("_", " ") in text_lower:
                 exclusions.append(category)
-            # Also match the underscore/hyphen variant
-            alt = category.replace("-", "_")
-            if alt != category and (category.replace("_", "-") in text_lower):
-                if alt not in exclusions:
-                    exclusions.append(alt)
+            elif category.replace("_", "-") in text_lower:
+                exclusions.append(category)
 
-        # Detect OOS patterns
         oos_patterns = re.finditer(
             r'(?:out.?of.?scope|not.?eligible|excluded|will.?not.?accept)[^.]*\.',
             text, re.IGNORECASE
@@ -604,21 +574,33 @@ class PolicyStore:
             if sentence and sentence not in out_of_scope:
                 out_of_scope.append(sentence)
 
-        # Determine PoC requirements
         requires_browser = bool(re.search(
             r'browser.?based|browser.?poc|fetch\(\)|curl.?is.?not.?sufficient',
             text_lower
         ))
 
-        name = name or "unknown"
+        requires_account = bool(re.search(
+            r'requires? (a |an )?account|need (a |an )?account|test account|demo account',
+            text_lower
+        ))
+
+        # Detect minimum severity
+        min_sev = "none"
+        for sev_text, sev_val in [("critical", "critical"), ("high", "high"),
+                                   ("medium", "medium"), ("low", "low")]:
+            if re.search(rf"minimum severity[:\s]*{sev_text}", text_lower):
+                min_sev = sev_val
+                break
+
         return ProgramPolicy(
-            name=name,
+            name=name or "unknown",
             platform=platform,
             url=url,
             exclusions=exclusions,
             score_range=score_range,
             requires_poc=True,
             requires_browser_poc=requires_browser,
+            requires_account=requires_account,
+            minimum_severity=min_sev,
             out_of_scope=out_of_scope,
-            notes="; ".join(notes) if notes else "",
         )

@@ -246,3 +246,118 @@ def test_policy_persistence():
     store2 = PolicyStore(db_path=db)
     assert store2.count() == len(_SEEDED_POLICIES) + 1
     assert store2.lookup("persistent-prog") is not None
+
+
+# ── Structured Field Tests ──────────────────────────────────────────────
+
+
+def test_policy_structured_defaults():
+    p = ProgramPolicy(name="test")
+    assert p.allow_self_xss is False
+    assert p.allow_clickjacking is False
+    assert p.requires_account is False
+    assert p.minimum_severity == "none"
+    assert p.accepts_duplicates is False
+    assert p.csrf_scope == "any"
+    assert p.oauth_scope == "in_scope"
+    assert p.api_scope == "in_scope"
+    assert p.mobile_scope == "out_of_scope"
+
+
+def test_policy_matches_by_severity():
+    p = ProgramPolicy(name="test", minimum_severity="high")
+    excluded, reason = p.matches_finding("xss_reflected", severity="low")
+    assert excluded is True
+    assert "minimum severity" in reason
+
+    excluded, reason = p.matches_finding("sqli_error", severity="critical")
+    assert excluded is False
+
+
+def test_policy_matches_by_self_xss():
+    p = ProgramPolicy(name="test")
+    excluded, reason = p.matches_finding("self_xss")
+    assert excluded is True
+
+    p2 = ProgramPolicy(name="test2", allow_self_xss=True)
+    excluded, reason = p2.matches_finding("self_xss")
+    assert excluded is False
+
+
+def test_policy_matches_by_clickjacking():
+    p = ProgramPolicy(name="test")
+    excluded, reason = p.matches_finding("clickjacking")
+    assert excluded is True
+
+    p2 = ProgramPolicy(name="test2", allow_clickjacking=True)
+    excluded, reason = p2.matches_finding("clickjacking")
+    assert excluded is False
+
+
+def test_policy_to_row_structured_fields():
+    p = ProgramPolicy(
+        name="structured-test",
+        allow_self_xss=True,
+        allow_clickjacking=False,
+        requires_account=True,
+        minimum_severity="medium",
+        accepts_duplicates=False,
+        csrf_scope="authenticated",
+        oauth_scope="out_of_scope",
+        api_scope="restricted",
+        mobile_scope="out_of_scope",
+    )
+    row = p.to_row()
+    assert row["allow_self_xss"] == 1
+    assert row["minimum_severity"] == "medium"
+    assert row["csrf_scope"] == "authenticated"
+
+    restored = ProgramPolicy.from_row(row)
+    assert restored.allow_self_xss is True
+    assert restored.requires_account is True
+    assert restored.minimum_severity == "medium"
+    assert restored.csrf_scope == "authenticated"
+    assert restored.api_scope == "restricted"
+
+
+def test_policy_to_summary():
+    p = ProgramPolicy(name="test", score_range="$500-$5000")
+    summary = p.to_summary()
+    assert "test" in summary
+    assert "$500" in summary
+
+    p2 = ProgramPolicy(name="permissive", allow_self_xss=True, allow_clickjacking=True)
+    summary = p2.to_summary()
+    assert "self-xss OK" in summary
+    assert "clickjacking OK" in summary
+
+
+def test_policy_invalid_severity_falls_back():
+    p = ProgramPolicy(name="test", minimum_severity="extreme")
+    assert p.minimum_severity == "none"
+
+
+def test_policy_invalid_scope_falls_back():
+    p = ProgramPolicy(name="test", csrf_scope="everything")
+    assert p.csrf_scope == "out_of_scope"  # invalid -> safest default
+
+    p2 = ProgramPolicy(name="test2", mobile_scope="sort_of")
+    assert p2.mobile_scope == "out_of_scope"  # invalid -> safest default
+
+
+def test_parse_policy_text_account_required():
+    store = PolicyStore(db_path=":memory:")
+    text = "This program requires a test account to demonstrate findings."
+    p = store.parse_policy_text(text, name="needs-account")
+    assert p is not None
+    assert p.requires_account is True
+
+
+def test_policy_matches_default_exclusions_preserved():
+    """Default policies should still reject via the exclusions list."""
+    store = PolicyStore(db_path=":memory:")
+    p = store.lookup("shopify")
+    assert p is not None
+    excluded, reason = p.matches_finding("self_xss")
+    assert excluded is True
+    assert "self-xss" in reason.lower() or "self" in reason.lower()
