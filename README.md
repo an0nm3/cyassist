@@ -10,9 +10,9 @@
   <img src=".github/quote.png" alt="As hackers use terminal for everything, why should the news be exception?">
 </p>
 
-# Cyassist 🇮🇳 — Indian Cyber News
+# Cyassist v3.3.0 🇮🇳 — AI Bug Bounty Assistant + Cyber News
 
-Daily cybersecurity news feed archive — auto-collected from 35+ RSS and Telegram sources. Built for the Indian bug bounty and security community.
+Daily cybersecurity news feed archive — auto-collected from 35+ RSS and Telegram sources — plus Triage Oracle, Rejection Analyzer, Adaptive Crawler, and Knowledge Graph for bug bounty workflow intelligence. Built for the Indian bug bounty and security community.
 
 Made with ❤️ by [**4n0n0n3**](https://github.com/4n0n0n3) (Pinaki Ranjan Patra) — [LinkedIn](https://www.linkedin.com/in/pinakirpatra/)
 
