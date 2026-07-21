@@ -37,11 +37,19 @@ def test_verdict_to_dict():
 def test_verdict_to_display():
     v = OracleVerdict(
         verdict="Submission Ready",
+        expected_validity=0.85,
+        expected_bounty="High",
+        duplicate_probability=0.12,
+        expected_triage_time="Fast",
+        recommendation="Submit Immediately",
         reasoning="Evidence supports",
         suggestions=["Write report"],
     )
     display = v.to_display()
-    assert "Submission Ready" in display
+    assert "85%" in display
+    assert "12%" in display
+    assert "High" in display
+    assert "Submit Immediately" in display
     assert "Evidence supports" in display
 
 
@@ -49,10 +57,15 @@ def test_verdict_to_display():
 
 
 def test_oracle_evaluate_no_policy():
-    """Oracle returns a verdict even without a known policy."""
+    """Oracle returns probabilistic scores even without a known policy."""
     oracle = TriageOracle()
     v = oracle.evaluate(finding_class="sqli_error", program_name="")
-    assert v.verdict in ("Submission Ready", "Needs Manual Review", "Low Confidence", "Policy Conflict")
+    assert 0.0 <= v.expected_validity <= 1.0
+    assert 0.0 <= v.duplicate_probability <= 1.0
+    assert v.expected_triage_time in ("Fast", "Moderate", "Slow")
+    assert v.recommendation in ("Submit Immediately", "Submit with Caution",
+                                 "Submit with Chain", "Build a Chain",
+                                 "Verify Further", "Low Confidence — Seek More Evidence")
     assert isinstance(v.reasoning, str)
     assert len(v.reasoning) > 0
 
