@@ -604,7 +604,7 @@ li {{
 <!-- PAGE 1: TITLE PAGE -->
 <div class="title-page">
   <img class="logo-img" src="{logo_data_uri}" alt="Cyassist" />
-  <div class="version-below-logo">v3.0</div>
+  <div class="version-below-logo">v3.3.0</div>
   <hr class="gradient-line" />
   <div class="subtitle">Engine-Driven Bug Bounty Assistant</div>
   <div class="tagline">SQLite-backed threat intel &bull; Indian-first news &bull; Rudra-native bridge</div>
@@ -616,7 +616,7 @@ li {{
 
 <!-- PAGE 2: MANUAL TITLE -->
 <div class="manual-title-page">
-  <div class="manual-title">Cyassist v3.0<br/>&mdash; User Manual</div>
+  <div class="manual-title">Cyassist v3.3.0<br/>&mdash; User Manual</div>
 </div>
 
 <!-- PAGE 3: TABLE OF CONTENTS -->

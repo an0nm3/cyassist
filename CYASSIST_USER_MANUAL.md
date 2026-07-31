@@ -1,9 +1,9 @@
-# Cyassist v3 — User Manual
+# Cyassist v3.3.0 — User Manual
 
 > **Engine-Driven Bug Bounty Assistant**  
 > SQLite-backed threat intel, Indian cybersecurity news, exploit DNA harvesting, template indexing, and Rudra Framework integration.  
 > Storage target: `<100MB` — metadata only, no exploit code cached.  
-> Latest: **v2.2.1** — short flags, 3-color Indian logo, white-bg blinking highlights, BB-only news DB, India fallback (7 days), LinkedIn noise removed, Rudra v11.4.1 Phase 0 Browser Proxy + `--cf-bypass` + `--cookie`.
+> Latest: **v3.3.0** — Probabilistic Triage Oracle, Rejection Analyzer, Adaptive Crawler (SPA + login automation), unified Knowledge Graph, Chain Pattern Extractor.
 
 ---
 
@@ -27,6 +27,7 @@
 16. [Targets](#16-targets)
 17. [Database Schema](#17-database-schema)
 18. [False Positive Prevention](#18-false-positive-prevention)
+19. [Bug Bounty Workflow Intelligence (v3.3)](#19-bug-bounty-workflow-intelligence-v33)
 
 ---
 
@@ -42,7 +43,8 @@
 | Web Sources | 10+ (THN, BleepingComputer, GBHackers, PacketStorm, Reddit, X/Twitter) |
 | Exploit Sources | Exploit-DB RSS + GitHub API |
 | Template Sources | Nuclei + Metasploit (local scan) |
-| Integrations | Rudra Framework v10+ |
+| Integrations | Rudra Framework v12.4.0+ (ExecutionTrace, Knowledge Packs) |
+| Workflow Intel (v3.3) | Triage Oracle, Rejection Analyzer, Knowledge Graph, Adaptive Crawler |
 
 
 ### What Makes Cyassist Different
@@ -52,6 +54,9 @@
 - **Rudra-native bridge** — tech → CVE → sink type → probe config in one call. Feeds directly into Rudra's `pipeline.py`.
 - **On-demand fetching** — exploit code fetched read-only at query time, never cached. Zero storage cost.
 - **Watch mode** — polls for new CVEs, alerts on high-EPSS/PoC/KEV entries, optionally triggers Rudra auto-scan.
+- **Probabilistic triage (v3.3)** — before submitting, get an advisory verdict: expected validity, duplicate probability, expected bounty, triage time — grounded in program policy + historical rejection evidence + chain patterns.
+- **Unified knowledge graph (v3.3)** — 16 node types and 20 edge types unify all intel (technologies, CVEs, exploits, findings, programs, policies) into one queryable SQLite graph.
+- **SPA-aware crawling (v3.3)** — Playwright-based Adaptive Crawler clicks, scrolls, fills login forms, and compares pre-auth vs post-auth surfaces — the surface discovery modern JS apps need.
 
 ---
 
@@ -90,6 +95,7 @@
 │       │        │  CVE→probe config        │             │
 │       │        │  finding enrichment      │             │
 │       │        │  auto-scan config        │             │
+│       │        │  execution trace          │             │
 │  ┌────┴─────┐  │  target import           │             │
 │  │ on_demand│  └──────────┬───────────────┘             │
 │  │ .py      │             │                              │
@@ -210,6 +216,7 @@ cyassist --daily
 cyassist --watch --watch-interval 600
 ```
 
+
 ---
 
 ## 5. Command-Line Flags
@@ -263,6 +270,15 @@ cyassist --watch --watch-interval 600
 | CLI | `cyassist.py` | Unified entry point, dispatches all modules |
 | Reader | `reader.py` | News reader with Indian keywords |
 | Hunter | `hunter.py` | Hunting pipeline (legacy) |
+| Triage Oracle | `engine/triage_oracle.py` | Probabilistic submission advisory (validity, bounty, dup, triage time) |
+| Rejection Analyzer | `engine/rejection_analyzer.py` | Historical rejection/acceptance evidence per finding class + program |
+| Policy Parser | `engine/policy_parser.py` | Program policy ingestion, exclusion rules, minimum severity |
+| Chain Extractor | `engine/chain_extractor.py` | Exploit-chain pattern extraction from H1 reports + YAML chains |
+| Knowledge Graph | `engine/knowledge_graph.py` | Unified 16-node/20-edge SQLite graph of all intel |
+| Adaptive Crawler | `engine/discovery/adaptive_crawler.py` | Playwright SPA crawling + login automation + auth-aware discovery |
+| SPA Crawler | `engine/discovery/spa_crawler.py` | Client-side route discovery for JS apps |
+| JS Analyzer | `engine/discovery/js_analyzer.py` | JS bundle surface analysis |
+| GraphQL Discoverer | `engine/discovery/graphql_discoverer.py` | GraphQL introspection/operation discovery |
 
 ---
 
@@ -449,6 +465,13 @@ Built-in map covers 11 technologies:
 | okta | 2 | CVE-2024-XXXXX |
 | s3 | 2 | CVE-2024-XXXXX |
 | graphql | 3 | introspection, batching |
+
+### v12.4.0 Bridge Updates (Rudra Side)
+- **ExecutionTrace** — Rudra now emits per-step execution traces (WorkflowExecutionReport.trace). Consumable by CyAssist in future update.
+- **EvidenceCheck** — Rudra ASSERT steps reference structured evidence artifacts from prior steps.
+- **Knowledge Packs** — Rudra's capability_reasoner detects framework capabilities (Express, Laravel, Spring Boot) via auto-discovered packs.
+- **Confidence Chain** — Rudra propagates confidence across stages (transport → discovery → verification). CyAssist bridge integration planned.
+- **907 tests** — Rudra's full test suite validates the bridge contract
 
 ### Target Import
 
@@ -676,6 +699,159 @@ The following are automatically filtered from exploit intel:
 
 ---
 
+## 19. Bug Bounty Workflow Intelligence (v3.3)
+
+The v3.3 engine (`engine/`) layers decision support over the intel DB. All modules are pure libraries — they never suppress a finding, every output is advisory.
+
+### 19.1 Triage Oracle — probabilistic submission advisory
+
+Combines program policy, historical rejection evidence, and chain patterns to score a finding **before you submit**:
+
+| Score | Meaning |
+|-------|---------|
+| `expected_validity` | 0–1, likelihood the finding is accepted |
+| `expected_bounty` | Estimated bounty tier (Critical/High/Medium/Low, +1 with a chain) |
+| `duplicate_probability` | 0–1, likelihood the report is a duplicate |
+| `expected_triage_time` | Fast / Moderate / Slow (from submission-history volume) |
+| `recommendation` | Submit Immediately / Submit with Chain / Verify Further / Build a Chain |
+
+```python
+from engine.triage_oracle import TriageOracle
+
+oracle = TriageOracle(db_path="~/.local/share/cyassist/intel.db")
+verdict = oracle.evaluate(
+    finding_class="ssrf_reflected",
+    program_name="shopify",
+    severity="high",
+    tech="",
+    description="OOB callback on redirect= parameter",
+)
+print(verdict.to_display())
+# Expected validity: 85% | Duplicate prob: 12% | Expected bounty: High |
+# Triage time: Moderate | Recommendation: Submit with Caution | ...
+```
+
+Logic highlights:
+- **Base validity priors per sink** (e.g. sqli_error 0.85, xss_dom 0.55) adjusted 60/40 by actual accept-rate evidence.
+- **Policy penalties**: excluded classes knock validity to 60%; severity below the program minimum subtracts 0.15 per missing level.
+- **Duplicate probability** rises with rejection volume and is floored for historically over-reported classes (xss_reflected, open_redirect, cors_misconfig).
+- **Chain boost**: a matching `ChainPattern` (+1 bounty tier) is the single strongest lever — it prefers "submit as a chain" over standalone low-value findings.
+
+### 19.2 Rejection Analyzer
+
+Tracks every historical submission outcome per `(finding_class, program)`:
+
+```python
+from engine.rejection_analyzer import RejectionDB
+db = RejectionDB(db_path="~/.local/share/cyassist/intel.db")
+ev = db.evidence_for("xss_reflected", "shopify")
+print(ev.to_display())          # 12 accepted / 5 rejected / 3% reject rate
+print(ev.common_reasons[:3])    # top rejection reasons
+```
+
+Feeds the Triage Oracle's evidence model. Schema: `rejection_records(id, program, finding_class, outcome, severity, reason, date)`.
+
+### 19.3 Policy Parser — program policy ingestion
+
+Parses HackerOne/Bugcrowd policy exclusions into structured `ProgramPolicy` rows:
+
+| Field | Meaning |
+|-------|---------|
+| `exclusions` | Vulnerability classes excluded by the program |
+| `minimum_severity` | Severity floor before a report is considered |
+| `requires_browser_poc` | Programs demanding browser-side PoC (CORS/XSS/SSTI) |
+| `requires_account` | Test-account requirement |
+
+```python
+from engine.policy_parser import PolicyStore
+store = PolicyStore(db_path="~/.local/share/cyassist/intel.db")
+policy = store.lookup("shopify")
+excluded, reason = policy.matches_finding("cors_misconfig", "medium")
+```
+
+`exclusion_to_sink()` maps policy exclusion text (e.g. "rate limiting") to Rudra sink IDs for automated matching.
+
+### 19.4 Chain Pattern Extractor
+
+Mines exploit-chain patterns from public H1 reports and YAML chain definitions:
+
+```python
+from engine.chain_extractor import ChainIndex
+idx = ChainIndex(db_path="~/.local/share/cyassist/intel.db")
+chains = idx.lookup_by_sink("open_redirect")
+# e.g. open_redirect + oauth_misconfig → account_takeover
+```
+
+- 18+ seed patterns baked in (IDOR→account_takeover, JWT+weak-CORS→ATO, SSRF→RCE, ...).
+- `chains/*.yaml` lets you add primitives without code changes.
+- Chains surface in the Triage Oracle as a +1 bounty tier and a "Submit with Chain" recommendation.
+
+### 19.5 Knowledge Graph — unified intel graph
+
+Unifies 14 siloed data sources into a single queryable graph (SQLite adjacency list):
+
+```
+16 node types: Technology, Framework, CVE, Exploit, Sink, Finding,
+               Surface, Chain, Program, Policy, Detector, Probe,
+               HistoricalReport, Evidence, PayloadVector, Session
+
+20 edge types: AFFECTS, HAS_EXPLOIT, TARGETS_SINK, FOUND_ON, HAS_EVIDENCE,
+               USES_SINK, PART_OF_CHAIN, HAS_POLICY, HAS_FINDING, DETECTS,
+               RELATED_TO, RUNS_ON, TESTED_WITH, HAS_CVE, SIMILAR_TO,
+               LEADS_TO, BLOCKED_BY, REQUIRES_AUTH, PRODUCES, DEPENDS_ON
+```
+
+```python
+from engine.knowledge_graph import KnowledgeGraph
+kg = KnowledgeGraph()
+kg.populate_all()                    # import from all existing stores
+techs = kg.query_nodes("Technology")
+cves = kg.find_related("Technology:laravel", "CVE")
+path = kg.find_path("CVE:CVE-2021-44228", "Chain:log4shell_rce")  # up to depth 5
+print(kg.stats())                    # node/edge counts per type
+```
+
+Everything else (oracle, crawler) queries this graph instead of doing isolated DB lookups.
+
+### 19.6 Adaptive Crawler — SPA discovery with login automation
+
+Playwright-based crawler (G1–G4) for modern JS applications:
+
+| Component | Capability |
+|-----------|-----------|
+| G1 Enhanced SPA crawling | Click buttons, submit forms, scroll, lazy-load capture, route interception |
+| G2 Login automation | Detect login forms, fill credentials, capture session (cookies/bearer/storage_state) |
+| G3 Stateful navigation | Login → dashboard → settings; role-based surface trees |
+| G4 Auth-aware discovery | Pre-auth vs post-auth surface comparison; surfaces annotated `auth_required`/`role` |
+
+```python
+from engine.discovery.adaptive_crawler import AdaptiveCrawler
+crawler = AdaptiveCrawler(
+    "https://target.com",
+    login_url="https://target.com/login",
+    credentials={"username": "test@user.com", "password": "..."},
+)
+result = crawler.crawl()
+# result.pre_auth_surfaces / result.post_auth_surfaces
+# result.api_endpoints, result.graphql_operations,
+# result.websocket_urls, result.js_bundles
+```
+
+`CrawlResult` also captures `api_endpoints`, `graphql_operations`, `websocket_urls`, and `js_bundles` — the surface types server-side scanners miss. Discovered routes are written into the Knowledge Graph with `RUNS_ON` / `REQUIRES_AUTH` / `LEADS_TO` edges. Companion modules: `spa_crawler.py` (client-side route discovery), `js_analyzer.py` (bundle analysis), `graphql_discoverer.py` (introspection + operation discovery).
+
+> **Note:** `AdaptiveCrawler` needs Playwright (`pip install playwright && playwright install chromium`). Without it, `HAS_PLAYWRIGHT=False` and the crawler degrades gracefully.
+
+### 19.7 Engine CLI (`python3 -m engine`)
+
+```
+python3 -m engine sync --src all            # sync HackerOne/Immunefi/Medium indices
+python3 -m engine extract --report-id H1-123 # extract attack DNA from a report
+python3 -m engine query --sink sqli_error    # query the metadata store
+python3 -m engine status                     # store size + counts
+```
+
+---
+
 ## Appendix A: File Reference
 
 | File | Lines | Purpose |
@@ -690,6 +866,15 @@ The following are automatically filtered from exploit intel:
 | `on_demand.py` | 290 | On-demand fetcher + watch |
 | `reader.py` | 700+ | News reader (existing) |
 | `hunter.py` | 300+ | Hunting pipeline (existing) |
+| `engine/triage_oracle.py` | 320 | Probabilistic submission advisory |
+| `engine/rejection_analyzer.py` | 200+ | Historical rejection evidence |
+| `engine/policy_parser.py` | 480+ | Program policy ingestion |
+| `engine/chain_extractor.py` | 440+ | Chain pattern extraction |
+| `engine/knowledge_graph.py` | 646 | Unified intel graph |
+| `engine/discovery/adaptive_crawler.py` | 1116 | SPA crawl + login automation |
+| `engine/discovery/spa_crawler.py` | — | Client-side route discovery |
+| `engine/discovery/js_analyzer.py` | — | JS bundle analysis |
+| `engine/discovery/graphql_discoverer.py` | — | GraphQL discovery |
 
 ## Appendix B: Storage Budget Tracking
 
