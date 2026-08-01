@@ -3,7 +3,7 @@
 v3: Pattern Query API, report parser, tech detector, curl parser, vector schema.
 Storage target: <100MB. SQLite-backed. No exploit code cached."""
 
-VERSION = "3.0"
+VERSION = "3.3"
 
 import argparse
 import sys

@@ -924,7 +924,7 @@ def summary(days: int = 1, category: str = "news",
             src = e['meta'].get('source', '?')
             cves = " ".join(e['cves'][:3]) if e['cves'] else ""
             cve_tag = f" [{Fmt.cve(cves)}]" if cves else ""
-            body_text = _clean_body(e['body'], max_words=25, title=e['title'])[:120] if e['body'] else ""
+            body_text = _clean_body(e['body'], max_words=25, title=e['meta'].get('title', '?'))[:120] if e['body'] else ""
             fallback = Fmt.dim("(no summary)") if not body_text else body_text
             print(f"  {Fmt.bold(title)}{cve_tag}")
             print(f"  {Fmt.source(src)} \u2014 {Fmt.dim(body_text) if body_text else fallback}")

@@ -56,9 +56,17 @@ TEMPLATE_META = re.compile(
 )
 
 
+def safe_exists(p: Path) -> bool:
+    """Path.exists() that swallows PermissionError (py3.13 re-raises it)."""
+    try:
+        return bool(p) and p.exists()
+    except OSError:
+        return False
+
+
 def find_nuclei_dir() -> Optional[Path]:
     for d in NUCLEI_TEMPLATES_DIRS:
-        if d and d.exists():
+        if safe_exists(d):
             return d
     try:
         result = subprocess.run(
@@ -69,7 +77,7 @@ def find_nuclei_dir() -> Optional[Path]:
             if "templates" in line.lower() and "/" in line:
                 path = line.strip().split()[-1]
                 p = Path(path)
-                if p.exists():
+                if safe_exists(p):
                     return p
     except (FileNotFoundError, subprocess.TimeoutExpired, Exception):
         pass
@@ -194,7 +202,7 @@ def sync_metasploit(db: IntelDB, verbose: bool = True) -> int:
     count = 0
     msf_dir = None
     for p in MSF_PATHS:
-        if p.exists():
+        if safe_exists(p):
             msf_dir = p
             break
     if not msf_dir:
@@ -302,7 +310,7 @@ if __name__ == "__main__":
             print(f"  {Fmt.green(f'nuclei-templates: {d}')}")
         else:
             print(f"  {Fmt.yellow('nuclei-templates not found')}")
-        msf = [p for p in MSF_PATHS if p.exists()]
+        msf = [p for p in MSF_PATHS if safe_exists(p)]
         if msf:
             print(f"  {Fmt.green(f'Metasploit: {msf[0]}')}")
         else:

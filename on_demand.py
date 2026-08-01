@@ -47,6 +47,15 @@ class Fmt:
     def dim(cls, s): return cls._w("2", s)
     @classmethod
     def cyan(cls, s): return cls._w("36", s)
+    @classmethod
+    def hr(cls, char="\u2501", n=60): return cls.dim(char * n)
+    @classmethod
+    def banner(cls, text, sub=""):
+        line = cls.hr()
+        parts = [f"  {cls.bold(text)}"]
+        if sub:
+            parts.append(f"  {cls.dim(sub)}")
+        return f"\n{line}\n{chr(10).join(parts)}\n{line}\n"
 
 
 def _fetch(url: str, timeout: int = 30) -> Optional[str]:
